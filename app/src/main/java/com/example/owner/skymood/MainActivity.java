@@ -56,18 +56,18 @@ public class MainActivity extends AppCompatActivity {
 
     class MyTask extends AsyncTask<Void, Void, Void> {
 
-        String dateAndTime;
         String location;
         String conditionn;
         String iconUrl;
         String temp;
+        String feelsLikee;
         Bitmap pic;
 
         @Override
         protected Void doInBackground(Void... params) {
 
             try {
-                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/forecast/q/CA/San_Francisco.json");
+                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/conditions/q/CA/San_Francisco.json");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
@@ -78,20 +78,14 @@ public class MainActivity extends AppCompatActivity {
                 }
                 String info = body.toString();
 
-                JSONObject infoJson = new JSONObject(info);
-                JSONObject forecast = (JSONObject) infoJson.get("forecast");
-                JSONObject simpleForecast = (JSONObject) forecast.get("simpleforecast");
-                JSONArray forecastDay = simpleForecast.getJSONArray("forecastday");
-                JSONObject forecastDayOne = (JSONObject) forecastDay.get(1);
-                JSONObject date = (JSONObject) forecastDayOne.get("date");
-                dateAndTime = date.getString("pretty");
-                location = date.getString("tz_long");
-                conditionn = date.getString("conditions");
-                Log.e("VVV","condition: " +  conditionn);
-                iconUrl = date.getString("icon_url");
-                JSONObject tempH = (JSONObject) date.get("high");
-                temp = tempH.getString("celsius");
-                Log.e("VVV", "temp: " + temp);
+                JSONObject jsonData = new JSONObject(info);
+                JSONObject observation = (JSONObject) jsonData.get("current_observation");
+                JSONObject locationObject = (JSONObject) observation.get("display_location");
+                location = locationObject.getString("full");
+                conditionn = observation.getString("weather");
+                temp = observation.getString("temp_c");
+                feelsLikee = "Feels like: " + observation.getString("feelslike_c");
+                iconUrl = observation.getString("icon_url");
 
                 pic = BitmapFactory.decodeStream((InputStream) new URL(iconUrl).getContent());
 
@@ -110,13 +104,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             city.setText(location);
-            date.setText(dateAndTime);
             temperature.setText(temp);
             condition.setText(conditionn);
+            feelsLike.setText(feelsLikee);
 
             weatherImage.setImageBitmap(pic);
-
-
+            weatherImage.setAdjustViewBounds(true);
         }
     }
 }

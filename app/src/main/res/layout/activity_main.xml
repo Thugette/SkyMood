@@ -8,6 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/main_activity_background"
     tools:context="com.example.owner.skymood.MainActivity">
 
     <LinearLayout
@@ -19,50 +20,80 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"
+            android:textColor="@color/white"
+            android:shadowColor="@color/veryDarkGrey"
+            android:shadowRadius="3"
+            android:shadowDx="2"
+            android:shadowDy="2"
             android:id="@+id/cityNameTextView" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:shadowColor="@color/veryDarkGrey"
+            android:shadowRadius="3"
+            android:shadowDx="2"
+            android:shadowDy="2"
             android:id="@+id/dateAndTimeTextView" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:gravity="center"
         android:orientation="vertical">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:scaleType="fitXY"
             android:id="@+id/weatherImageView"/>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:gravity="center"
+        android:textColor="@color/white"
         android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="70sp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:shadowColor="@color/veryDarkGrey"
+            android:shadowRadius="3"
+            android:shadowDx="2"
+            android:shadowDy="2"
             android:id="@+id/temperatureTextView"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="30sp"
+            android:textColor="@color/white"
+            android:shadowColor="@color/veryDarkGrey"
+            android:shadowRadius="3"
+            android:shadowDx="2"
+            android:shadowDy="2"
             android:id="@+id/conditionTextView"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"
+            android:textColor="@color/white"
+            android:shadowColor="@color/veryDarkGrey"
+            android:shadowRadius="3"
+            android:shadowDx="2"
+            android:shadowDy="2"
             android:id="@+id/feelsLikeTextView"/>
 
     </LinearLayout>
@@ -76,6 +107,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:shadowColor="@color/veryDarkGrey"
+            android:shadowRadius="3"
+            android:shadowDx="2"
+            android:shadowDy="2"
             android:id="@+id/lastUpdateTextView"/>
 
     </LinearLayout>
