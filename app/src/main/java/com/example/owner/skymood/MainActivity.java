@@ -83,8 +83,8 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject locationObject = (JSONObject) observation.get("display_location");
                 location = locationObject.getString("full");
                 conditionn = observation.getString("weather");
-                temp = observation.getString("temp_c");
-                feelsLikee = "Feels like: " + observation.getString("feelslike_c");
+                temp = observation.getString("temp_c") + "°";
+                feelsLikee = "Feels like: " + observation.getString("feelslike_c") + "℃";
                 iconUrl = observation.getString("icon_url");
 
                 pic = BitmapFactory.decodeStream((InputStream) new URL(iconUrl).getContent());
