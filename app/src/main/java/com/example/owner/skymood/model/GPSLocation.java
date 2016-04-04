@@ -18,28 +18,38 @@ import com.example.owner.skymood.LocationActivity;
  */
 public class GPSLocation implements LocationListener {
 
-    Context context;
+    private Context context;
+    private LocationManager locationManager;
+    private Location location;
 
     public GPSLocation(Context context) {
         this.context = context;
+        this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        doSmth();
     }
 
-    private LocationManager locationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
-//    if (context.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//        // TODO: Consider calling
-//        //    ActivityCompat#requestPermissions
-//        // here to request the missing permissions, and then overriding
-//        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//        //                                          int[] grantResults)
-//        // to handle the case where the user grants the permission. See the documentation
-//        // for ActivityCompat#requestPermissions for more details.
-//        return;
-//    }
-//    locationManager.requestLocationUpdates(context.LocationManager.GPS_PROVIDER, 1000, 1, this);
+    public void doSmth() {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, this);
+    }
+
+    public Location getLocationTwo(){
+        return this.location;
+    }
+
 
     @Override
     public void onLocationChanged(android.location.Location location) {
-
+        this.location = location;
     }
 
     @Override
@@ -74,11 +84,11 @@ public class GPSLocation implements LocationListener {
     }
 
     public double getLatitude(){
-        return getLocation().getLatitude();
+        return this.location.getLatitude();
     }
 
     public double getLongitude(){
-        return getLocation().getLongitude();
+        return this.location.getLongitude();
     }
 
 

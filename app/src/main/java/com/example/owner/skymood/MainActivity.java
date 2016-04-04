@@ -1,7 +1,6 @@
 package com.example.owner.skymood;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,11 +14,8 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.owner.skymood.location.NetworkLocationHelper;
 import com.example.owner.skymood.location.NetworkLocationListener;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NetworkLocationListener.LocationReciever {
 
     private TextView city;
     private TextView date;
@@ -41,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView lastUpdate;
     private ImageView weatherImage;
 
+    private Location location;
+    private LocationManager locationManager;
+    private NetworkLocationListener listener;
     private double latitude;
     private double longtitude;
 
@@ -59,69 +58,26 @@ public class MainActivity extends AppCompatActivity {
         lastUpdate = (TextView) findViewById(R.id.lastUpdateTextView);
         weatherImage = (ImageView) findViewById(R.id.weatherImageView);
 
-        //shared prefs
+        //TODO: shared prefs
 
-        //network location
-        NetworkLocationHelper nlh = new NetworkLocationHelper(this);
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(nlh)
-                .addOnConnectionFailedListener(nlh)
-                .build();
-        nlh.setGoogleApiClient(mGoogleApiClient);
+        //TODO: network location
+        getNetworkLocation();
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-
-      //  LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-      //  Location l = manager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-        Log.e("HHH", location + "");
-
-        if(location != null) {
-            double lat = location.getLatitude();
-            Log.e("HHH", lat + "");
-            double lon = location.getLongitude();
-            Log.e("HHH", lon + "");
-        }
-
-        //gps
+        //TODO: gps
 
         MyTask task = new MyTask();
         task.execute();
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //connecting the client
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    protected void onStop() {
-        //disconnecting client
-        mGoogleApiClient.disconnect();
-        super.onStop();
-    }
-
-    /*  public void getLocation(View view) {
-        Intent intent = new Intent(MainActivity.this, AndroidLocationActivity.class);
+ /*   public void getLocation(View view) {
+        Intent intent = new Intent(this, LocationActivity.class);
         startActivity(intent);
     } */
 
-    public void getCoordinatesByNetwork(){
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+    public void getNetworkLocation() {
+        listener = new NetworkLocationListener(this);
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -132,16 +88,30 @@ public class MainActivity extends AppCompatActivity {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-
-        String locationProvider = LocationManager.NETWORK_PROVIDER;
-        locationManager.requestLocationUpdates(locationProvider, 0, 0, new NetworkLocationListener());
-        Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
-        latitude = lastKnownLocation.getLatitude();
-        Log.e("VVV", "latitude: " + latitude);
-        longtitude = lastKnownLocation.getLongitude();
-        Log.e("VVV", "longtitude: " + longtitude);
-
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
     }
+
+    @Override
+    public void receiveLocation(Location location) {
+        this.location = location;
+        this.latitude = location.getLatitude();
+        Log.e("AAA", latitude + "");
+        this.longtitude = location.getLongitude();
+        Log.e("AAA", longtitude + "");
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.removeUpdates(listener);
+    }
+
 
     class MyTask extends AsyncTask<Void, Void, Void> {
 

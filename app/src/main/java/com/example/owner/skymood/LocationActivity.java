@@ -97,7 +97,7 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
 
     public void setLocation(View view) {
         GPSLocation gps = new GPSLocation(LocationActivity.this);
-        classLat.setText(String.valueOf(gps.getLatitude()));
-        classLong.setText(String.valueOf(gps.getLongitude()));
+        classLat.setText(String.valueOf(gps.getLocationTwo().getLatitude()));
+        classLong.setText(String.valueOf(gps.getLocationTwo().getLongitude()));
     }
 }

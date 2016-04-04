@@ -1,5 +1,6 @@
 package com.example.owner.skymood.location;
 
+import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -9,9 +10,15 @@ import android.os.Bundle;
  */
 public class NetworkLocationListener implements LocationListener {
 
+    private LocationReciever receiver;
+
+    public NetworkLocationListener(Context context){
+        this.receiver = (LocationReciever) context;
+    }
+
     @Override
     public void onLocationChanged(Location location) {
-
+        receiver.receiveLocation(location);
     }
 
     @Override
@@ -26,6 +33,12 @@ public class NetworkLocationListener implements LocationListener {
 
     @Override
     public void onProviderDisabled(String provider) {
+      //TODO: what to do when there is no network connection
+    }
+
+    public interface LocationReciever {
+
+        void receiveLocation(Location location);
 
     }
 }
