@@ -55,9 +55,7 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
         classLat = (TextView) findViewById(R.id.class_lat);
         classLong = (TextView) findViewById(R.id.class_long);
 
-        GPSLocation location = new GPSLocation(this);
-        classLat.setText(String.valueOf(location.getLatitude()));
-        classLong.setText(String.valueOf(location.getLongitude()));
+
 
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -78,6 +76,8 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
     public void onLocationChanged(Location location) {
         txtLat.setText(String.valueOf(location.getLatitude()));
         txtLong.setText(String.valueOf(location.getLongitude()));
+
+
     }
 
     @Override
@@ -93,5 +93,11 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    public void setLocation(View view) {
+        GPSLocation gps = new GPSLocation(LocationActivity.this);
+        classLat.setText(String.valueOf(gps.getLatitude()));
+        classLong.setText(String.valueOf(gps.getLongitude()));
     }
 }

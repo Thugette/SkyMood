@@ -8,6 +8,10 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.example.owner.skymood.LocationActivity;
 
 /**
  * Created by owner on 03/04/2016.
@@ -20,7 +24,7 @@ public class GPSLocation implements LocationListener {
         this.context = context;
     }
 
-    private LocationManager locationManager = (LocationManager) context.getSystemService(context.LOCATION_SERVICE);
+    private LocationManager locationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
 //    if (context.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 //        // TODO: Consider calling
 //        //    ActivityCompat#requestPermissions

@@ -64,4 +64,9 @@
         android:id="@+id/class_long"
         android:layout_below="@+id/class_lat"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="setLocation"/>
 </RelativeLayout>
