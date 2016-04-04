@@ -1,23 +1,27 @@
-package com.example.owner.skymood;
+package com.example.owner.skymood.fragments;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.owner.skymood.HourlyActivity;
+import com.example.owner.skymood.R;
 import com.example.owner.skymood.location.NetworkLocationListener;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +33,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
-public class MainActivity extends AppCompatActivity implements NetworkLocationListener.LocationReceiver {
+
+public class CurrentWeatherFragment extends Fragment implements NetworkLocationListener.LocationReceiver, Swideable{
 
     private TextView city;
     private TextView date;
@@ -45,45 +50,50 @@ public class MainActivity extends AppCompatActivity implements NetworkLocationLi
     private double latitude;
     private double longtitude;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    Context context;
 
-        city = (TextView) findViewById(R.id.cityNameTextView);
-        date = (TextView) findViewById(R.id.dateAndTimeTextView);
-        temperature = (TextView) findViewById(R.id.temperatureTextView);
-        condition = (TextView) findViewById(R.id.conditionTextView);
-        feelsLike = (TextView) findViewById(R.id.feelsLikeTextView);
-        lastUpdate = (TextView) findViewById(R.id.lastUpdateTextView);
-        weatherImage = (ImageView) findViewById(R.id.weatherImageView);
+    public CurrentWeatherFragment() {
+        // Required empty public constructor
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        ViewGroup rootView = (ViewGroup) inflater.inflate(
+                R.layout.fragment_current_weather, container, false);
+
+        city = (TextView) rootView.findViewById(R.id.cityNameTextView);
+        date = (TextView) rootView.findViewById(R.id.dateAndTimeTextView);
+        temperature = (TextView) rootView.findViewById(R.id.temperatureTextView);
+        condition = (TextView) rootView.findViewById(R.id.conditionTextView);
+        feelsLike = (TextView) rootView.findViewById(R.id.feelsLikeTextView);
+        lastUpdate = (TextView) rootView.findViewById(R.id.lastUpdateTextView);
+        weatherImage = (ImageView) rootView.findViewById(R.id.weatherImageView);
 
         //TODO: shared prefs
 
         //network location
-        getNetworkLocation();
+       // getNetworkLocation();
 
         //TODO: gps
 
         MyTask task = new MyTask();
         task.execute();
 
+
+        return rootView;
     }
 
-    public void getLocation(View view) {
-        Intent intent = new Intent(this, HourlyActivity.class);
-        startActivity(intent);
-    }
-
-    public void getNetworkLocation() {
-        listener = new NetworkLocationListener(this);
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+   /* public void getNetworkLocation() {
+        listener = new NetworkLocationListener(context);
+        locationManager = (LocationManager) Context.getSystemService(LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
-    }
+    } */
 
     @Override
     public void receiveLocation(Location location) {
@@ -91,11 +101,16 @@ public class MainActivity extends AppCompatActivity implements NetworkLocationLi
         this.latitude = location.getLatitude();
         this.longtitude = location.getLongitude();
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             return;
         }
         locationManager.removeUpdates(listener);
+    }
+
+    @Override
+    public void setContext(Context context) {
+        this.context = context;
     }
 
 
@@ -157,4 +172,5 @@ public class MainActivity extends AppCompatActivity implements NetworkLocationLi
             weatherImage.setAdjustViewBounds(true);
         }
     }
+
 }
