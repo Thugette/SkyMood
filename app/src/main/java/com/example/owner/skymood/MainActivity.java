@@ -1,7 +1,6 @@
 package com.example.owner.skymood;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,13 +11,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.owner.skymood.location.NetworkLocationListener;
+import com.google.android.gms.common.api.GoogleApiClient;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements NetworkLocationLi
     private double latitude;
     private double longtitude;
 
+    private GoogleApiClient mGoogleApiClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,28 +64,16 @@ public class MainActivity extends AppCompatActivity implements NetworkLocationLi
         getNetworkLocation();
 
         //TODO: gps
-      //  getGpsLocation();
-
 
         MyTask task = new MyTask();
         task.execute();
 
     }
 
-    public void getLocation(View view) {
-        Intent intent = new Intent(this, HourlyActivity.class);
+ /*   public void getLocation(View view) {
+        Intent intent = new Intent(this, LocationActivity.class);
         startActivity(intent);
-    }
-
-    public void getGpsLocation() {
-        listener = new NetworkLocationListener(this);
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
-    }
+    } */
 
     public void getNetworkLocation() {
         listener = new NetworkLocationListener(this);
@@ -99,12 +87,9 @@ public class MainActivity extends AppCompatActivity implements NetworkLocationLi
 
     @Override
     public void receiveLocation(Location location) {
-        Log.e("VVV", "method entered");
         this.location = location;
         this.latitude = location.getLatitude();
-        Log.e("VVV", latitude + "");
         this.longtitude = location.getLongitude();
-        Log.e("VVV", longtitude + "");
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -127,9 +112,7 @@ public class MainActivity extends AppCompatActivity implements NetworkLocationLi
         protected Void doInBackground(Void... params) {
 
             try {
-                Log.e("didi", ""+latitude);
-                Log.e("didi", ""+longtitude);
-                URL url = new URL("http://api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longtitude+"&APPID=186859f63d164736ac379bc15a658e8b&units=metric");
+                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/conditions/q/BG/Sofia.json");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
@@ -141,14 +124,13 @@ public class MainActivity extends AppCompatActivity implements NetworkLocationLi
                 String info = body.toString();
 
                 JSONObject jsonData = new JSONObject(info);
-                JSONArray weather = (JSONArray) jsonData.get("weather");
-                JSONObject main = (JSONObject) jsonData.get("main");
-                //JSONObject locationObject = (JSONObject) observation.get("display_location");
-                location = jsonData.getString("name");
-                conditionn = weather.getString(2);
-                temp = main.getString("temp") + "°";
-                //feelsLikee = "Feels like: " + main.getString("feelslike_c") + "℃";
-                iconUrl = "http://openweathermap.org/img/w/"+weather.getString(3)+".png";
+                JSONObject observation = (JSONObject) jsonData.get("current_observation");
+                JSONObject locationObject = (JSONObject) observation.get("display_location");
+                location = locationObject.getString("full");
+                conditionn = observation.getString("weather");
+                temp = observation.getString("temp_c") + "°";
+                feelsLikee = "Feels like: " + observation.getString("feelslike_c") + "℃";
+                iconUrl = observation.getString("icon_url");
 
                 pic = BitmapFactory.decodeStream((InputStream) new URL(iconUrl).getContent());
 
