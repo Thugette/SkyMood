@@ -10,10 +10,10 @@ import android.os.Bundle;
  */
 public class NetworkLocationListener implements LocationListener {
 
-    private LocationReciever receiver;
+    private LocationReceiver receiver;
 
     public NetworkLocationListener(Context context){
-        this.receiver = (LocationReciever) context;
+        this.receiver = (LocationReceiver) context;
     }
 
     @Override
@@ -23,12 +23,10 @@ public class NetworkLocationListener implements LocationListener {
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-
     }
 
     @Override
@@ -36,9 +34,7 @@ public class NetworkLocationListener implements LocationListener {
       //TODO: what to do when there is no network connection
     }
 
-    public interface LocationReciever {
-
+    public interface LocationReceiver {
         void receiveLocation(Location location);
-
     }
 }

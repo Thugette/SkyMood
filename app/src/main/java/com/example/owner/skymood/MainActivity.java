@@ -1,6 +1,7 @@
 package com.example.owner.skymood;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,11 +12,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.owner.skymood.location.NetworkLocationListener;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +28,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
-public class MainActivity extends AppCompatActivity implements NetworkLocationListener.LocationReciever {
+public class MainActivity extends AppCompatActivity implements NetworkLocationListener.LocationReceiver {
 
     private TextView city;
     private TextView date;
@@ -42,8 +43,6 @@ public class MainActivity extends AppCompatActivity implements NetworkLocationLi
     private NetworkLocationListener listener;
     private double latitude;
     private double longtitude;
-
-    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,19 +60,31 @@ public class MainActivity extends AppCompatActivity implements NetworkLocationLi
         //TODO: shared prefs
 
         //network location
-        getNetworkLocation();
+     //   getNetworkLocation();
 
         //TODO: gps
+        getGpsLocation();
+
 
         MyTask task = new MyTask();
         task.execute();
 
     }
 
- /*   public void getLocation(View view) {
-        Intent intent = new Intent(this, LocationActivity.class);
+    public void getLocation(View view) {
+        Intent intent = new Intent(this, HourlyActivity.class);
         startActivity(intent);
-    } */
+    }
+
+    public void getGpsLocation() {
+        listener = new NetworkLocationListener(this);
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
+    }
 
     public void getNetworkLocation() {
         listener = new NetworkLocationListener(this);
