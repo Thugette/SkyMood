@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.example.owner.skymood.location.NetworkLocationListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -123,7 +124,9 @@ public class MainActivity extends AppCompatActivity implements NetworkLocationLi
         protected Void doInBackground(Void... params) {
 
             try {
-                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/conditions/q/CA/San_Francisco.json");
+                Log.e("didi", ""+latitude);
+                Log.e("didi", ""+longtitude);
+                URL url = new URL("http://api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longtitude+"&APPID=186859f63d164736ac379bc15a658e8b&units=metric");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
@@ -135,13 +138,14 @@ public class MainActivity extends AppCompatActivity implements NetworkLocationLi
                 String info = body.toString();
 
                 JSONObject jsonData = new JSONObject(info);
-                JSONObject observation = (JSONObject) jsonData.get("current_observation");
-                JSONObject locationObject = (JSONObject) observation.get("display_location");
-                location = locationObject.getString("full");
-                conditionn = observation.getString("weather");
-                temp = observation.getString("temp_c") + "°";
-                feelsLikee = "Feels like: " + observation.getString("feelslike_c") + "℃";
-                iconUrl = observation.getString("icon_url");
+                JSONArray weather = (JSONArray) jsonData.get("weather");
+                JSONObject main = (JSONObject) jsonData.get("main");
+                //JSONObject locationObject = (JSONObject) observation.get("display_location");
+                location = jsonData.getString("name");
+                conditionn = weather.getString(2);
+                temp = main.getString("temp") + "°";
+                //feelsLikee = "Feels like: " + main.getString("feelslike_c") + "℃";
+                iconUrl = "http://openweathermap.org/img/w/"+weather.getString(3)+".png";
 
                 pic = BitmapFactory.decodeStream((InputStream) new URL(iconUrl).getContent());
 
