@@ -61,10 +61,10 @@ public class MainActivity extends AppCompatActivity implements NetworkLocationLi
         //TODO: shared prefs
 
         //network location
-     //   getNetworkLocation();
+        getNetworkLocation();
 
         //TODO: gps
-        getGpsLocation();
+      //  getGpsLocation();
 
 
         MyTask task = new MyTask();
@@ -99,9 +99,12 @@ public class MainActivity extends AppCompatActivity implements NetworkLocationLi
 
     @Override
     public void receiveLocation(Location location) {
+        Log.e("VVV", "method entered");
         this.location = location;
         this.latitude = location.getLatitude();
+        Log.e("VVV", latitude + "");
         this.longtitude = location.getLongitude();
+        Log.e("VVV", longtitude + "");
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
