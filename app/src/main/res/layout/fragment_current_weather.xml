@@ -10,28 +10,37 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <TextView
+        <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textColor="@color/white"
-            android:shadowColor="@color/veryDarkGrey"
-            android:shadowRadius="3"
-            android:shadowDx="2"
-            android:shadowDy="2"
-            android:id="@+id/cityNameTextView" />
+            android:id="@+id/locationSpinner"></Spinner>
 
-        <TextView
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:shadowColor="@color/veryDarkGrey"
-            android:shadowRadius="3"
-            android:shadowDx="2"
-            android:shadowDy="2"
-            android:id="@+id/dateAndTimeTextView" />
+            android:clickable="true"
+            android:id="@+id/synchronize"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:id="@+id/gpsSearch"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Write a city"
+            android:visibility="gone"
+            android:id="@+id/writeCityEditText"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:id="@+id/citySearch"/>
 
     </LinearLayout>
 

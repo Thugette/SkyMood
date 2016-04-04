@@ -16,7 +16,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.owner.skymood.HourlyActivity;
@@ -31,13 +34,17 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 
 public class CurrentWeatherFragment extends Fragment implements NetworkLocationListener.LocationReceiver, Swideable{
 
-    private TextView city;
-    private TextView date;
+    private Spinner spinner;
+    private ImageView sync;
+    private ImageView gpsSearch;
+    private ImageView citySearch;
+    private EditText writeCityEditText;
     private TextView temperature;
     private TextView condition;
     private TextView feelsLike;
@@ -63,13 +70,24 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
         ViewGroup rootView = (ViewGroup) inflater.inflate(
                 R.layout.fragment_current_weather, container, false);
 
-        city = (TextView) rootView.findViewById(R.id.cityNameTextView);
-        date = (TextView) rootView.findViewById(R.id.dateAndTimeTextView);
+        sync = (ImageView) rootView.findViewById(R.id.synchronize);
+        gpsSearch = (ImageView) rootView.findViewById(R.id.gpsSearch);
+        citySearch = (ImageView) rootView.findViewById(R.id.citySearch);
+        writeCityEditText = (EditText) rootView.findViewById(R.id.writeCityEditText);
         temperature = (TextView) rootView.findViewById(R.id.temperatureTextView);
         condition = (TextView) rootView.findViewById(R.id.conditionTextView);
         feelsLike = (TextView) rootView.findViewById(R.id.feelsLikeTextView);
         lastUpdate = (TextView) rootView.findViewById(R.id.lastUpdateTextView);
         weatherImage = (ImageView) rootView.findViewById(R.id.weatherImageView);
+
+        ArrayList<String> cities =  new ArrayList<>();
+        cities.add("Sofia");
+        cities.add("London");
+        cities.add("Paris");
+        spinner = (Spinner) rootView.findViewById(R.id.locationSpinner);
+        ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, cities);
+        spinner.setAdapter(adapter);
+
 
         //TODO: shared prefs
 
@@ -163,7 +181,7 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            city.setText(location);
+           // city.setText(location);
             temperature.setText(temp);
             condition.setText(conditionn);
             feelsLike.setText(feelsLikee);
