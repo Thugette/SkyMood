@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements NetworkLocationLi
 
         //TODO: shared prefs
 
-        //TODO: network location
+        //network location
         getNetworkLocation();
 
         //TODO: gps
@@ -80,12 +80,6 @@ public class MainActivity extends AppCompatActivity implements NetworkLocationLi
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
@@ -95,18 +89,10 @@ public class MainActivity extends AppCompatActivity implements NetworkLocationLi
     public void receiveLocation(Location location) {
         this.location = location;
         this.latitude = location.getLatitude();
-        Log.e("AAA", latitude + "");
         this.longtitude = location.getLongitude();
-        Log.e("AAA", longtitude + "");
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         locationManager.removeUpdates(listener);
