@@ -184,10 +184,9 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
 
         String location;
         String conditionn;
-        String iconUrl;
+        String icon;
         String temp;
         String feelsLikee;
-        Bitmap pic;
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -212,9 +211,7 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
                 conditionn = observation.getString("weather");
                 temp = observation.getString("temp_c") + "°";
                 feelsLikee = "Feels like: " + observation.getString("feelslike_c") + "℃";
-                iconUrl = observation.getString("icon_url");
-
-                pic = BitmapFactory.decodeStream((InputStream) new URL(iconUrl).getContent());
+                icon = observation.getString("icon");
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -241,13 +238,22 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
             temperature.setText(temp);
             condition.setText(conditionn);
             feelsLike.setText(feelsLikee);
+
             Calendar c = Calendar.getInstance();
-            int cb = c.get(Calendar.DATE);
-            String update = "Last update: " +  cb;
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            String update = "Last update: " + hour + ":" + c.get(Calendar.MINUTE) + " " +
+                    c.get(Calendar.DATE) + "." + c.get(Calendar.MONTH) + "." + c.get(Calendar.YEAR);
             lastUpdate.setText(update);
 
-            weatherImage.setImageBitmap(pic);
-            weatherImage.setAdjustViewBounds(true);
+
+            Context con = weatherImage.getContext();
+            int id = 0;
+            if(hour >= 6 && hour <= 19){
+               id = context.getResources().getIdentifier(icon, "drawable", con.getPackageName());
+            } else {
+                id = context.getResources().getIdentifier(icon + "_night", "drawable", con.getPackageName());
+            }
+            weatherImage.setImageResource(id);
         }
     }
 
