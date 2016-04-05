@@ -39,6 +39,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Scanner;
 
 
@@ -235,10 +237,14 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
         protected void onPostExecute(Void aVoid) {
             progressBar.setVisibility(View.GONE);
             chosenCity.setVisibility(View.VISIBLE);
-            chosenCity.setText(cityToDisplay);
+            chosenCity.setText(location);
             temperature.setText(temp);
             condition.setText(conditionn);
             feelsLike.setText(feelsLikee);
+            Calendar c = Calendar.getInstance();
+            int cb = c.get(Calendar.DATE);
+            String update = "Last update: " +  cb;
+            lastUpdate.setText(update);
 
             weatherImage.setImageBitmap(pic);
             weatherImage.setAdjustViewBounds(true);
