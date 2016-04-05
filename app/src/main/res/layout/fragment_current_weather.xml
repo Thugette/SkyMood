@@ -48,14 +48,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:src="@drawable/ic_autorenew_black_24dp"
+                android:src="@drawable/sync"
                 android:id="@+id/synchronize"/>
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:src="@drawable/ic_room_black_24dp"
+                android:src="@drawable/gps"
                 android:id="@+id/gpsSearch"/>
 
             <EditText
@@ -74,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:src="@drawable/ic_search_black_24dp"
+                android:src="@drawable/search"
                 android:id="@+id/citySearch"/>
 
 
