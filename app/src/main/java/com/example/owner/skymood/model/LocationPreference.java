@@ -21,6 +21,7 @@ public class LocationPreference {
     public static final String CONDITION = "condition";
     public static final String MORE_INFO = "more info";
     public static final String LAST_UPDATE = "last update";
+    public static final String ICON = "icon";
 
     private LocationPreference(Context context){
         this.context = context;
@@ -35,12 +36,13 @@ public class LocationPreference {
         return instance;
     }
 
-    public void setPreferredLocation(String location, String temperature, String condition, String moreInfo, String lastUpdate){
+    public void setPreferredLocation(String location, String temperature, String condition, String moreInfo, String lastUpdate, String icon){
         editor.putString(LOCATION, location);
         editor.putString(TEMPERATURE, temperature);
         editor.putString(CONDITION, condition);
         editor.putString(MORE_INFO, moreInfo);
         editor.putString(LAST_UPDATE, lastUpdate);
+        editor.putString(ICON, icon);
         editor.commit();
     }
 
@@ -48,8 +50,30 @@ public class LocationPreference {
         return pref.contains(LOCATION);
     }
 
+    public String getTemperature(){
+        return pref.getString(TEMPERATURE, null);
+    }
+
+    public String getCondition(){
+        return pref.getString(CONDITION, null);
+    }
+
+    public String getMoreInfo(){
+        return pref.getString(MORE_INFO, null);
+    }
+
+    public String getLastUpdate(){
+        return pref.getString(LAST_UPDATE, null);
+    }
+
+    public String getIcon(){
+        return pref.getString(ICON, null);
+    }
+
     public String getLocation(){
         return pref.getString(LOCATION, null);
     }
+
+
 
 }

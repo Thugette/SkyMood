@@ -276,6 +276,7 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
                 spinner.setVisibility(View.GONE);
                 sync.setVisibility(View.GONE);
                 gpsSearch.setVisibility(View.GONE);
+                weatherImage.setAdjustViewBounds(true);
                 //TODO: change animation
                 Animation slide = new AnimationUtils().loadAnimation(getContext(), android.R.anim.fade_in);
                 slide.setDuration(1000);
