@@ -12,7 +12,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static DatabaseHelper instance;
 
     public static final String DATABASE_NAME = "SKY_MOOD_DATABASE";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     //tables
     public static final String MY_LOCATIONS = "my_locations";
@@ -23,9 +23,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // last searched
     public static final String SEARCHED_ID = "id";
-    public static final String CURRENT_WEATHER = "current_weather";
     public static final String HOURLY_WEATHER = "hourly_weather";
     public static final String WEEKLY_WEATHER = "weekly_weather";
+    public static final String TEMP = "temp";
+    public static final String CONDITION = "condition";
+    public static final String MORE_INFO = "more_info";
     public static final String DATE = "date";
 
     //create table statements
@@ -36,9 +38,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_LAST_SEARCHED = "CREATE TABLE IF NOT EXISTS " + LAST_SEARCHED + " ("
             + SEARCHED_ID +" INTEGER PRIMARY KEY AUTOINCREMENT , "
             + CITY + " VARCHAR(30) NOT NULL, "
-            + CURRENT_WEATHER +" text NOT NULL, "
             + HOURLY_WEATHER + " text NOT NULL, "
             + WEEKLY_WEATHER + " text NOT NULL, "
+            + TEMP + " text NOT NULL, "
+            + CONDITION + " text NOT NULL, "
+            + MORE_INFO + " text NOT NULL, "
             + DATE + " DATE NOT NULL, "
             +") ";
 
