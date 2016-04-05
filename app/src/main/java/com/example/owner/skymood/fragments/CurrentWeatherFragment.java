@@ -7,10 +7,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.owner.skymood.R;
 import com.example.owner.skymood.location.NetworkLocationListener;
@@ -59,16 +63,18 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
     private TextView lastUpdate;
     private ImageView weatherImage;
 
+    private static final String DEFAULT_CITY = "Sofia";
     private Location location;
     private LocationManager locationManager;
     private NetworkLocationListener listener;
     private double latitude;
     private double longtitude;
-    String city;
-    String cityToDisplay;
+    private String city;
+    private String cityToDisplay;
 
-    InputMethodManager keyboard;
-    Context context;
+    private InputMethodManager keyboard;
+    private Context context;
+    private LocationPreference locPref;
 
     public CurrentWeatherFragment() {
         // Required empty public constructor
@@ -111,27 +117,62 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
 
         //TODO gpsSearch.setOnClickListener();
 
-
         //shared prefs
-        LocationPreference locPref = LocationPreference.getInstance(context);
+        locPref = LocationPreference.getInstance(context);
 
         //for now hard coded for demo
-        locPref.setPreferredLocation("Burgas", "19.9°", "Clear", "Feels like: 19.9℃", "05.04.2016, 18:00");
+       // locPref.setPreferredLocation("Burgas, Bulgaria", "Burgas", "19.9°", "Clear", "Feels like: 19.9℃", "Last update: 05.04.2016, 18:00", "clear");
 
-        if(locPref.isSetLocation()){
-            setCity(locPref.getLocation());
+
+        if(isOnline()){
+            //first: check shared prefs
+            if(locPref.isSetLocation()){
+                setCity(locPref.getCity());
+            } else {
+                //if GPS is turned on
+                    //TODO: gps
+                //else
+                    //network location
+                    //getNetworkLocation();
+            }
+
+            if(city == null) {
+                setCity("Sofia");
+            }
+
+            MyTask task = new MyTask();
+            task.execute();
+
+        } else {
+            if(locPref.isSetLocation()){
+                Toast.makeText(context, "NO INTERNET CONNECTION\nFor up to date info connect to Internet", Toast.LENGTH_LONG).show();
+                setCity(locPref.getCity());
+                getWeatherInfoFromSharedPref();
+            } else {
+                feelsLike.setText("Please connect to Internet");
+            }
         }
 
-        //network location
-        //getNetworkLocation();
-
-        //TODO: gps
-
-
-        MyTask task = new MyTask();
-        task.execute();
-
         return rootView;
+    }
+
+    public void getWeatherInfoFromSharedPref(){
+        chosenCity.setVisibility(View.VISIBLE);
+        chosenCity.setText(locPref.getLocation());
+        temperature.setText(locPref.getTemperature());
+        feelsLike.setText(locPref.getMoreInfo());
+        lastUpdate.setText(locPref.getLastUpdate());
+        condition.setText(locPref.getCondition());
+
+        Context con = weatherImage.getContext();
+        weatherImage.setImageResource(context.getResources().getIdentifier(locPref.getIcon(), "drawable", con.getPackageName()));
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     public void setCity(String city){
@@ -251,9 +292,14 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
             if(hour >= 6 && hour <= 19){
                id = context.getResources().getIdentifier(icon, "drawable", con.getPackageName());
             } else {
-                id = context.getResources().getIdentifier(icon + "_night", "drawable", con.getPackageName());
+                icon = icon + "_night";
+                id = context.getResources().getIdentifier(icon, "drawable", con.getPackageName());
             }
             weatherImage.setImageResource(id);
+
+            if(locPref.isSetLocation() && city.equalsIgnoreCase(locPref.getLocation())){
+                locPref.setPreferredLocation(location, city, temp, conditionn, feelsLikee, update, icon);
+            }
         }
     }
 
@@ -272,26 +318,30 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
     private class OnCitySearchClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            if (writeCityEditText.getVisibility() == View.GONE) {
-                spinner.setVisibility(View.GONE);
-                sync.setVisibility(View.GONE);
-                gpsSearch.setVisibility(View.GONE);
-                weatherImage.setAdjustViewBounds(true);
-                //TODO: change animation
-                Animation slide = new AnimationUtils().loadAnimation(getContext(), android.R.anim.fade_in);
-                slide.setDuration(1000);
-                writeCityEditText.startAnimation(slide);
-                writeCityEditText.setVisibility(View.VISIBLE);
-                writeCityEditText.setFocusable(true);
-                writeCityEditText.requestFocus();
-                keyboard = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                keyboard.showSoftInput(writeCityEditText, 0);
+            if(isOnline()) {
+                if (writeCityEditText.getVisibility() == View.GONE) {
+                    spinner.setVisibility(View.GONE);
+                    sync.setVisibility(View.GONE);
+                    gpsSearch.setVisibility(View.GONE);
+                    weatherImage.setAdjustViewBounds(true);
+                    //TODO: change animation
+                    Animation slide = new AnimationUtils().loadAnimation(getContext(), android.R.anim.fade_in);
+                    slide.setDuration(1000);
+                    writeCityEditText.startAnimation(slide);
+                    writeCityEditText.setVisibility(View.VISIBLE);
+                    writeCityEditText.setFocusable(true);
+                    writeCityEditText.requestFocus();
+                    keyboard = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    keyboard.showSoftInput(writeCityEditText, 0);
+                } else {
+                    writeCityEditText.setVisibility(View.GONE);
+                    keyboard.hideSoftInputFromWindow(writeCityEditText.getWindowToken(), 0);
+                    spinner.setVisibility(View.VISIBLE);
+                    sync.setVisibility(View.VISIBLE);
+                    gpsSearch.setVisibility(View.VISIBLE);
+                }
             } else {
-                writeCityEditText.setVisibility(View.GONE);
-                keyboard.hideSoftInputFromWindow(writeCityEditText.getWindowToken(), 0);
-                spinner.setVisibility(View.VISIBLE);
-                sync.setVisibility(View.VISIBLE);
-                gpsSearch.setVisibility(View.VISIBLE);
+                Toast.makeText(context, "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -299,11 +349,19 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
     private class OnMyLocationsSpinnerItemListener implements AdapterView.OnItemSelectedListener {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            if(!((String)parent.getItemAtPosition(position)).equals("My Locations")){
-                setCity((String)parent.getItemAtPosition(position));
-                MyTask task = new MyTask();
-                task.execute();
-            }
+
+                if (!((String) parent.getItemAtPosition(position)).equals("My Locations")) {
+                    if (isOnline()) {
+                        setCity((String) parent.getItemAtPosition(position));
+                        MyTask task = new MyTask();
+                        task.execute();
+                    } else {
+                        //TODO check if there is information in DB
+
+                        //if there isn't info in db
+                        Toast.makeText(context, "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
+                    }
+                }
         }
         @Override
         public void onNothingSelected(AdapterView<?> parent) {}
@@ -312,8 +370,12 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
     private class OnSyncListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            MyTask task = new MyTask();
-            task.execute();
+            if(isOnline()) {
+                MyTask task = new MyTask();
+                task.execute();
+            } else {
+                Toast.makeText(context, "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

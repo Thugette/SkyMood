@@ -26,9 +26,7 @@ public class SwipeViewActivity extends FragmentActivity {
 
 
         adapter = new CustomPagerAdapter(getSupportFragmentManager(), this);
-        Log.e("NNN", adapter + "");
         pager = (ViewPager) findViewById(R.id.pager);
-        Log.e("NNN", pager + "");
         pager.setAdapter(adapter);
 
     }

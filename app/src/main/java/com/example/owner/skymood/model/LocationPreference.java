@@ -17,6 +17,7 @@ public class LocationPreference {
     int PRIVATE_MODE = 0;
     private static final String PREFER_NAME = "SkyModePreferences";
     public static final String LOCATION = "location";
+    public static final String CITY = "city";
     public static final String TEMPERATURE = "temperature";
     public static final String CONDITION = "condition";
     public static final String MORE_INFO = "more info";
@@ -36,8 +37,9 @@ public class LocationPreference {
         return instance;
     }
 
-    public void setPreferredLocation(String location, String temperature, String condition, String moreInfo, String lastUpdate, String icon){
+    public void setPreferredLocation(String location,String city, String temperature, String condition, String moreInfo, String lastUpdate, String icon){
         editor.putString(LOCATION, location);
+        editor.putString(CITY, city);
         editor.putString(TEMPERATURE, temperature);
         editor.putString(CONDITION, condition);
         editor.putString(MORE_INFO, moreInfo);
@@ -48,6 +50,10 @@ public class LocationPreference {
 
     public boolean isSetLocation(){
         return pref.contains(LOCATION);
+    }
+
+    public String getCity(){
+        return pref.getString(CITY, null);
     }
 
     public String getTemperature(){
@@ -73,7 +79,5 @@ public class LocationPreference {
     public String getLocation(){
         return pref.getString(LOCATION, null);
     }
-
-
 
 }
