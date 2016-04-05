@@ -13,9 +13,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -56,6 +60,7 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
     private NetworkLocationListener listener;
     private double latitude;
     private double longtitude;
+    String city;
 
     Context context;
 
@@ -91,23 +96,51 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
         citySearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                if (writeCityEditText.getVisibility() == View.GONE) {
+                    //TODO: change animation
+                    Animation slide = new AnimationUtils().loadAnimation(getContext(), android.R.anim.fade_in);
+                    slide.setDuration(1000);
+                    writeCityEditText.startAnimation(slide);
+                    writeCityEditText.setVisibility(View.VISIBLE);
+                    writeCityEditText.setFocusable(true);
+                    writeCityEditText.requestFocus();
+                } else {
+                    writeCityEditText.setVisibility(View.GONE);
+                }
             }
         });
+
+        View.OnKeyListener onSearchPressed = new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode == KeyEvent.KEYCODE_ENTER){
+                    getCity(writeCityEditText.getText().toString());
+                    return true;
+                }
+                return false;
+            }
+        };
+
+        writeCityEditText.setOnKeyListener(onSearchPressed);
+
 
 
         //TODO: shared prefs
 
         //network location
-       // getNetworkLocation();
+        //getNetworkLocation();
 
         //TODO: gps
 
-        MyTask task = new MyTask();
-        task.execute();
-
 
         return rootView;
+    }
+
+    public void getCity(String city){
+        this.city = city.substring(0, 1).toUpperCase() + city.substring(1);
+        writeCityEditText.setVisibility(View.GONE);
+        MyTask task = new MyTask();
+        task.execute();
     }
 
    public void getNetworkLocation() {
@@ -152,7 +185,8 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
         protected Void doInBackground(Void... params) {
 
             try {
-                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/conditions/q/BG/Sofia.json");
+
+                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/conditions/q/" + city + ".json");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
