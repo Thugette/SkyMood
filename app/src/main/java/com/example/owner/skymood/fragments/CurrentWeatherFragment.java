@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -87,22 +88,25 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
         weatherImage = (ImageView) rootView.findViewById(R.id.weatherImageView);
         chosenCity = (TextView) rootView.findViewById(R.id.chosenCity);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+        spinner = (Spinner) rootView.findViewById(R.id.locationSpinner);
 
         ArrayList<String> cities =  new ArrayList<>();
         cities.add("My Locations");
         cities.add("Sofia");
-        cities.add("London");
-        cities.add("Paris");
-        spinner = (Spinner) rootView.findViewById(R.id.locationSpinner);
+        cities.add("Burgas");
+        cities.add("Plovdiv");
         ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, cities);
         spinner.setAdapter(adapter);
-
-        //spinner.setOnItemClickListener();
+        spinner.setOnItemSelectedListener(new OnMyLocationsSpinnerItemListener());
 
         citySearch.setOnClickListener(new OnCitySearchClickListener());
 
         View.OnKeyListener onSearchPressed = new OnSearchPressedListener();
         writeCityEditText.setOnKeyListener(onSearchPressed);
+
+        sync.setOnClickListener(new OnSyncListener());
+
+        //TODO gpsSearch.setOnClickListener();
 
         //TODO: shared prefs
 
@@ -122,6 +126,7 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
 
     public void setCity(String city){
         this.city = city.replace(" ", "_");
+        this.city.toLowerCase();
         this.cityToDisplay = city.toUpperCase();
     }
 
@@ -197,7 +202,7 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
                 iconUrl = observation.getString("icon_url");
 
                 pic = BitmapFactory.decodeStream((InputStream) new URL(iconUrl).getContent());
-                
+
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -230,7 +235,6 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
     }
 
     private class OnSearchPressedListener implements View.OnKeyListener{
-
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             if(keyCode == KeyEvent.KEYCODE_ENTER){
@@ -243,7 +247,6 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
     }
 
     private class OnCitySearchClickListener implements View.OnClickListener {
-
         @Override
         public void onClick(View v) {
             if (writeCityEditText.getVisibility() == View.GONE) {
@@ -260,6 +263,27 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
                 writeCityEditText.setVisibility(View.GONE);
                 keyboard.hideSoftInputFromWindow(writeCityEditText.getWindowToken(), 0);
             }
+        }
+    }
+
+    private class OnMyLocationsSpinnerItemListener implements AdapterView.OnItemSelectedListener {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if(!((String)parent.getItemAtPosition(position)).equals("My Locations")){
+                setCity((String)parent.getItemAtPosition(position));
+                MyTask task = new MyTask();
+                task.execute();
+            }
+        }
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {}
+    }
+
+    private class OnSyncListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            MyTask task = new MyTask();
+            task.execute();
         }
     }
 
