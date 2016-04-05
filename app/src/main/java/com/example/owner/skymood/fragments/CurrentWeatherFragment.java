@@ -88,6 +88,13 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
         ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, cities);
         spinner.setAdapter(adapter);
 
+        citySearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
+
 
         //TODO: shared prefs
 
