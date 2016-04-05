@@ -11,12 +11,16 @@ import com.example.owner.skymood.location.NetworkLocationListener;
 public class LocationPreference {
 
     private static LocationPreference instance = null;
-    public static final String LOCATION = "location";
     SharedPreferences pref;
     Context context;
     SharedPreferences.Editor editor;
     int PRIVATE_MODE = 0;
     private static final String PREFER_NAME = "SkyModePreferences";
+    public static final String LOCATION = "location";
+    public static final String TEMPERATURE = "temperature";
+    public static final String CONDITION = "condition";
+    public static final String MORE_INFO = "more info";
+    public static final String LAST_UPDATE = "last update";
 
     private LocationPreference(Context context){
         this.context = context;
@@ -31,8 +35,12 @@ public class LocationPreference {
         return instance;
     }
 
-    public void setPreferredLocation(String location){
+    public void setPreferredLocation(String location, String temperature, String condition, String moreInfo, String lastUpdate){
         editor.putString(LOCATION, location);
+        editor.putString(TEMPERATURE, temperature);
+        editor.putString(CONDITION, condition);
+        editor.putString(MORE_INFO, moreInfo);
+        editor.putString(LAST_UPDATE, lastUpdate);
         editor.commit();
     }
 
