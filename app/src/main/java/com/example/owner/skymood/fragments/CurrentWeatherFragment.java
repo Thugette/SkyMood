@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -62,6 +63,7 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
     private double longtitude;
     String city;
 
+    InputMethodManager keyboard;
     Context context;
 
     public CurrentWeatherFragment() {
@@ -104,8 +106,11 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
                     writeCityEditText.setVisibility(View.VISIBLE);
                     writeCityEditText.setFocusable(true);
                     writeCityEditText.requestFocus();
+                    keyboard = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    keyboard.showSoftInput(writeCityEditText, 0);
                 } else {
                     writeCityEditText.setVisibility(View.GONE);
+                    keyboard.hideSoftInputFromWindow(writeCityEditText.getWindowToken(), 0);
                 }
             }
         });
@@ -114,7 +119,8 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if(keyCode == KeyEvent.KEYCODE_ENTER){
-                    getCity(writeCityEditText.getText().toString());
+                    getWeatherInfoByCity(writeCityEditText.getText().toString());
+                    keyboard.hideSoftInputFromWindow(writeCityEditText.getWindowToken(), 0);
                     return true;
                 }
                 return false;
@@ -133,11 +139,22 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
         //TODO: gps
 
 
+        //for now by deafault will be sofia
+        city = "sofia";
+        MyTask task = new MyTask();
+        task.execute();
+
+
         return rootView;
     }
 
-    public void getCity(String city){
-        this.city = city.substring(0, 1).toUpperCase() + city.substring(1);
+    public void setCity(String city){
+        this.city = city.replace(" ", "_");
+    }
+
+    public void getWeatherInfoByCity(String city){
+        setCity(city);
+        writeCityEditText.setText("");
         writeCityEditText.setVisibility(View.GONE);
         MyTask task = new MyTask();
         task.execute();
