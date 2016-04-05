@@ -18,7 +18,7 @@ import java.util.zip.Inflater;
 /**
  * Created by owner on 04/04/2016.
  */
-public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.HourViewHolder> {
+public class HourlyAdapter extends RecyclerView.Adapter<HourlyWeekViewHolder> {
 
     private Context context;
     private ArrayList<HourlyWeather> weathers;
@@ -30,19 +30,19 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.HourViewHo
 
 
     @Override
-    public HourViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public HourlyWeekViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View row = inflater.inflate(R.layout.hour_row, parent, false);
-        return new HourViewHolder(row);
+        return new HourlyWeekViewHolder(row);
     }
 
     @Override
-    public void onBindViewHolder(HourViewHolder holder, int position) {
+    public void onBindViewHolder(HourlyWeekViewHolder holder, int position) {
         HourlyWeather weather = weathers.get(position);
-        holder.hour.setText(weather.getHour() + ":00");
-        holder.condition.setText(weather.getCondition());
-        holder.temp.setText(weather.getTemp() + " ℃");
-        holder.icon.setImageBitmap(weather.getIcon());
+        holder.getHour().setText(weather.getHour() + ":00");
+        holder.getCondition().setText(weather.getCondition());
+        holder.getTemp().setText(weather.getTemp() + " ℃");
+        holder.getIcon().setImageBitmap(weather.getIcon());
 
     }
 

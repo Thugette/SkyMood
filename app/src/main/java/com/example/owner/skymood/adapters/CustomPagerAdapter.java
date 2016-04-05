@@ -7,7 +7,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.example.owner.skymood.SwipeViewActivity;
 import com.example.owner.skymood.fragments.CurrentWeatherFragment;
+import com.example.owner.skymood.fragments.HourlyWeatherFragment;
 import com.example.owner.skymood.fragments.Swideable;
+import com.example.owner.skymood.fragments.WeeklyWeatherFragment;
 
 /**
  * Created by Golemanovaa on 4.4.2016 г..
@@ -31,13 +33,13 @@ public class CustomPagerAdapter extends FragmentStatePagerAdapter {
                 break;
 
             case 1:
-                //return new HourlWeatherFragment();
-                fragment = new CurrentWeatherFragment();
+                //return new HourlyWeatherFragment();
+                fragment = new HourlyWeatherFragment();
                 fragment.setContext(context);
                 break;
             case 2:
                 //return new WeeklyWeatherFragment();
-                fragment = new CurrentWeatherFragment();
+                fragment = new WeeklyWeatherFragment();
                 fragment.setContext(context);
                 break;
             case 3:
