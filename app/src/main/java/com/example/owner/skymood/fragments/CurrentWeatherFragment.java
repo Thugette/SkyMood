@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import com.example.owner.skymood.R;
 import com.example.owner.skymood.location.NetworkLocationListener;
+import com.example.owner.skymood.model.LocationPreference;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -108,16 +109,23 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
 
         //TODO gpsSearch.setOnClickListener();
 
-        //TODO: shared prefs
+
+        //shared prefs
+        LocationPreference locPref = LocationPreference.getInstance(context);
+
+        //for now hard coded for demo
+        locPref.setPreferredLocation("Burgas", "19.9°", "Clear", "Feels like: 19.9℃", "05.04.2016, 18:00");
+
+        if(locPref.isSetLocation()){
+            setCity(locPref.getLocation());
+        }
 
         //network location
         //getNetworkLocation();
 
         //TODO: gps
 
-        //for now by deafault will be sofia
-        setCity("Sofia");
-        chosenCity.setText(city);
+
         MyTask task = new MyTask();
         task.execute();
 
@@ -134,6 +142,9 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
         setCity(city);
         writeCityEditText.setText("");
         writeCityEditText.setVisibility(View.GONE);
+        spinner.setVisibility(View.VISIBLE);
+        sync.setVisibility(View.VISIBLE);
+        gpsSearch.setVisibility(View.VISIBLE);
         MyTask task = new MyTask();
         task.execute();
     }
@@ -250,6 +261,9 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
         @Override
         public void onClick(View v) {
             if (writeCityEditText.getVisibility() == View.GONE) {
+                spinner.setVisibility(View.GONE);
+                sync.setVisibility(View.GONE);
+                gpsSearch.setVisibility(View.GONE);
                 //TODO: change animation
                 Animation slide = new AnimationUtils().loadAnimation(getContext(), android.R.anim.fade_in);
                 slide.setDuration(1000);
@@ -262,6 +276,9 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
             } else {
                 writeCityEditText.setVisibility(View.GONE);
                 keyboard.hideSoftInputFromWindow(writeCityEditText.getWindowToken(), 0);
+                spinner.setVisibility(View.VISIBLE);
+                sync.setVisibility(View.VISIBLE);
+                gpsSearch.setVisibility(View.VISIBLE);
             }
         }
     }
