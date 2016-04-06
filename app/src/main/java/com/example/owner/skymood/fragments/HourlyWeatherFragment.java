@@ -14,11 +14,7 @@ import android.view.ViewGroup;
 
 import com.example.owner.skymood.R;
 import com.example.owner.skymood.adapters.HourlyAdapter;
-<<<<<<< HEAD
-=======
 import com.example.owner.skymood.adapters.WeeklyAdapter;
-import com.example.owner.skymood.location.NetworkLocationListener;
->>>>>>> origin/master
 import com.example.owner.skymood.model.HourlyWeather;
 import com.example.owner.skymood.model.WeeklyWeather;
 
