@@ -11,13 +11,13 @@ import com.example.owner.skymood.adapters.CustomPagerAdapter;
 
 public class SwipeViewActivity extends FragmentActivity {
 
-    public static final int NUMBER_OF_PAGES = 4;
+    public static final int NUMBER_OF_PAGES = 3;
 
     CustomPagerAdapter adapter;
     ViewPager pager;
 
 
-    private String[] tabs = {"Current", "Hourly", "Weekly", "More info"};
+    private String[] tabs = {"Current", "Hourly", "More info"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -9,7 +9,6 @@ import com.example.owner.skymood.SwipeViewActivity;
 import com.example.owner.skymood.fragments.CurrentWeatherFragment;
 import com.example.owner.skymood.fragments.HourlyWeatherFragment;
 import com.example.owner.skymood.fragments.Swideable;
-import com.example.owner.skymood.fragments.WeeklyWeatherFragment;
 
 /**
  * Created by Golemanovaa on 4.4.2016 г..
@@ -38,11 +37,6 @@ public class CustomPagerAdapter extends FragmentStatePagerAdapter {
                 fragment.setContext(context);
                 break;
             case 2:
-                //return new WeeklyWeatherFragment();
-                fragment = new WeeklyWeatherFragment();
-                fragment.setContext(context);
-                break;
-            case 3:
                 //return MoreInfoOnWeatherConditionFragment();
                 fragment = new CurrentWeatherFragment();
                 fragment.setContext(context);
@@ -63,8 +57,6 @@ public class CustomPagerAdapter extends FragmentStatePagerAdapter {
         case 1:
             return "HOURLY";
         case 2:
-            return "WEEKLY";
-        case 3:
             return "MORE INFO";
     }
         return null;

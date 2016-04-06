@@ -31,7 +31,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<HourlyWeekViewHolder> {
     @Override
     public HourlyWeekViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.hour_row, parent, false);
+        View view = inflater.inflate(R.layout.weekly_row, parent, false);
         return new HourlyWeekViewHolder(view);
     }
 
