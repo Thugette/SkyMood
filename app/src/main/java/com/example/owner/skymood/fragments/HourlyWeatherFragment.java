@@ -3,8 +3,6 @@ package com.example.owner.skymood.fragments;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,7 +14,6 @@ import android.view.ViewGroup;
 
 import com.example.owner.skymood.R;
 import com.example.owner.skymood.adapters.HourlyAdapter;
-import com.example.owner.skymood.location.NetworkLocationListener;
 import com.example.owner.skymood.model.HourlyWeather;
 
 import org.json.JSONArray;

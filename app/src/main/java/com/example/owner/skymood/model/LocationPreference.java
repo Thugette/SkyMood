@@ -3,8 +3,6 @@ package com.example.owner.skymood.model;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.example.owner.skymood.location.NetworkLocationListener;
-
 /**
  * Created by Golemanovaa on 5.4.2016 г..
  */

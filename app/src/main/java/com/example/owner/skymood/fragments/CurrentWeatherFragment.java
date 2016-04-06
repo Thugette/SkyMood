@@ -1,18 +1,15 @@
 package com.example.owner.skymood.fragments;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -23,7 +20,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -31,24 +28,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.owner.skymood.R;
-import com.example.owner.skymood.location.NetworkLocationListener;
 import com.example.owner.skymood.model.LocationPreference;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.Scanner;
 
 
-public class CurrentWeatherFragment extends Fragment implements NetworkLocationListener.LocationReceiver, Swideable {
+public class CurrentWeatherFragment extends Fragment implements Swideable {
 
     private ProgressBar progressBar;
     private TextView chosenCity;
@@ -56,7 +52,7 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
     private ImageView sync;
     private ImageView gpsSearch;
     private ImageView citySearch;
-    private EditText writeCityEditText;
+    private AutoCompleteTextView writeCityEditText;
     private TextView temperature;
     private TextView condition;
     private TextView feelsLike;
@@ -64,13 +60,11 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
     private ImageView weatherImage;
 
     private static final String DEFAULT_CITY = "Sofia";
-    private Location location;
-    private LocationManager locationManager;
-    private NetworkLocationListener listener;
-    private double latitude;
-    private double longtitude;
     private String city;
     private String cityToDisplay;
+    private HashMap<String, String> cities;
+    private ArrayList<String> autoCopleteNames;
+    ArrayAdapter adapterAutoComplete;
 
     private InputMethodManager keyboard;
     private Context context;
@@ -89,7 +83,7 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
         sync = (ImageView) rootView.findViewById(R.id.synchronize);
         gpsSearch = (ImageView) rootView.findViewById(R.id.gpsSearch);
         citySearch = (ImageView) rootView.findViewById(R.id.citySearch);
-        writeCityEditText = (EditText) rootView.findViewById(R.id.writeCityEditText);
+        writeCityEditText = (AutoCompleteTextView) rootView.findViewById(R.id.writeCityEditText);
         temperature = (TextView) rootView.findViewById(R.id.temperatureTextView);
         condition = (TextView) rootView.findViewById(R.id.conditionTextView);
         feelsLike = (TextView) rootView.findViewById(R.id.feelsLikeTextView);
@@ -108,6 +102,7 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new OnMyLocationsSpinnerItemListener());
 
+
         citySearch.setOnClickListener(new OnCitySearchClickListener());
 
         View.OnKeyListener onSearchPressed = new OnSearchPressedListener();
@@ -115,7 +110,8 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
 
         sync.setOnClickListener(new OnSyncListener());
 
-        //TODO gpsSearch.setOnClickListener();
+        writeCityEditText.addTextChangedListener(new TextChanged());
+
 
         //shared prefs
         locPref = LocationPreference.getInstance(context);
@@ -129,11 +125,7 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
             if(locPref.isSetLocation()){
                 setCity(locPref.getCity());
             } else {
-                //if GPS is turned on
-                    //TODO: gps
-                //else
-                    //network location
-                    //getNetworkLocation();
+                //API autoIP
             }
 
             if(city == null) {
@@ -192,34 +184,10 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
         task.execute();
     }
 
-   public void getNetworkLocation() {
-        listener = new NetworkLocationListener(context);
-        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
-    }
-
-    @Override
-    public void receiveLocation(Location location) {
-        this.location = location;
-        this.latitude = location.getLatitude();
-        this.longtitude = location.getLongitude();
-
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            return;
-        }
-        locationManager.removeUpdates(listener);
-    }
-
     @Override
     public void setContext(Context context) {
         this.context = context;
     }
-
 
     class MyTask extends AsyncTask<Void, Void, Void> {
 
@@ -233,7 +201,6 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
         protected Void doInBackground(Void... params) {
 
             try {
-
                 URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/conditions/q/BG/" + city + ".json");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
@@ -261,7 +228,6 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
             return null;
         }
 
@@ -289,17 +255,21 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
 
             Context con = weatherImage.getContext();
             int id = 0;
-            if(hour >= 6 && hour <= 19){
-               id = context.getResources().getIdentifier(icon, "drawable", con.getPackageName());
+            if(icon == null) {
+                weatherImage.setImageResource(R.drawable.nulll);
             } else {
-                icon = icon + "_night";
-                id = context.getResources().getIdentifier(icon, "drawable", con.getPackageName());
-            }
-            weatherImage.setImageResource(id);
+                if (hour >= 6 && hour <= 19) {
+                    id = context.getResources().getIdentifier(icon, "drawable", con.getPackageName());
+                } else {
+                    icon = icon + "_night";
+                    id = context.getResources().getIdentifier(icon, "drawable", con.getPackageName());
+                }
+                weatherImage.setImageResource(id);
 
-            if(locPref.isSetLocation() && city.equalsIgnoreCase(locPref.getLocation())){
-                locPref.setPreferredLocation(location, city, temp, conditionn, feelsLikee, update, icon);
-            } 
+                if (locPref.isSetLocation() && city.equalsIgnoreCase(locPref.getLocation())) {
+                    locPref.setPreferredLocation(location, city, temp, conditionn, feelsLikee, update, icon);
+                }
+            }
         }
     }
 
@@ -319,6 +289,7 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
         @Override
         public void onClick(View v) {
             if(isOnline()) {
+                autoCopleteNames = new ArrayList<>();
                 if (writeCityEditText.getVisibility() == View.GONE) {
                     spinner.setVisibility(View.GONE);
                     sync.setVisibility(View.GONE);
@@ -333,6 +304,8 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
                     writeCityEditText.requestFocus();
                     keyboard = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                     keyboard.showSoftInput(writeCityEditText, 0);
+
+
                 } else {
                     writeCityEditText.setVisibility(View.GONE);
                     keyboard.hideSoftInputFromWindow(writeCityEditText.getWindowToken(), 0);
@@ -376,6 +349,89 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
             } else {
                 Toast.makeText(context, "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    private class StringFiller extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+
+            try {
+                Log.e("VVV", "Do in background");
+                URL url = new URL("http://autocomplete.wunderground.com/aq?query=" + params[0]);
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.connect();
+
+                Scanner sc = new Scanner(con.getInputStream());
+                StringBuilder body = new StringBuilder();
+                while(sc.hasNextLine()){
+                    body.append(sc.nextLine());
+                }
+                String info = body.toString();
+                Log.e("VVV", " json string" + info.length() + "");
+
+                JSONObject jsonObj = new JSONObject(info);
+                JSONArray results = jsonObj.getJSONArray("RESULTS");
+                Log.e("VVV","json array" + results.length() + "");
+                cities = new HashMap<>();
+                for(int i = 0; i < results.length(); i++){
+                    JSONObject location = (JSONObject) results.get(i);
+                    String name = location.getString("name");
+                    String country = location.getString("c");
+                    cities.put(name, country);
+                }
+
+
+                autoCopleteNames = new ArrayList<>();
+                for(String name : cities.keySet()){
+                    Log.e("VVV", name);
+                    autoCopleteNames.add(name);
+                }
+
+                Log.e("VVV", autoCopleteNames.size() + "");
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+          return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Log.e("VVV", "on post execute");
+            adapterAutoComplete = new ArrayAdapter(context, android.R.layout.simple_list_item_1, autoCopleteNames);
+            writeCityEditText.setThreshold(2);
+            writeCityEditText.setAdapter(adapterAutoComplete);
+        }
+    }
+
+    private class TextChanged implements TextWatcher {
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            int chars = writeCityEditText.getText().toString().length();
+            if(chars == 2){
+                StringFiller filler = new StringFiller();
+                filler.execute(writeCityEditText.getText().toString());
+            }
+            if (chars > 2) {
+
+                Log.e("VVV", adapterAutoComplete.getCount() + "");
+                //TODO
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
         }
     }
 

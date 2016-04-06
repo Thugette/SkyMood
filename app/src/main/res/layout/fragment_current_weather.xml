@@ -58,11 +58,10 @@
                 android:src="@drawable/gps"
                 android:id="@+id/gpsSearch"/>
 
-            <EditText
+            <AutoCompleteTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="Write a city \t \t \t \t \t \t"
-                android:inputType="textAutoComplete"
                 android:imeOptions="actionSearch"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
