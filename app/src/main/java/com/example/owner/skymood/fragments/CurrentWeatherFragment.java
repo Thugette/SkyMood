@@ -275,7 +275,7 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
         protected void onPostExecute(Void aVoid) {
             progressBar.setVisibility(View.GONE);
             chosenCity.setVisibility(View.VISIBLE);
-            chosenCity.setText(location);
+            chosenCity.setText(cityToDisplay);
             temperature.setText(temp);
             condition.setText(conditionn);
             feelsLike.setText(feelsLikee);
