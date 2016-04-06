@@ -10,4 +10,5 @@ public interface IMyLocationDAO {
     ArrayList<String> getAllMyLocations();
     long insertMyLocation(String city);
     String selectMyCity(String city);
+    long deleteMyLocation(String city);
 }

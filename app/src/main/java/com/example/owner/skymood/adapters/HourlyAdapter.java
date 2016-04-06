@@ -40,7 +40,6 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyWeekViewHolder> {
     public void onBindViewHolder(HourlyWeekViewHolder holder, int position) {
         HourlyWeather weather = weathers.get(position);
         holder.getHour().setText(weather.getHour() + ":00");
-        holder.getCondition().setText(weather.getCondition());
         holder.getTemp().setText(weather.getTemp() + " ℃");
         holder.getIcon().setImageBitmap(weather.getIcon());
 
@@ -48,22 +47,9 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyWeekViewHolder> {
 
     @Override
     public int getItemCount() {
+        if(weathers.size() > 24)
+            return 24;
         return weathers.size();
     }
 
-    public class HourViewHolder extends RecyclerView.ViewHolder{
-
-        ImageView icon;
-        TextView hour;
-        TextView condition;
-        TextView temp;
-
-        public HourViewHolder(View itemView) {
-            super(itemView);
-            this.icon = (ImageView) itemView.findViewById(R.id.hour_icon);
-            this.hour = (TextView) itemView.findViewById(R.id.hour_hour);
-            this.condition = (TextView) itemView.findViewById(R.id.hour_condition);
-            this.temp = (TextView) itemView.findViewById(R.id.hour_temp);
-        }
-    }
 }

@@ -67,4 +67,10 @@ public class MyLocationDAO implements IMyLocationDAO{
         else
             return null;
     }
+
+    @Override
+    public long deleteMyLocation(String city) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        return db.delete(helper.MY_LOCATIONS, helper.CITY + " = ?", new String[] {city});
+    }
 }
