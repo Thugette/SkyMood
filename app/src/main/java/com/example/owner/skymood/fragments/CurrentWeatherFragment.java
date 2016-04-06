@@ -283,7 +283,7 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
             Calendar c = Calendar.getInstance();
             int hour = c.get(Calendar.HOUR_OF_DAY);
             String update = "Last update: " + hour + ":" + c.get(Calendar.MINUTE) + " " +
-                    c.get(Calendar.DATE) + "." + c.get(Calendar.MONTH) + "." + c.get(Calendar.YEAR);
+                    c.get(Calendar.DATE) + "." + (c.get(Calendar.MONTH) + 1) + "." + c.get(Calendar.YEAR);
             lastUpdate.setText(update);
 
 
