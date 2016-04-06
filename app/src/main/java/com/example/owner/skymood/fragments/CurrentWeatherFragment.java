@@ -234,7 +234,7 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
 
             try {
 
-                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/conditions/q/" + city + ".json");
+                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/conditions/q/BG/" + city + ".json");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
@@ -299,7 +299,7 @@ public class CurrentWeatherFragment extends Fragment implements NetworkLocationL
 
             if(locPref.isSetLocation() && city.equalsIgnoreCase(locPref.getLocation())){
                 locPref.setPreferredLocation(location, city, temp, conditionn, feelsLikee, update, icon);
-            }
+            } 
         }
     }
 
