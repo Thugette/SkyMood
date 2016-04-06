@@ -419,13 +419,13 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             int chars = writeCityEditText.getText().toString().length();
-            if(chars == 2){
+            if(chars == 3){
                 StringFiller filler = new StringFiller();
                 filler.execute(writeCityEditText.getText().toString());
             }
-            if (chars > 2) {
+            if (chars > 3) {
 
-                Log.e("VVV", adapterAutoComplete.getCount() + "");
+               // Log.e("VVV", adapterAutoComplete.getCount() + "");
                 //TODO
             }
         }
