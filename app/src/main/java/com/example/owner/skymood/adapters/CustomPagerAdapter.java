@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.Log;
 
 import com.example.owner.skymood.SwipeViewActivity;
 import com.example.owner.skymood.fragments.CurrentWeatherFragment;
@@ -18,12 +19,12 @@ import com.example.owner.skymood.model.WeatherCondition;
 public class CustomPagerAdapter extends FragmentStatePagerAdapter {
 
     private Context context;
-    WeatherCondition infoWeather;
-    String city;
-    String code;
-    String min;
-    String max;
-    String date;
+    private String city;
+    private String code;
+    private String min;
+    private String max;
+    private String date;
+    private int id = 0;
 
     public CustomPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
@@ -37,20 +38,22 @@ public class CustomPagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 fragment = new CurrentWeatherFragment();
                 fragment.setContext(context);
-                return (Fragment) fragment;
+                break;
 
             case 1:
                 //return new HourlyWeatherFragment();
                 fragment = new HourlyWeatherFragment();
-                fragment.setContext(context);
                 ((HourlyWeatherFragment)fragment).setData(city, code);
-                return (Fragment) fragment;
+                fragment.setContext(context);
+                this.id = ((HourlyWeatherFragment) fragment).getMyId();
+                Log.e("DIDI", "ID after creation"+id);
+                break;
             case 2:
                 //return MoreInfoOnWeatherConditionFragment();
                 fragment = new MoreInfoFragment();
                 fragment.setContext(context);
                 ((MoreInfoFragment)fragment).setInfo(city, code, date, min, max);
-                return (Fragment) fragment;
+                break;
         }
         return (Fragment)fragment;
     }
@@ -80,8 +83,7 @@ public class CustomPagerAdapter extends FragmentStatePagerAdapter {
         this.date = date;
     }
 
-    public void setLocation(String city, String code){
-        this.city = city;
-        this.code = code;
+    public int getHourlyId(){
+        return id;
     }
 }

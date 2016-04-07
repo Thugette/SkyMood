@@ -8,11 +8,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.owner.skymood.R;
+import com.example.owner.skymood.SwipeViewActivity;
 import com.example.owner.skymood.adapters.HourlyAdapter;
 import com.example.owner.skymood.adapters.WeeklyAdapter;
 import com.example.owner.skymood.model.HourlyWeather;
@@ -34,11 +36,12 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
 
     private ArrayList<HourlyWeather> hourlyWeather;
     private ArrayList<WeeklyWeather> weatherArray;
-    RecyclerView hourlyRecycler;
-    RecyclerView weerklyRecycler;
-    Context context;
-    String city;
-    String code;
+    private RecyclerView hourlyRecycler;
+    private RecyclerView weerklyRecycler;
+    private Context context;
+    private String city;
+    private String code;
+    private int id;
 
     public HourlyWeatherFragment() {
         // Required empty public constructor
@@ -61,9 +64,8 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
         WeeklyAdapter weeklyAdapte = new WeeklyAdapter(weatherArray, context);
         weerklyRecycler.setAdapter(weeklyAdapte);
 
-//        new GetHoursTask().execute();
+        this.id = this.getId();
 //        new GetWeeklyTask().execute();
-
         return view;
     }
 
@@ -76,6 +78,7 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
         @Override
         protected Void doInBackground(Void... params) {
             try {
+
                 URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/hourly/q/"+code+"/"+city+".json");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
@@ -171,7 +174,13 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
     public void setData(String city, String code){
         this.city = city;
         this.code = code;
-        new GetHoursTask().execute();
-        new GetWeeklyTask().execute();
+        if(city != null && code != null) {
+            new GetHoursTask().execute();
+            new GetWeeklyTask().execute();
+        }
+    }
+
+    public int getMyId(){
+        return this.id;
     }
 }

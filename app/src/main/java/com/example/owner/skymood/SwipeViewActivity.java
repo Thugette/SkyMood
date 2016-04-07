@@ -1,5 +1,6 @@
 package com.example.owner.skymood;
 
+import android.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -24,12 +25,6 @@ public class SwipeViewActivity extends FragmentActivity implements ICommunicatio
     CustomPagerAdapter adapter;
     ViewPager pager;
 
-
-    WeatherCondition weatherInfo;
-    String city;
-    String code;
-
-
     private String[] tabs = {"Current", "Hourly", "More info"};
 
     @Override
@@ -37,12 +32,9 @@ public class SwipeViewActivity extends FragmentActivity implements ICommunicatio
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_swipe_view);
 
-
         adapter = new CustomPagerAdapter(getSupportFragmentManager(), this);
         pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(adapter);
-//        WeatherCondition weather = new WeatherCondition("moon", "dsa", 2,12, 23, 23, 23, 25, 45, 78, 45, "ads");
-//        setInfo(weather);
     }
 
     @Override
@@ -56,14 +48,13 @@ public class SwipeViewActivity extends FragmentActivity implements ICommunicatio
     }
 
     @Override
-    public void getNewLocation(String city, String code) {
-            adapter.setLocation(city, code);
-    }
-
-    @Override
     public void setInfo(String city, String code, String min, String max, String date) {
         adapter.setInfoWeather(city, code, min, max, date);
+        int id = adapter.getHourlyId();
+        Log.e("DIDI", id+" w setInfo");
+        if(id !=  0) {
+            android.support.v4.app.Fragment frag = getSupportFragmentManager().findFragmentById(id);
+            ((HourlyWeatherFragment)frag).setData(city, code);
+        }
     }
-
-
 }

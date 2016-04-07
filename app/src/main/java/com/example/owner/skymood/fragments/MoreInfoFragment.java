@@ -82,7 +82,6 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("DIDI", "MoreInfo fragment created");
         setRetainInstance(true);
 
     }

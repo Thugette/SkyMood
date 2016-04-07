@@ -11,6 +11,5 @@ import java.util.TreeMap;
  */
 public interface ICommunicatior {
 
-    void getNewLocation(String city, String code);
     void setInfo(String city, String code, String min, String max, String date);
 }
