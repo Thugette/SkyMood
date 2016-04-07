@@ -28,6 +28,7 @@ import com.example.owner.skymood.R;
 import com.example.owner.skymood.SwipeViewActivity;
 import com.example.owner.skymood.asyncTasks.APIDataGetterAsyncTask;
 import com.example.owner.skymood.asyncTasks.AutoCompleteStringFillerAsyncTask;
+import com.example.owner.skymood.asyncTasks.FindLocationAsyncTask;
 import com.example.owner.skymood.model.LocationPreference;
 
 import org.json.JSONArray;
@@ -143,8 +144,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                 task.execute(countryCode, city, country);
             } else {
                 //API autoIP
-                DetermineCity determineCity = new DetermineCity();
-                determineCity.execute();
+                findLocation();
             }
 
             if(city == null) {
@@ -326,53 +326,11 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         }
     }
 
-    public class DetermineCity extends AsyncTask<Void, Void, Void>{
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            try {
-                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/geolookup/q/autoip.json");
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.connect();
-
-                Scanner sc = new Scanner(con.getInputStream());
-                StringBuilder body = new StringBuilder();
-                while(sc.hasNextLine()){
-                    body.append(sc.nextLine());
-                }
-                String info = body.toString();
-
-                JSONObject data = new JSONObject(info);
-                JSONObject location = data.getJSONObject("location");
-                countryCode = location.getString("country_iso3166");
-                country = location.getString("country_name");
-                city = location.getString("city");
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            setCity(city);
-            APIDataGetterAsyncTask task = new APIDataGetterAsyncTask(CurrentWeatherFragment.this, context, weatherImage);
-            task.execute(countryCode, city, country);
-        }
-    }
-
     private class OnFindLocationListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
-            DetermineCity determineCity = new DetermineCity();
-            determineCity.execute();
+            findLocation();
         }
     }
 
@@ -414,4 +372,10 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         this.adapterAutoComplete = adapterAutoComplete;
         this.cities = cities;
     }
+
+    private void findLocation(){
+        FindLocationAsyncTask findLocation = new FindLocationAsyncTask(this, context, weatherImage);
+        findLocation.execute();
+    }
 }
+
