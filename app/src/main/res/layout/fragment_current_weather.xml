@@ -24,7 +24,7 @@
             android:layout_height="match_parent"
             android:visibility="gone"
             android:textColor="@color/white"
-            android:textSize="25sp"
+            android:textSize="20sp"
             android:shadowColor="@color/veryDarkGrey"
             android:shadowRadius="3"
             android:shadowDx="2"
@@ -42,6 +42,7 @@
             <android.support.v7.widget.AppCompatSpinner
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:id="@+id/locationSpinner"></android.support.v7.widget.AppCompatSpinner>
 
             <ImageView
@@ -59,7 +60,7 @@
                 android:id="@+id/gpsSearch"/>
 
             <AutoCompleteTextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Write a city \t \t \t \t \t \t"
                 android:imeOptions="actionGo"

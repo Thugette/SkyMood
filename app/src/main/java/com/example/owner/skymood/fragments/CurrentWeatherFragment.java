@@ -39,8 +39,11 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -247,14 +250,15 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
             condition.setText(conditionn);
             feelsLike.setText(feelsLikee);
 
-            Calendar c = Calendar.getInstance();
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            String update = "Last update: " + hour + ":" + c.get(Calendar.MINUTE) + " " +
-                    c.get(Calendar.DATE) + "." + (c.get(Calendar.MONTH) + 1) + "." + c.get(Calendar.YEAR);
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, 1);
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm, dd.MM.yyyy");
+            String dateAndTime = format.format(cal.getTime());
+            String update = "Last update: " + dateAndTime;
             lastUpdate.setText(update);
 
-
             Context con = weatherImage.getContext();
+            int hour = cal.get(Calendar.HOUR_OF_DAY);
             int id = 0;
             if(icon == null) {
                 weatherImage.setImageResource(R.drawable.nulll);
@@ -266,10 +270,10 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                     id = context.getResources().getIdentifier(icon, "drawable", con.getPackageName());
                 }
                 weatherImage.setImageResource(id);
+            }
 
-                if (locPref.isSetLocation() && city.equalsIgnoreCase(locPref.getLocation())) {
-                    locPref.setPreferredLocation(location, city, temp, conditionn, feelsLikee, update, icon);
-                }
+            if (locPref.isSetLocation() && city.equalsIgnoreCase(locPref.getLocation())) {
+                locPref.setPreferredLocation(location, city, temp, conditionn, feelsLikee, update, icon);
             }
         }
     }
@@ -334,7 +338,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         public void onClick(View v) {
             if(isOnline()) {
                 MyTask task = new MyTask();
-                task.execute();
+                task.execute("BG");
             } else {
                 Toast.makeText(context, "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
             }
