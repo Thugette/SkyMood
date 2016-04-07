@@ -127,15 +127,16 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
 
         syncButton.setOnClickListener(new OnSyncListener());
 
+        locationSearchButton.setOnClickListener(new OnFindLocationListener());
+
         //shared prefs
         locPref = LocationPreference.getInstance(context);
 
         //TODO remove, for now hard coded for demo
-        locPref.setPreferredLocation("Burgas", "Bulgaria", "BG", "clear", "19.9", "15", "21", "Clear", "Feels like: 20", "Last update: 05.04.2016, 18:00");
+        //locPref.setPreferredLocation("Burgas", "Bulgaria", "BG", "clear", "19.9", "15", "21", "Clear", "Feels like: 20", "Last update: 05.04.2016, 18:00");
 
         if(isOnline()){
             MyTask task = new MyTask();
-
             //first: check shared prefs
             if(locPref.isSetLocation()){
                 setCity(locPref.getCity());
@@ -143,7 +144,9 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                 country = locPref.getCountry();
                 task.execute();
             } else {
-                //TODO API autoIP
+                //API autoIP
+                DetermineCity determineCity = new DetermineCity();
+                determineCity.execute();
             }
 
             if(city == null) {
@@ -309,7 +312,6 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
             cal.add(Calendar.DATE, 0);
             SimpleDateFormat format = new SimpleDateFormat("HH:mm, dd.MM.yyyy");
             dateAndTime = format.format(cal.getTime());
-            Log.e("VVV", cal.getTime() + "");
             String update = "Last update: " + dateAndTime;
             lastUpdate.setText(update);
 
@@ -329,7 +331,6 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
             }
 
             if (locPref.isSetLocation() && city.equals(locPref.getCity()) && country.equals(locPref.getCountry())) {
-                Log.e("VVV", "set shaared prefs");
                 locPref.setPreferredLocation(city, country, countryCode, icon, temp, minTemp,maxTemp, conditionn, feelsLikee, update);
             }
         }
@@ -493,6 +494,57 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
             }
             keyboard.hideSoftInputFromWindow(writeCityEditText.getWindowToken(), 0);
             return false;
+        }
+    }
+
+    public class DetermineCity extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            URL url = null;
+            try {
+                url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/geolookup/q/autoip.json");
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.connect();
+
+                Scanner sc = new Scanner(con.getInputStream());
+                StringBuilder body = new StringBuilder();
+                while(sc.hasNextLine()){
+                    body.append(sc.nextLine());
+                }
+                String info = body.toString();
+
+                JSONObject data = new JSONObject(info);
+                JSONObject location = data.getJSONObject("location");
+                countryCode = location.getString("country_iso3166");
+                country = location.getString("country_name");
+                city = location.getString("city");
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            setCity(city);
+            MyTask task = new MyTask();
+            task.execute();
+        }
+    }
+
+    private class OnFindLocationListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            DetermineCity determineCity = new DetermineCity();
+            determineCity.execute();
         }
     }
 
