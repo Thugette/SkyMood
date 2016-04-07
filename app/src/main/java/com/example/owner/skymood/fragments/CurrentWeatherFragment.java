@@ -111,16 +111,15 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
 
         writeCityEditText.addTextChangedListener(new TextChanged());
 
+        writeCityEditText.setOnItemSelectedListener(new CitySelectedListener());
+
         sync.setOnClickListener(new OnSyncListener());
-
-
 
         //shared prefs
         locPref = LocationPreference.getInstance(context);
 
         //for now hard coded for demo
        // locPref.setPreferredLocation("Burgas, Bulgaria", "Burgas", "19.9°", "Clear", "Feels like: 19.9℃", "Last update: 05.04.2016, 18:00", "clear");
-
 
         if(isOnline()){
             //first: check shared prefs
@@ -135,7 +134,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
             }
 
             MyTask task = new MyTask();
-            task.execute();
+            task.execute("BG");
 
         } else {
             if(locPref.isSetLocation()){
@@ -175,7 +174,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         this.cityToDisplay = city.toUpperCase();
     }
 
-    public void getWeatherInfoByCity(String city){
+    public void getWeatherInfoByCity(String city, String country){
         Log.e("VVV", "getWeatherInfoByCity");
         if(city != null && !city.isEmpty()) {
             setCity(city);
@@ -185,7 +184,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
             sync.setVisibility(View.VISIBLE);
             gpsSearch.setVisibility(View.VISIBLE);
             MyTask task = new MyTask();
-            task.execute();
+            task.execute(country);
         }
     }
 
@@ -194,7 +193,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         this.context = context;
     }
 
-    class MyTask extends AsyncTask<Void, Void, Void> {
+    class MyTask extends AsyncTask<String, Void, Void> {
 
         String location;
         String conditionn;
@@ -203,10 +202,11 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         String feelsLikee;
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Void doInBackground(String... params) {
 
+            Log.e("ZZZ", params.length + "");
             try {
-                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/conditions/q/BG/" + city + ".json");
+                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/conditions/q/" + params[0] + "/" + city + ".json");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
@@ -427,10 +427,33 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
     private class SearchButtonListener implements TextView.OnEditorActionListener {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-            Log.e("VVV", "OnEditorAction - actuon = " + actionId);
-            getWeatherInfoByCity(writeCityEditText.getText().toString());
+            Log.e("VVV", "OnEditorAction - action = " + actionId);
+           // getWeatherInfoByCity(writeCityEditText.getText().toString());
             keyboard.hideSoftInputFromWindow(writeCityEditText.getWindowToken(), 0);
+            String location =  writeCityEditText.getText().toString();
+            String country = cities.get(location);
+            String[] parts = location.split(",");
+            String city = parts[0];
+            getWeatherInfoByCity(city, country);
             return false;
+        }
+    }
+
+    private class CitySelectedListener implements AdapterView.OnItemSelectedListener {
+
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            Log.e("ZZZ", "On Item selected");
+            String location =  parent.getItemAtPosition(position).toString();
+            String country = cities.get(location);
+            String[] parts = location.split(",");
+            String city = parts[0];
+            getWeatherInfoByCity(city, country);
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
         }
     }
 
