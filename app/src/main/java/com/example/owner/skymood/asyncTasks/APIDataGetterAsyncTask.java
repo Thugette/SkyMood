@@ -25,7 +25,7 @@ import java.util.Scanner;
 /**
  * Created by Golemanovaa on 7.4.2016 г..
  */
-public class APIDataGetter extends AsyncTask<String, Void, Void> {
+public class APIDataGetterAsyncTask extends AsyncTask<String, Void, Void> {
 
     private String condition;
     private String icon;
@@ -43,7 +43,7 @@ public class APIDataGetter extends AsyncTask<String, Void, Void> {
     private String countryCode;
     private String country;
 
-    public APIDataGetter(Fragment f, Context context, ImageView weatherImage){
+    public APIDataGetterAsyncTask(Fragment f, Context context, ImageView weatherImage){
         this.fragment = f;
         this.context = context;
         this.weatherImage = weatherImage;
@@ -71,7 +71,6 @@ public class APIDataGetter extends AsyncTask<String, Void, Void> {
 
             JSONObject jsonData = new JSONObject(info);
             JSONObject observation = (JSONObject) jsonData.get("current_observation");
-            //JSONObject locationObject = (JSONObject) observation.get("display_location");
             condition = observation.getString("weather");
             temp = observation.getString("temp_c");
             feelsLike = "Feels like: " + observation.getString("feelslike_c") + "℃";
@@ -117,37 +116,38 @@ public class APIDataGetter extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPreExecute() {
-        ((CurrentWeatherFragment)fragment).myTaskPreExecute();
+        ((CurrentWeatherFragment)fragment).apiDataGetterAsyncTaskOnPreExecute();
     }
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, 0);
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm, dd.MM.yyyy");
-        dateAndTime = format.format(cal.getTime());
-        String lastUpdate = "Last update: " + dateAndTime;
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, 0);
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm, dd.MM.yyyy");
+            dateAndTime = format.format(cal.getTime());
+            String lastUpdate = "Last update: " + dateAndTime;
 
-        Context con = weatherImage.getContext();
-        int hour = cal.get(Calendar.HOUR_OF_DAY);
-        int id = 0;
-        if(icon == null) {
-            weatherImage.setImageResource(R.drawable.nulll);
-        } else {
-            if (hour >= 6 && hour <= 19) {
-                id = context.getResources().getIdentifier(icon, "drawable", con.getPackageName());
+            Context con = weatherImage.getContext();
+            int hour = cal.get(Calendar.HOUR_OF_DAY);
+            int id = 0;
+            if (icon == null) {
+                weatherImage.setImageResource(R.drawable.nulll);
             } else {
-                icon = icon + "_night";
-                id = context.getResources().getIdentifier(icon, "drawable", con.getPackageName());
+                if (hour >= 6 && hour <= 19) {
+                    id = context.getResources().getIdentifier(icon, "drawable", con.getPackageName());
+                } else {
+                    icon = icon + "_night";
+                    id = context.getResources().getIdentifier(icon, "drawable", con.getPackageName());
+                }
+                weatherImage.setImageResource(id);
             }
-            weatherImage.setImageResource(id);
-        }
 
-        if (locPref.isSetLocation() && city.equals(locPref.getCity()) && countryCode.equals(locPref.getCountryCode())) {
-            locPref.setPreferredLocation(city, country, countryCode, icon, temp, minTemp,maxTemp, condition, feelsLike, lastUpdate);
-        }
+            if (locPref.isSetLocation() && city.equals(locPref.getCity()) && countryCode.equals(locPref.getCountryCode())) {
+                locPref.setPreferredLocation(city, country, countryCode, icon, temp, minTemp, maxTemp, condition, feelsLike, lastUpdate);
+            }
 
-        ((CurrentWeatherFragment)fragment).myTaskOnPostExecute(temp, condition, feelsLike, minTemp, maxTemp, dateAndTime, lastUpdate);
+            ((CurrentWeatherFragment) fragment).apiDataGetterAsyncTaskOnPostExecute(temp, condition, feelsLike, minTemp, maxTemp, dateAndTime, lastUpdate);
+
     }
 
 }
