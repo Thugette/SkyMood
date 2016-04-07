@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/foreground"
     android:layout_margin="10dp"
+    android:id="@+id/fragment_hourly"
     tools:context="com.example.owner.skymood.fragments.HourlyWeatherFragment">
 
     <android.support.v7.widget.RecyclerView

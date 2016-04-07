@@ -8,7 +8,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import com.example.owner.skymood.SwipeViewActivity;
 import com.example.owner.skymood.fragments.CurrentWeatherFragment;
 import com.example.owner.skymood.fragments.HourlyWeatherFragment;
+import com.example.owner.skymood.fragments.MoreInfoFragment;
 import com.example.owner.skymood.fragments.Swideable;
+import com.example.owner.skymood.model.WeatherCondition;
 
 /**
  * Created by Golemanovaa on 4.4.2016 г..
@@ -16,6 +18,12 @@ import com.example.owner.skymood.fragments.Swideable;
 public class CustomPagerAdapter extends FragmentStatePagerAdapter {
 
     private Context context;
+    WeatherCondition infoWeather;
+    String city;
+    String code;
+    String min;
+    String max;
+    String date;
 
     public CustomPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
@@ -29,18 +37,20 @@ public class CustomPagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 fragment = new CurrentWeatherFragment();
                 fragment.setContext(context);
-                break;
+                return (Fragment) fragment;
 
             case 1:
                 //return new HourlyWeatherFragment();
                 fragment = new HourlyWeatherFragment();
                 fragment.setContext(context);
-                break;
+                ((HourlyWeatherFragment)fragment).setData(city, code);
+                return (Fragment) fragment;
             case 2:
                 //return MoreInfoOnWeatherConditionFragment();
-                fragment = new CurrentWeatherFragment();
+                fragment = new MoreInfoFragment();
                 fragment.setContext(context);
-                break;
+                ((MoreInfoFragment)fragment).setInfo(city, code, date, min, max);
+                return (Fragment) fragment;
         }
         return (Fragment)fragment;
     }
@@ -60,5 +70,18 @@ public class CustomPagerAdapter extends FragmentStatePagerAdapter {
             return "MORE INFO";
     }
         return null;
+    }
+
+    public void setInfoWeather(String city, String code, String min, String max, String date) {
+        this.city = city;
+        this.code = code;
+        this.min = min;
+        this.max = max;
+        this.date = date;
+    }
+
+    public void setLocation(String city, String code){
+        this.city = city;
+        this.code = code;
     }
 }

@@ -8,5 +8,4 @@ import android.content.Context;
 public interface Swideable {
 
     void setContext(Context context);
-
 }

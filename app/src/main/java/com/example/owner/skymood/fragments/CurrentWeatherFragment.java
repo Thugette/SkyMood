@@ -1,5 +1,6 @@
 package com.example.owner.skymood.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.owner.skymood.R;
+import com.example.owner.skymood.SwipeViewActivity;
 import com.example.owner.skymood.model.LocationPreference;
 
 import org.json.JSONArray;
@@ -441,6 +443,9 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         protected void onPostExecute(Void aVoid) {
             adapterAutoComplete = new ArrayAdapter(context, android.R.layout.simple_list_item_1, autoCopleteNames);
             writeCityEditText.setAdapter(adapterAutoComplete);
+            ((SwipeViewActivity)context).setInfo(city, countryCode, minTemp, maxTemp, dateAndTime);
+            ((SwipeViewActivity)context).getNewLocation(city, countryCode);
+
         }
     }
 

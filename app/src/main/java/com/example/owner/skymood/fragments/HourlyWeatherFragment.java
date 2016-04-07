@@ -37,6 +37,8 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
     RecyclerView hourlyRecycler;
     RecyclerView weerklyRecycler;
     Context context;
+    String city;
+    String code;
 
     public HourlyWeatherFragment() {
         // Required empty public constructor
@@ -59,8 +61,8 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
         WeeklyAdapter weeklyAdapte = new WeeklyAdapter(weatherArray, context);
         weerklyRecycler.setAdapter(weeklyAdapte);
 
-        new GetHoursTask().execute();
-        new GetWeeklyTask().execute();
+//        new GetHoursTask().execute();
+//        new GetWeeklyTask().execute();
 
         return view;
     }
@@ -73,9 +75,8 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
     class GetHoursTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-
             try {
-                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/hourly/q/BG/Sofia.json");
+                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/hourly/q/"+code+"/"+city+".json");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
@@ -120,7 +121,7 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
         @Override
         protected Void doInBackground(Void... params) {
             try{
-                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/forecast7day/q/BG/Sofia.json");
+                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/forecast7day/q/"+code+"/"+city+".json");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
@@ -165,5 +166,12 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
         protected void onPostExecute(Void aVoid) {
             weerklyRecycler.getAdapter().notifyDataSetChanged();
         }
+    }
+
+    public void setData(String city, String code){
+        this.city = city;
+        this.code = code;
+        new GetHoursTask().execute();
+        new GetWeeklyTask().execute();
     }
 }
