@@ -240,6 +240,8 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
             this.maxTemp = maxTemp;
             this.lastUpdate.setText(lastUpdate);
             this.dateAndTime = dateAndTime;
+
+
         } else {
             this.temperature.setText("");
             this.condition.setText("");

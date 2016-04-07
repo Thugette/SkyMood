@@ -1,6 +1,7 @@
 package com.example.owner.skymood.listeners;
 
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.owner.skymood.fragments.CurrentWeatherFragment;
 
@@ -17,7 +18,11 @@ public class LocationSearchButtonListener implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        fragment.findLocation();
+        if(fragment.isOnline()){
+            fragment.findLocation();
+        } else {
+            Toast.makeText(fragment.getContext(), "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

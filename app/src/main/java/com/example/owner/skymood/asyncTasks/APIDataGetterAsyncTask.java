@@ -142,8 +142,10 @@ public class APIDataGetterAsyncTask extends AsyncTask<String, Void, Void> {
                 weatherImage.setImageResource(id);
             }
 
-            if (locPref.isSetLocation() && city.equals(locPref.getCity()) && countryCode.equals(locPref.getCountryCode())) {
-                locPref.setPreferredLocation(city, country, countryCode, icon, temp, minTemp, maxTemp, condition, feelsLike, lastUpdate);
+            if(temp != null && icon != null) {
+                if (locPref.isSetLocation() && city.equals(locPref.getCity()) && countryCode.equals(locPref.getCountryCode())) {
+                    locPref.setPreferredLocation(city, country, countryCode, icon, temp, minTemp, maxTemp, condition, feelsLike, lastUpdate);
+                }
             }
 
             ((CurrentWeatherFragment) fragment).apiDataGetterAsyncTaskOnPostExecute(temp, condition, feelsLike, minTemp, maxTemp, dateAndTime, lastUpdate);
