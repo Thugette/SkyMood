@@ -19,17 +19,35 @@
             android:id="@+id/progressBar"
             android:visibility="gone"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:shadowColor="@color/veryDarkGrey"
-            android:shadowRadius="3"
-            android:shadowDx="2"
-            android:shadowDy="2"
-            android:id="@+id/chosenCity"/>
+       <LinearLayout
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:orientation="vertical">
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:visibility="gone"
+               android:textColor="@color/white"
+               android:textSize="20sp"
+               android:shadowColor="@color/veryDarkGrey"
+               android:shadowRadius="3"
+               android:shadowDx="2"
+               android:shadowDy="2"
+               android:id="@+id/chosenCity"/>
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:textColor="@color/white"
+               android:textSize="15sp"
+               android:shadowColor="@color/veryDarkGrey"
+               android:shadowRadius="3"
+               android:shadowDx="2"
+               android:shadowDy="2"
+               android:id="@+id/country"/>
+
+       </LinearLayout>
 
 
         <LinearLayout
@@ -91,6 +109,8 @@
         android:gravity="top"
         android:orientation="vertical">
 
+
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -108,18 +128,59 @@
         android:textColor="@color/white"
         android:orientation="vertical">
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="70sp"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:shadowColor="@color/veryDarkGrey"
-            android:shadowRadius="3"
-            android:shadowDx="2"
-            android:shadowDy="2"
-            android:id="@+id/temperatureTextView"/>
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="70sp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:shadowColor="@color/veryDarkGrey"
+                android:shadowRadius="3"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:id="@+id/temperatureTextView"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="17sp"
+                    android:textColor="@color/red"
+                    android:shadowColor="@color/veryDarkGrey"
+                    android:shadowRadius="3"
+                    android:shadowDx="2"
+                    android:shadowDy="2"
+                    android:id="@+id/maxTemp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="17sp"
+                    android:textColor="@color/blue"
+                    android:shadowColor="@color/veryDarkGrey"
+                    android:shadowRadius="3"
+                    android:shadowDx="2"
+                    android:shadowDy="2"
+                    android:id="@+id/minTemp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -133,17 +194,19 @@
             android:shadowDy="2"
             android:id="@+id/conditionTextView"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:layout_gravity="center"
-            android:textColor="@color/white"
-            android:shadowColor="@color/veryDarkGrey"
-            android:shadowRadius="3"
-            android:shadowDx="2"
-            android:shadowDy="2"
-            android:id="@+id/feelsLikeTextView"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:shadowColor="@color/veryDarkGrey"
+                android:shadowRadius="3"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:id="@+id/feelsLikeTextView"/>
+
+
 
     </LinearLayout>
 

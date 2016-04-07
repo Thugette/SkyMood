@@ -1,8 +1,6 @@
 package com.example.owner.skymood.fragments;
 
 import android.content.Context;
-import android.location.Location;
-import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -17,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -39,36 +36,45 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
 
 
 public class CurrentWeatherFragment extends Fragment implements Swideable {
 
+    private static final String DEFAULT_CITY = "Sofia";
+    private static final String DEFAULT_COUNTRY_CODE = "BG";
+    private static final String DEFAULT_COUNTRY = "Bulgaria";
+
     private ProgressBar progressBar;
-    private TextView chosenCity;
+    private TextView chosenCityTextView;
     private Spinner spinner;
-    private ImageView sync;
-    private ImageView gpsSearch;
-    private ImageView citySearch;
+    private ImageView syncButton;
+    private ImageView locationSearchButton;
+    private ImageView citySearchButton;
     private AutoCompleteTextView writeCityEditText;
     private TextView temperature;
     private TextView condition;
     private TextView feelsLike;
     private TextView lastUpdate;
+    private TextView countryTextView;
+    private TextView minTempTextView;
+    private TextView maxTempTextView;
     private ImageView weatherImage;
 
-    private static final String DEFAULT_CITY = "Sofia";
     private String city;
+    private String country;
+    private String countryCode;
     private String cityToDisplay;
+    private String minTemp;
+    private String maxTemp;
+    private String dateAndTime;
     private HashMap<String, String> cities;
     private ArrayList<String> autoCopleteNames;
-    ArrayAdapter adapterAutoComplete;
+    private ArrayAdapter adapterAutoComplete;
 
     private InputMethodManager keyboard;
     private Context context;
@@ -84,17 +90,20 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         ViewGroup rootView = (ViewGroup) inflater.inflate(
                 R.layout.fragment_current_weather, container, false);
 
-        sync = (ImageView) rootView.findViewById(R.id.synchronize);
-        gpsSearch = (ImageView) rootView.findViewById(R.id.gpsSearch);
-        citySearch = (ImageView) rootView.findViewById(R.id.citySearch);
+        syncButton = (ImageView) rootView.findViewById(R.id.synchronize);
+        locationSearchButton = (ImageView) rootView.findViewById(R.id.gpsSearch);
+        citySearchButton = (ImageView) rootView.findViewById(R.id.citySearch);
         writeCityEditText = (AutoCompleteTextView) rootView.findViewById(R.id.writeCityEditText);
         writeCityEditText.setThreshold(3);
         temperature = (TextView) rootView.findViewById(R.id.temperatureTextView);
+        countryTextView = (TextView) rootView.findViewById(R.id.country);
         condition = (TextView) rootView.findViewById(R.id.conditionTextView);
+        minTempTextView = (TextView) rootView.findViewById(R.id.minTemp);
+        maxTempTextView = (TextView) rootView.findViewById(R.id.maxTemp);
         feelsLike = (TextView) rootView.findViewById(R.id.feelsLikeTextView);
         lastUpdate = (TextView) rootView.findViewById(R.id.lastUpdateTextView);
         weatherImage = (ImageView) rootView.findViewById(R.id.weatherImageView);
-        chosenCity = (TextView) rootView.findViewById(R.id.chosenCity);
+        chosenCityTextView = (TextView) rootView.findViewById(R.id.chosenCity);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         spinner = (Spinner) rootView.findViewById(R.id.locationSpinner);
 
@@ -107,14 +116,14 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new OnMyLocationsSpinnerItemListener());
 
-        citySearch.setOnClickListener(new OnCitySearchClickListener());
+        citySearchButton.setOnClickListener(new OnCitySearchClickListener());
 
         TextView.OnEditorActionListener searchButtonPressed = new SearchButtonListener();
         writeCityEditText.setOnEditorActionListener(searchButtonPressed);
 
         writeCityEditText.addTextChangedListener(new TextChanged());
 
-        sync.setOnClickListener(new OnSyncListener());
+        syncButton.setOnClickListener(new OnSyncListener());
 
         //shared prefs
         locPref = LocationPreference.getInstance(context);
@@ -123,19 +132,22 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
        // locPref.setPreferredLocation("Burgas, Bulgaria", "Burgas", "19.9°", "Clear", "Feels like: 19.9℃", "Last update: 05.04.2016, 18:00", "clear");
 
         if(isOnline()){
+            MyTask task = new MyTask();
+
             //first: check shared prefs
             if(locPref.isSetLocation()){
                 setCity(locPref.getCity());
+                //TODO task.extecute();
             } else {
                 //API autoIP
             }
 
             if(city == null) {
                 setCity(DEFAULT_CITY);
+                countryCode = DEFAULT_COUNTRY_CODE;
+                country = DEFAULT_COUNTRY;
+                task.execute();
             }
-
-            MyTask task = new MyTask();
-            task.execute("BG");
 
         } else {
             if(locPref.isSetLocation()){
@@ -151,8 +163,10 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
     }
 
     public void getWeatherInfoFromSharedPref(){
-        chosenCity.setVisibility(View.VISIBLE);
-        chosenCity.setText(locPref.getLocation());
+        //TODO change by new API info
+        //countryTextView
+        chosenCityTextView.setVisibility(View.VISIBLE);
+        chosenCityTextView.setText(locPref.getLocation());
         temperature.setText(locPref.getTemperature());
         feelsLike.setText(locPref.getMoreInfo());
         lastUpdate.setText(locPref.getLastUpdate());
@@ -175,16 +189,16 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         this.cityToDisplay = city.toUpperCase();
     }
 
-    public void getWeatherInfoByCity(String city, String country){
+    public void getWeatherInfoByCity(String city){
         if(city != null && !city.isEmpty()) {
             setCity(city);
             writeCityEditText.setText("");
             writeCityEditText.setVisibility(View.GONE);
             spinner.setVisibility(View.VISIBLE);
-            sync.setVisibility(View.VISIBLE);
-            gpsSearch.setVisibility(View.VISIBLE);
+            syncButton.setVisibility(View.VISIBLE);
+            locationSearchButton.setVisibility(View.VISIBLE);
             MyTask task = new MyTask();
-            task.execute(country);
+            task.execute();
         }
     }
 
@@ -193,7 +207,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         this.context = context;
     }
 
-    class MyTask extends AsyncTask<String, Void, Void> {
+    class MyTask extends AsyncTask<Void, Void, Void> {
 
         String location;
         String conditionn;
@@ -202,10 +216,11 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         String feelsLikee;
 
         @Override
-        protected Void doInBackground(String... params) {
+        protected Void doInBackground(Void... params) {
 
             try {
-                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/conditions/q/" + params[0] + "/" + city + ".json");
+                //API 1
+                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/conditions/q/" + countryCode + "/" + city + ".json");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
@@ -221,9 +236,37 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                 JSONObject locationObject = (JSONObject) observation.get("display_location");
                 location = locationObject.getString("full");
                 conditionn = observation.getString("weather");
-                temp = observation.getString("temp_c") + "°";
+                temp = observation.getString("temp_c");
                 feelsLikee = "Feels like: " + observation.getString("feelslike_c") + "℃";
                 icon = observation.getString("icon");
+
+                //API 2
+                URL url2 = new URL("http://api.wunderground.com/api/b4d0925e0429238f/forecast/q/" + countryCode + "/" + city + ".json");
+                HttpURLConnection connection2 = (HttpURLConnection) url2.openConnection();
+                connection2.connect();
+
+                Scanner sc2 = new Scanner(connection2.getInputStream());
+                StringBuilder data = new StringBuilder();
+                while(sc2.hasNextLine()){
+                    data.append(sc2.nextLine());
+                }
+                String dataJson = data.toString();
+
+                JSONObject dataJsonObj = new JSONObject(dataJson);
+                JSONObject forecast = dataJsonObj.getJSONObject("forecast");
+                JSONObject simpleForecast = forecast.getJSONObject("simpleforecast");
+                JSONArray forecastDay = simpleForecast.getJSONArray("forecastday");
+                JSONObject day = (JSONObject) forecastDay.get(0);
+                JSONObject high = day.getJSONObject("high");
+                maxTemp = high.getString("celsius");
+                JSONObject low = day.getJSONObject("low");
+                minTemp = low.getString("celsius");
+
+               if(Double.parseDouble(temp) > Double.parseDouble(maxTemp)){
+                   Double max = Math.ceil(Double.parseDouble(temp));
+                   Integer maxTempInt = max.intValue();
+                   maxTemp = maxTempInt.toString();
+               }
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -237,23 +280,28 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
 
         @Override
         protected void onPreExecute() {
-            chosenCity.setVisibility(View.GONE);
+            chosenCityTextView.setVisibility(View.GONE);
+            countryTextView.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             progressBar.setVisibility(View.GONE);
-            chosenCity.setVisibility(View.VISIBLE);
-            chosenCity.setText(cityToDisplay);
-            temperature.setText(temp);
+            chosenCityTextView.setVisibility(View.VISIBLE);
+            chosenCityTextView.setText(cityToDisplay);
+            countryTextView.setVisibility(View.VISIBLE);
+            countryTextView.setText(country);
+            temperature.setText(temp + "°");
             condition.setText(conditionn);
             feelsLike.setText(feelsLikee);
+            minTempTextView.setText("⬇" + minTemp + "°");
+            maxTempTextView.setText("⬆" + maxTemp + "°");
 
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DATE, 1);
             SimpleDateFormat format = new SimpleDateFormat("HH:mm, dd.MM.yyyy");
-            String dateAndTime = format.format(cal.getTime());
+            dateAndTime = format.format(cal.getTime());
             String update = "Last update: " + dateAndTime;
             lastUpdate.setText(update);
 
@@ -285,8 +333,8 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                 autoCopleteNames = new ArrayList<>();
                 if (writeCityEditText.getVisibility() == View.GONE) {
                     spinner.setVisibility(View.GONE);
-                    sync.setVisibility(View.GONE);
-                    gpsSearch.setVisibility(View.GONE);
+                    syncButton.setVisibility(View.GONE);
+                    locationSearchButton.setVisibility(View.GONE);
                     weatherImage.setAdjustViewBounds(true);
                     //TODO: change animation
                     Animation slide = new AnimationUtils().loadAnimation(getContext(), android.R.anim.fade_in);
@@ -297,14 +345,12 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                     writeCityEditText.requestFocus();
                     keyboard = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                     keyboard.showSoftInput(writeCityEditText, 0);
-
-
                 } else {
                     writeCityEditText.setVisibility(View.GONE);
                     keyboard.hideSoftInputFromWindow(writeCityEditText.getWindowToken(), 0);
                     spinner.setVisibility(View.VISIBLE);
-                    sync.setVisibility(View.VISIBLE);
-                    gpsSearch.setVisibility(View.VISIBLE);
+                    syncButton.setVisibility(View.VISIBLE);
+                    locationSearchButton.setVisibility(View.VISIBLE);
                 }
             } else {
                 Toast.makeText(context, "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
@@ -320,7 +366,9 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                     if (isOnline()) {
                         setCity((String) parent.getItemAtPosition(position));
                         MyTask task = new MyTask();
-                        task.execute("BG");
+                        //TODO remove next line
+                        countryCode = DEFAULT_COUNTRY_CODE;
+                        task.execute();
                     } else {
                         //TODO check if there is information in DB
 
@@ -338,7 +386,9 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         public void onClick(View v) {
             if(isOnline()) {
                 MyTask task = new MyTask();
-                task.execute("BG");
+                //TODO remove next line
+                countryCode = DEFAULT_COUNTRY_CODE;
+                task.execute();
             } else {
                 Toast.makeText(context, "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
             }
@@ -405,7 +455,6 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         @Override
         public void afterTextChanged(Editable s) {
             int chars = writeCityEditText.getText().toString().length();
-            Log.e("VVV", "characters = " + chars);
             if(chars >= 3){
                 StringFiller filler = new StringFiller();
                 filler.execute(writeCityEditText.getText().toString());
@@ -416,14 +465,23 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
     private class SearchButtonListener implements TextView.OnEditorActionListener {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-            Log.e("VVV", "OnEditorAction - action = " + actionId);
-           // getWeatherInfoByCity(writeCityEditText.getText().toString());
+
+            if(writeCityEditText != null && !writeCityEditText.getText().toString().isEmpty()) {
+                String location = writeCityEditText.getText().toString();
+                countryCode = cities.get(location);
+                String[] parts = location.split(",");
+                String city = parts[0];
+                country = parts[1].trim();
+
+                getWeatherInfoByCity(city);
+            } else {
+                writeCityEditText.setVisibility(View.GONE);
+                keyboard.hideSoftInputFromWindow(writeCityEditText.getWindowToken(), 0);
+                spinner.setVisibility(View.VISIBLE);
+                syncButton.setVisibility(View.VISIBLE);
+                locationSearchButton.setVisibility(View.VISIBLE);
+            }
             keyboard.hideSoftInputFromWindow(writeCityEditText.getWindowToken(), 0);
-            String location =  writeCityEditText.getText().toString();
-            String country = cities.get(location);
-            String[] parts = location.split(",");
-            String city = parts[0];
-            getWeatherInfoByCity(city, country);
             return false;
         }
     }
