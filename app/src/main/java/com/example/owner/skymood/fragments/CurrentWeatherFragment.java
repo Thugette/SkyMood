@@ -26,7 +26,8 @@ import android.widget.Toast;
 
 import com.example.owner.skymood.R;
 import com.example.owner.skymood.SwipeViewActivity;
-import com.example.owner.skymood.asyncTasks.APIDataGetter;
+import com.example.owner.skymood.asyncTasks.APIDataGetterAsyncTask;
+import com.example.owner.skymood.asyncTasks.AutoCompleteStringFillerAsyncTask;
 import com.example.owner.skymood.model.LocationPreference;
 
 import org.json.JSONArray;
@@ -133,7 +134,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         //locPref.setPreferredLocation("Burgas", "Bulgaria", "BG", "clear", "19.9", "15", "21", "Clear", "Feels like: 20", "Last update: 05.04.2016, 18:00");
 
         if(isOnline()){
-            APIDataGetter task = new APIDataGetter(this, context, weatherImage);
+            APIDataGetterAsyncTask task = new APIDataGetterAsyncTask(this, context, weatherImage);
             //first: check shared prefs
             if(locPref.isSetLocation()){
                 setCity(locPref.getCity());
@@ -209,7 +210,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
             spinner.setVisibility(View.VISIBLE);
             syncButton.setVisibility(View.VISIBLE);
             locationSearchButton.setVisibility(View.VISIBLE);
-            APIDataGetter task = new APIDataGetter(this, context, weatherImage);
+            APIDataGetterAsyncTask task = new APIDataGetterAsyncTask(this, context, weatherImage);
             task.execute(countryCode, city, country);
         }
     }
@@ -224,13 +225,14 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                     syncButton.setVisibility(View.GONE);
                     locationSearchButton.setVisibility(View.GONE);
                     weatherImage.setAdjustViewBounds(true);
-                    //TODO: change animation
+
                     Animation slide = new AnimationUtils().loadAnimation(getContext(), android.R.anim.fade_in);
                     slide.setDuration(1000);
                     writeCityEditText.startAnimation(slide);
                     writeCityEditText.setVisibility(View.VISIBLE);
                     writeCityEditText.setFocusable(true);
                     writeCityEditText.requestFocus();
+
                     keyboard = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                     keyboard.showSoftInput(writeCityEditText, 0);
                 } else {
@@ -253,7 +255,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                 if (!((String) parent.getItemAtPosition(position)).equals("My Locations")) {
                     if (isOnline()) {
                         setCity((String) parent.getItemAtPosition(position));
-                        APIDataGetter task = new APIDataGetter(CurrentWeatherFragment.this, context, weatherImage);
+                        APIDataGetterAsyncTask task = new APIDataGetterAsyncTask(CurrentWeatherFragment.this, context, weatherImage);
                         //TODO remove next line
                         countryCode = DEFAULT_COUNTRY_CODE;
                         task.execute(countryCode, city, country);
@@ -273,62 +275,11 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         @Override
         public void onClick(View v) {
             if(isOnline()) {
-                APIDataGetter task = new APIDataGetter(CurrentWeatherFragment.this, context, weatherImage);
+                APIDataGetterAsyncTask task = new APIDataGetterAsyncTask(CurrentWeatherFragment.this, context, weatherImage);
                 task.execute(countryCode, city, country);
             } else {
                 Toast.makeText(context, "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
             }
-        }
-    }
-
-    private class StringFiller extends AsyncTask<String, Void, Void> {
-
-        @Override
-        protected Void doInBackground(String... params) {
-
-            try {
-                URL url = new URL("http://autocomplete.wunderground.com/aq?query=" + params[0]);
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.connect();
-
-                Scanner sc = new Scanner(con.getInputStream());
-                StringBuilder body = new StringBuilder();
-                while(sc.hasNextLine()){
-                    body.append(sc.nextLine());
-                }
-                String info = body.toString();
-
-                JSONObject jsonObj = new JSONObject(info);
-                JSONArray results = jsonObj.getJSONArray("RESULTS");
-                cities = new HashMap<>();
-                for(int i = 0; i < results.length(); i++){
-                    JSONObject location = (JSONObject) results.get(i);
-                    String name = location.getString("name");
-                    String country = location.getString("c");
-                    cities.put(name, country);
-                }
-
-                autoCopleteNames = new ArrayList<>();
-                for(String name : cities.keySet()){
-                    autoCopleteNames.add(name);
-                }
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-          return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            adapterAutoComplete = new ArrayAdapter(context, android.R.layout.simple_list_item_1, autoCopleteNames);
-            writeCityEditText.setAdapter(adapterAutoComplete);
-            ((SwipeViewActivity)context).setInfo(city, countryCode, minTemp, maxTemp, dateAndTime);
-            ((SwipeViewActivity)context).getNewLocation(city, countryCode);
         }
     }
 
@@ -344,7 +295,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         public void afterTextChanged(Editable s) {
             int chars = writeCityEditText.getText().toString().length();
             if(chars >= 3){
-                StringFiller filler = new StringFiller();
+                AutoCompleteStringFillerAsyncTask filler = new AutoCompleteStringFillerAsyncTask(CurrentWeatherFragment.this, context);
                 filler.execute(writeCityEditText.getText().toString());
             }
         }
@@ -354,15 +305,16 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
-            if(writeCityEditText != null && !writeCityEditText.getText().toString().isEmpty()) {
+            if(writeCityEditText != null && !writeCityEditText.getText().toString().isEmpty()
+                    && writeCityEditText.getText().toString().contains(",")) {
                 String location = writeCityEditText.getText().toString();
                 countryCode = cities.get(location);
                 String[] parts = location.split(",");
                 String city = parts[0];
                 country = parts[1].trim();
-
                 getWeatherInfoByCity(city);
             } else {
+                Toast.makeText(context, "You must specify a country", Toast.LENGTH_SHORT).show();
                 writeCityEditText.setVisibility(View.GONE);
                 keyboard.hideSoftInputFromWindow(writeCityEditText.getWindowToken(), 0);
                 spinner.setVisibility(View.VISIBLE);
@@ -410,7 +362,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         @Override
         protected void onPostExecute(Void aVoid) {
             setCity(city);
-            APIDataGetter task = new APIDataGetter(CurrentWeatherFragment.this, context, weatherImage);
+            APIDataGetterAsyncTask task = new APIDataGetterAsyncTask(CurrentWeatherFragment.this, context, weatherImage);
             task.execute(countryCode, city, country);
         }
     }
@@ -424,27 +376,42 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         }
     }
 
-    public void myTaskPreExecute(){
+    public void apiDataGetterAsyncTaskOnPreExecute(){
         chosenCityTextView.setVisibility(View.GONE);
         countryTextView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    public void myTaskOnPostExecute(String temp, String condition, String feelsLike, String minTemp, String maxTemp, String dateAndTime, String lastUpdate){
+    public void apiDataGetterAsyncTaskOnPostExecute(String temp, String condition, String feelsLike,
+                                    String minTemp, String maxTemp, String dateAndTime, String lastUpdate){
         this.progressBar.setVisibility(View.GONE);
         this.chosenCityTextView.setVisibility(View.VISIBLE);
         this.chosenCityTextView.setText(cityToDisplay);
         this.countryTextView.setVisibility(View.VISIBLE);
         this.countryTextView.setText(country);
-        this.temperature.setText(temp + "°");
-        this.condition.setText(condition);
-        this.feelsLike.setText(feelsLike);
-        this.minTempTextView.setText("⬇" + minTemp + "°");
-        this.minTemp = minTemp;
-        this.maxTempTextView.setText("⬆" + maxTemp + "°");
-        this.maxTemp = maxTemp;
-        this.lastUpdate.setText(lastUpdate);
-        this.dateAndTime = dateAndTime;
+        if(temp != null) {
+            this.temperature.setText(temp + "°");
+            this.condition.setText(condition);
+            this.feelsLike.setText(feelsLike);
+            this.minTempTextView.setText("⬇" + minTemp + "°");
+            this.minTemp = minTemp;
+            this.maxTempTextView.setText("⬆" + maxTemp + "°");
+            this.maxTemp = maxTemp;
+            this.lastUpdate.setText(lastUpdate);
+            this.dateAndTime = dateAndTime;
+        } else {
+            this.temperature.setText("");
+            this.condition.setText("");
+            this.lastUpdate.setText("");
+            this.maxTempTextView.setText("");
+            this.minTempTextView.setText("");
+            this.feelsLike.setText("Sorry, there is no \ninformation for that location.");
+        }
     }
 
+    public void autoCompleteStringFillerAsyncTaskOnPostExecute(ArrayAdapter adapterAutoComplete, HashMap<String, String> cities){
+        this.writeCityEditText.setAdapter(adapterAutoComplete);
+        this.adapterAutoComplete = adapterAutoComplete;
+        this.cities = cities;
+    }
 }
