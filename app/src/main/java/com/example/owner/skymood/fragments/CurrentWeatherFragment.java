@@ -131,7 +131,8 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         locPref = LocationPreference.getInstance(context);
 
         //for now hard coded for demo
-       // locPref.setPreferredLocation("Burgas, Bulgaria", "Burgas", "19.9°", "Clear", "Feels like: 19.9℃", "Last update: 05.04.2016, 18:00", "clear");
+        locPref.setPreferredLocation("Burgas", "Bulgaria", "BG", "clear", "19.9°", "15", "21", "Clear","Feels like: 20", "Last update: 05.04.2016, 18:00");
+
 
         if(isOnline()){
             MyTask task = new MyTask();
@@ -139,7 +140,9 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
             //first: check shared prefs
             if(locPref.isSetLocation()){
                 setCity(locPref.getCity());
-                //TODO task.extecute();
+                countryCode = locPref.getCountryCode();
+                country = locPref.getCountry();
+                task.execute();
             } else {
                 //API autoIP
             }
@@ -165,14 +168,14 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
     }
 
     public void getWeatherInfoFromSharedPref(){
-        //TODO change by new API info
-        //countryTextView
         chosenCityTextView.setVisibility(View.VISIBLE);
-        chosenCityTextView.setText(locPref.getLocation());
-        temperature.setText(locPref.getTemperature());
-        feelsLike.setText(locPref.getMoreInfo());
-        lastUpdate.setText(locPref.getLastUpdate());
+        chosenCityTextView.setText(locPref.getCity());
+        temperature.setText(locPref.getTemperature() + "°");
+        minTempTextView.setText("⬇" + locPref.getMinTemp() + "°");
+        maxTempTextView.setText("⬆" + locPref.getMaxTemp() + "°");
         condition.setText(locPref.getCondition());
+        feelsLike.setText(locPref.getFeelsLike());
+        lastUpdate.setText(locPref.getLastUpdate());
 
         Context con = weatherImage.getContext();
         weatherImage.setImageResource(context.getResources().getIdentifier(locPref.getIcon(), "drawable", con.getPackageName()));
@@ -322,8 +325,8 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                 weatherImage.setImageResource(id);
             }
 
-            if (locPref.isSetLocation() && city.equalsIgnoreCase(locPref.getLocation())) {
-                locPref.setPreferredLocation(location, city, temp, conditionn, feelsLikee, update, icon);
+            if (locPref.isSetLocation() && city.equals(locPref.getCity()) && country.equals(locPref.getCountry())) {
+                locPref.setPreferredLocation(city, country, countryCode, icon, temp, minTemp,maxTemp, conditionn, feelsLikee, update);
             }
         }
     }

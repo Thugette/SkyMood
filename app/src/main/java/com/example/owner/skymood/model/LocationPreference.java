@@ -14,13 +14,16 @@ public class LocationPreference {
     SharedPreferences.Editor editor;
     int PRIVATE_MODE = 0;
     private static final String PREFER_NAME = "SkyModePreferences";
-    public static final String LOCATION = "location";
     public static final String CITY = "city";
-    public static final String TEMPERATURE = "temperature";
-    public static final String CONDITION = "condition";
-    public static final String MORE_INFO = "more info";
-    public static final String LAST_UPDATE = "last update";
+    public static final String COUNTRY = "country";
+    public static final String COUNTRY_CODE = "countryCode";
     public static final String ICON = "icon";
+    public static final String TEMPERATURE = "temperature";
+    public static final String MIN_TEMP = "minTemp";
+    public static final String MAX_TEMP = "maxTemp";
+    public static final String CONDITION = "condition";
+    public static final String FEELS_LIKE = "feelsLike";
+    public static final String LAST_UPDATE = "lastUpdate";
 
     private LocationPreference(Context context){
         this.context = context;
@@ -35,47 +38,63 @@ public class LocationPreference {
         return instance;
     }
 
-    public void setPreferredLocation(String location,String city, String temperature, String condition, String moreInfo, String lastUpdate, String icon){
-        editor.putString(LOCATION, location);
+    public void setPreferredLocation(String city, String country, String countryCode, String icon, String temperature,
+                                     String minTemp, String maxTemp, String condition, String feelsLike, String lastUpdate){
         editor.putString(CITY, city);
-        editor.putString(TEMPERATURE, temperature);
-        editor.putString(CONDITION, condition);
-        editor.putString(MORE_INFO, moreInfo);
-        editor.putString(LAST_UPDATE, lastUpdate);
+        editor.putString(COUNTRY, country);
+        editor.putString(COUNTRY_CODE, countryCode);
         editor.putString(ICON, icon);
+        editor.putString(TEMPERATURE, temperature);
+        editor.putString(MIN_TEMP, minTemp);
+        editor.putString(MAX_TEMP, maxTemp);
+        editor.putString(CONDITION, condition);
+        editor.putString(FEELS_LIKE, feelsLike);
+        editor.putString(LAST_UPDATE, lastUpdate);
         editor.commit();
     }
 
     public boolean isSetLocation(){
-        return pref.contains(LOCATION);
+        return pref.contains(CITY);
     }
 
     public String getCity(){
         return pref.getString(CITY, null);
     }
 
-    public String getTemperature(){
-        return pref.getString(TEMPERATURE, null);
+    public String getCountry() {
+        return pref.getString(COUNTRY, null);
     }
 
-    public String getCondition(){
-        return pref.getString(CONDITION, null);
-    }
-
-    public String getMoreInfo(){
-        return pref.getString(MORE_INFO, null);
-    }
-
-    public String getLastUpdate(){
-        return pref.getString(LAST_UPDATE, null);
+    public String getCountryCode() {
+        return pref.getString(COUNTRY_CODE, null);
     }
 
     public String getIcon(){
         return pref.getString(ICON, null);
     }
 
-    public String getLocation(){
-        return pref.getString(LOCATION, null);
+    public String getTemperature(){
+        return pref.getString(TEMPERATURE, null);
+    }
+
+    public String getMinTemp(){
+        return pref.getString(MIN_TEMP, null);
+    }
+
+    public String getMaxTemp(){
+        return pref.getString(MAX_TEMP, null);
+    }
+
+    public String getCondition(){
+        return pref.getString(CONDITION, null);
+    }
+
+    public String getFeelsLike(){
+        return pref.getString(FEELS_LIKE, null);
+    }
+
+    public String getLastUpdate(){
+        return pref.getString(LAST_UPDATE, null);
     }
 
 }
