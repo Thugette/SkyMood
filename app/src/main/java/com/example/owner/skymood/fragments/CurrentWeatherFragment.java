@@ -111,8 +111,6 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
 
         writeCityEditText.addTextChangedListener(new TextChanged());
 
-        writeCityEditText.setOnItemSelectedListener(new CitySelectedListener());
-
         sync.setOnClickListener(new OnSyncListener());
 
         //shared prefs
@@ -130,7 +128,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
             }
 
             if(city == null) {
-                setCity("Sofia");
+                setCity(DEFAULT_CITY);
             }
 
             MyTask task = new MyTask();
@@ -175,7 +173,6 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
     }
 
     public void getWeatherInfoByCity(String city, String country){
-        Log.e("VVV", "getWeatherInfoByCity");
         if(city != null && !city.isEmpty()) {
             setCity(city);
             writeCityEditText.setText("");
@@ -204,7 +201,6 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         @Override
         protected Void doInBackground(String... params) {
 
-            Log.e("ZZZ", params.length + "");
             try {
                 URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/conditions/q/" + params[0] + "/" + city + ".json");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -320,7 +316,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                     if (isOnline()) {
                         setCity((String) parent.getItemAtPosition(position));
                         MyTask task = new MyTask();
-                        task.execute();
+                        task.execute("BG");
                     } else {
                         //TODO check if there is information in DB
 
@@ -351,7 +347,6 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         protected Void doInBackground(String... params) {
 
             try {
-                Log.e("VVV", "Do in background");
                 URL url = new URL("http://autocomplete.wunderground.com/aq?query=" + params[0]);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.connect();
@@ -362,11 +357,9 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                     body.append(sc.nextLine());
                 }
                 String info = body.toString();
-                Log.e("VVV", " json string" + info.length() + "");
 
                 JSONObject jsonObj = new JSONObject(info);
                 JSONArray results = jsonObj.getJSONArray("RESULTS");
-                Log.e("VVV","json array" + results.length() + "");
                 cities = new HashMap<>();
                 for(int i = 0; i < results.length(); i++){
                     JSONObject location = (JSONObject) results.get(i);
@@ -375,14 +368,10 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                     cities.put(name, country);
                 }
 
-
                 autoCopleteNames = new ArrayList<>();
                 for(String name : cities.keySet()){
-                    Log.e("VVV", name);
                     autoCopleteNames.add(name);
                 }
-
-                Log.e("VVV", autoCopleteNames.size() + "");
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -396,7 +385,6 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            Log.e("VVV", "on post execute");
             adapterAutoComplete = new ArrayAdapter(context, android.R.layout.simple_list_item_1, autoCopleteNames);
             writeCityEditText.setAdapter(adapterAutoComplete);
         }
@@ -405,13 +393,10 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
     private class TextChanged implements TextWatcher {
 
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -436,24 +421,6 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
             String city = parts[0];
             getWeatherInfoByCity(city, country);
             return false;
-        }
-    }
-
-    private class CitySelectedListener implements AdapterView.OnItemSelectedListener {
-
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            Log.e("ZZZ", "On Item selected");
-            String location =  parent.getItemAtPosition(position).toString();
-            String country = cities.get(location);
-            String[] parts = location.split(",");
-            String city = parts[0];
-            getWeatherInfoByCity(city, country);
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-
         }
     }
 
