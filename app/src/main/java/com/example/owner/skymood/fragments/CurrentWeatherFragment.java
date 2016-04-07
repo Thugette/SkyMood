@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -84,6 +85,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         gpsSearch = (ImageView) rootView.findViewById(R.id.gpsSearch);
         citySearch = (ImageView) rootView.findViewById(R.id.citySearch);
         writeCityEditText = (AutoCompleteTextView) rootView.findViewById(R.id.writeCityEditText);
+        writeCityEditText.setThreshold(3);
         temperature = (TextView) rootView.findViewById(R.id.temperatureTextView);
         condition = (TextView) rootView.findViewById(R.id.conditionTextView);
         feelsLike = (TextView) rootView.findViewById(R.id.feelsLikeTextView);
@@ -102,15 +104,15 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new OnMyLocationsSpinnerItemListener());
 
-
         citySearch.setOnClickListener(new OnCitySearchClickListener());
 
-        View.OnKeyListener onSearchPressed = new OnSearchPressedListener();
-        writeCityEditText.setOnKeyListener(onSearchPressed);
+        TextView.OnEditorActionListener searchButtonPressed = new SearchButtonListener();
+        writeCityEditText.setOnEditorActionListener(searchButtonPressed);
+
+        writeCityEditText.addTextChangedListener(new TextChanged());
 
         sync.setOnClickListener(new OnSyncListener());
 
-        writeCityEditText.addTextChangedListener(new TextChanged());
 
 
         //shared prefs
@@ -174,14 +176,17 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
     }
 
     public void getWeatherInfoByCity(String city){
-        setCity(city);
-        writeCityEditText.setText("");
-        writeCityEditText.setVisibility(View.GONE);
-        spinner.setVisibility(View.VISIBLE);
-        sync.setVisibility(View.VISIBLE);
-        gpsSearch.setVisibility(View.VISIBLE);
-        MyTask task = new MyTask();
-        task.execute();
+        Log.e("VVV", "getWeatherInfoByCity");
+        if(city != null && !city.isEmpty()) {
+            setCity(city);
+            writeCityEditText.setText("");
+            writeCityEditText.setVisibility(View.GONE);
+            spinner.setVisibility(View.VISIBLE);
+            sync.setVisibility(View.VISIBLE);
+            gpsSearch.setVisibility(View.VISIBLE);
+            MyTask task = new MyTask();
+            task.execute();
+        }
     }
 
     @Override
@@ -270,18 +275,6 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                     locPref.setPreferredLocation(location, city, temp, conditionn, feelsLikee, update, icon);
                 }
             }
-        }
-    }
-
-    private class OnSearchPressedListener implements View.OnKeyListener{
-        @Override
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-            if(keyCode == KeyEvent.KEYCODE_ENTER){
-                getWeatherInfoByCity(writeCityEditText.getText().toString());
-                keyboard.hideSoftInputFromWindow(writeCityEditText.getWindowToken(), 0);
-                return true;
-            }
-            return false;
         }
     }
 
@@ -405,7 +398,6 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         protected void onPostExecute(Void aVoid) {
             Log.e("VVV", "on post execute");
             adapterAutoComplete = new ArrayAdapter(context, android.R.layout.simple_list_item_1, autoCopleteNames);
-            writeCityEditText.setThreshold(2);
             writeCityEditText.setAdapter(adapterAutoComplete);
         }
     }
@@ -418,20 +410,27 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            int chars = writeCityEditText.getText().toString().length();
-            if(chars == 3){
-                StringFiller filler = new StringFiller();
-                filler.execute(writeCityEditText.getText().toString());
-            }
-            if (chars > 3) {
 
-               // Log.e("VVV", adapterAutoComplete.getCount() + "");
-                //TODO
-            }
         }
 
         @Override
         public void afterTextChanged(Editable s) {
+            int chars = writeCityEditText.getText().toString().length();
+            Log.e("VVV", "characters = " + chars);
+            if(chars >= 3){
+                StringFiller filler = new StringFiller();
+                filler.execute(writeCityEditText.getText().toString());
+            }
+        }
+    }
+
+    private class SearchButtonListener implements TextView.OnEditorActionListener {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            Log.e("VVV", "OnEditorAction - actuon = " + actionId);
+            getWeatherInfoByCity(writeCityEditText.getText().toString());
+            keyboard.hideSoftInputFromWindow(writeCityEditText.getWindowToken(), 0);
+            return false;
         }
     }
 
