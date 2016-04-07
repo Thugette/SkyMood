@@ -1,6 +1,5 @@
 package com.example.owner.skymood.fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -9,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.owner.skymood.R;
 import com.example.owner.skymood.SwipeViewActivity;
+import com.example.owner.skymood.asyncTasks.APIDataGetter;
 import com.example.owner.skymood.model.LocationPreference;
 
 import org.json.JSONArray;
@@ -38,9 +37,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -136,13 +133,13 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         //locPref.setPreferredLocation("Burgas", "Bulgaria", "BG", "clear", "19.9", "15", "21", "Clear", "Feels like: 20", "Last update: 05.04.2016, 18:00");
 
         if(isOnline()){
-            MyTask task = new MyTask();
+            APIDataGetter task = new APIDataGetter(this, context, weatherImage);
             //first: check shared prefs
             if(locPref.isSetLocation()){
                 setCity(locPref.getCity());
                 countryCode = locPref.getCountryCode();
                 country = locPref.getCountry();
-                task.execute();
+                task.execute(countryCode, city, country);
             } else {
                 //API autoIP
                 DetermineCity determineCity = new DetermineCity();
@@ -153,7 +150,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                 setCity(DEFAULT_CITY);
                 countryCode = DEFAULT_COUNTRY_CODE;
                 country = DEFAULT_COUNTRY;
-                task.execute();
+                task.execute(countryCode, city, country);
             }
 
         } else {
@@ -169,6 +166,11 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         }
 
         return rootView;
+    }
+
+    @Override
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     public void getWeatherInfoFromSharedPref(){
@@ -207,132 +209,8 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
             spinner.setVisibility(View.VISIBLE);
             syncButton.setVisibility(View.VISIBLE);
             locationSearchButton.setVisibility(View.VISIBLE);
-            MyTask task = new MyTask();
-            task.execute();
-        }
-    }
-
-    @Override
-    public void setContext(Context context) {
-        this.context = context;
-    }
-
-    class MyTask extends AsyncTask<Void, Void, Void> {
-
-        String location;
-        String conditionn;
-        String icon;
-        String temp;
-        String feelsLikee;
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            try {
-                //API 1
-                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/conditions/q/" + countryCode + "/" + city + ".json");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-
-                Scanner sc = new Scanner(connection.getInputStream());
-                StringBuilder body = new StringBuilder();
-                while(sc.hasNextLine()){
-                    body.append(sc.nextLine());
-                }
-                String info = body.toString();
-
-                JSONObject jsonData = new JSONObject(info);
-                JSONObject observation = (JSONObject) jsonData.get("current_observation");
-                JSONObject locationObject = (JSONObject) observation.get("display_location");
-                location = locationObject.getString("full");
-                conditionn = observation.getString("weather");
-                temp = observation.getString("temp_c");
-                feelsLikee = "Feels like: " + observation.getString("feelslike_c") + "℃";
-                icon = observation.getString("icon");
-
-                //API 2
-                URL url2 = new URL("http://api.wunderground.com/api/b4d0925e0429238f/forecast/q/" + countryCode + "/" + city + ".json");
-                HttpURLConnection connection2 = (HttpURLConnection) url2.openConnection();
-                connection2.connect();
-
-                Scanner sc2 = new Scanner(connection2.getInputStream());
-                StringBuilder data = new StringBuilder();
-                while(sc2.hasNextLine()){
-                    data.append(sc2.nextLine());
-                }
-                String dataJson = data.toString();
-
-                JSONObject dataJsonObj = new JSONObject(dataJson);
-                JSONObject forecast = dataJsonObj.getJSONObject("forecast");
-                JSONObject simpleForecast = forecast.getJSONObject("simpleforecast");
-                JSONArray forecastDay = simpleForecast.getJSONArray("forecastday");
-                JSONObject day = (JSONObject) forecastDay.get(0);
-                JSONObject high = day.getJSONObject("high");
-                maxTemp = high.getString("celsius");
-                JSONObject low = day.getJSONObject("low");
-                minTemp = low.getString("celsius");
-
-               if(Double.parseDouble(temp) > Double.parseDouble(maxTemp)){
-                   Double max = Math.ceil(Double.parseDouble(temp));
-                   Integer maxTempInt = max.intValue();
-                   maxTemp = maxTempInt.toString();
-               }
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            chosenCityTextView.setVisibility(View.GONE);
-            countryTextView.setVisibility(View.GONE);
-            progressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            progressBar.setVisibility(View.GONE);
-            chosenCityTextView.setVisibility(View.VISIBLE);
-            chosenCityTextView.setText(cityToDisplay);
-            countryTextView.setVisibility(View.VISIBLE);
-            countryTextView.setText(country);
-            temperature.setText(temp + "°");
-            condition.setText(conditionn);
-            feelsLike.setText(feelsLikee);
-            minTempTextView.setText("⬇" + minTemp + "°");
-            maxTempTextView.setText("⬆" + maxTemp + "°");
-
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DATE, 0);
-            SimpleDateFormat format = new SimpleDateFormat("HH:mm, dd.MM.yyyy");
-            dateAndTime = format.format(cal.getTime());
-            String update = "Last update: " + dateAndTime;
-            lastUpdate.setText(update);
-
-            Context con = weatherImage.getContext();
-            int hour = cal.get(Calendar.HOUR_OF_DAY);
-            int id = 0;
-            if(icon == null) {
-                weatherImage.setImageResource(R.drawable.nulll);
-            } else {
-                if (hour >= 6 && hour <= 19) {
-                    id = context.getResources().getIdentifier(icon, "drawable", con.getPackageName());
-                } else {
-                    icon = icon + "_night";
-                    id = context.getResources().getIdentifier(icon, "drawable", con.getPackageName());
-                }
-                weatherImage.setImageResource(id);
-            }
-
-            if (locPref.isSetLocation() && city.equals(locPref.getCity()) && country.equals(locPref.getCountry())) {
-                locPref.setPreferredLocation(city, country, countryCode, icon, temp, minTemp,maxTemp, conditionn, feelsLikee, update);
-            }
+            APIDataGetter task = new APIDataGetter(this, context, weatherImage);
+            task.execute(countryCode, city, country);
         }
     }
 
@@ -375,10 +253,10 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                 if (!((String) parent.getItemAtPosition(position)).equals("My Locations")) {
                     if (isOnline()) {
                         setCity((String) parent.getItemAtPosition(position));
-                        MyTask task = new MyTask();
+                        APIDataGetter task = new APIDataGetter(CurrentWeatherFragment.this, context, weatherImage);
                         //TODO remove next line
                         countryCode = DEFAULT_COUNTRY_CODE;
-                        task.execute();
+                        task.execute(countryCode, city, country);
                     } else {
                         //TODO check if there is information in DB
 
@@ -395,8 +273,8 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         @Override
         public void onClick(View v) {
             if(isOnline()) {
-                MyTask task = new MyTask();
-                task.execute();
+                APIDataGetter task = new APIDataGetter(CurrentWeatherFragment.this, context, weatherImage);
+                task.execute(countryCode, city, country);
             } else {
                 Toast.makeText(context, "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
             }
@@ -451,7 +329,6 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
             writeCityEditText.setAdapter(adapterAutoComplete);
             ((SwipeViewActivity)context).setInfo(city, countryCode, minTemp, maxTemp, dateAndTime);
             ((SwipeViewActivity)context).getNewLocation(city, countryCode);
-
         }
     }
 
@@ -502,9 +379,8 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         @Override
         protected Void doInBackground(Void... params) {
 
-            URL url = null;
             try {
-                url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/geolookup/q/autoip.json");
+                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/geolookup/q/autoip.json");
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.connect();
 
@@ -534,8 +410,8 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         @Override
         protected void onPostExecute(Void aVoid) {
             setCity(city);
-            MyTask task = new MyTask();
-            task.execute();
+            APIDataGetter task = new APIDataGetter(CurrentWeatherFragment.this, context, weatherImage);
+            task.execute(countryCode, city, country);
         }
     }
 
@@ -546,6 +422,29 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
             DetermineCity determineCity = new DetermineCity();
             determineCity.execute();
         }
+    }
+
+    public void myTaskPreExecute(){
+        chosenCityTextView.setVisibility(View.GONE);
+        countryTextView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    public void myTaskOnPostExecute(String temp, String condition, String feelsLike, String minTemp, String maxTemp, String dateAndTime, String lastUpdate){
+        this.progressBar.setVisibility(View.GONE);
+        this.chosenCityTextView.setVisibility(View.VISIBLE);
+        this.chosenCityTextView.setText(cityToDisplay);
+        this.countryTextView.setVisibility(View.VISIBLE);
+        this.countryTextView.setText(country);
+        this.temperature.setText(temp + "°");
+        this.condition.setText(condition);
+        this.feelsLike.setText(feelsLike);
+        this.minTempTextView.setText("⬇" + minTemp + "°");
+        this.minTemp = minTemp;
+        this.maxTempTextView.setText("⬆" + maxTemp + "°");
+        this.maxTemp = maxTemp;
+        this.lastUpdate.setText(lastUpdate);
+        this.dateAndTime = dateAndTime;
     }
 
 }
