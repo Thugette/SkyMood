@@ -130,9 +130,8 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         //shared prefs
         locPref = LocationPreference.getInstance(context);
 
-        //for now hard coded for demo
-        locPref.setPreferredLocation("Burgas", "Bulgaria", "BG", "clear", "19.9°", "15", "21", "Clear","Feels like: 20", "Last update: 05.04.2016, 18:00");
-
+        //TODO remove, for now hard coded for demo
+        locPref.setPreferredLocation("Burgas", "Bulgaria", "BG", "clear", "19.9", "15", "21", "Clear", "Feels like: 20", "Last update: 05.04.2016, 18:00");
 
         if(isOnline()){
             MyTask task = new MyTask();
@@ -144,7 +143,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                 country = locPref.getCountry();
                 task.execute();
             } else {
-                //API autoIP
+                //TODO API autoIP
             }
 
             if(city == null) {
@@ -158,6 +157,8 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
             if(locPref.isSetLocation()){
                 Toast.makeText(context, "NO INTERNET CONNECTION\nFor up to date info connect to Internet", Toast.LENGTH_LONG).show();
                 setCity(locPref.getCity());
+                country = locPref.getCountry();
+                countryCode = locPref.getCountryCode();
                 getWeatherInfoFromSharedPref();
             } else {
                 feelsLike.setText("Please connect to Internet");
@@ -170,6 +171,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
     public void getWeatherInfoFromSharedPref(){
         chosenCityTextView.setVisibility(View.VISIBLE);
         chosenCityTextView.setText(locPref.getCity());
+        countryTextView.setText(country);
         temperature.setText(locPref.getTemperature() + "°");
         minTempTextView.setText("⬇" + locPref.getMinTemp() + "°");
         maxTempTextView.setText("⬆" + locPref.getMaxTemp() + "°");
@@ -304,9 +306,10 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
             maxTempTextView.setText("⬆" + maxTemp + "°");
 
             Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DATE, 1);
+            cal.add(Calendar.DATE, 0);
             SimpleDateFormat format = new SimpleDateFormat("HH:mm, dd.MM.yyyy");
             dateAndTime = format.format(cal.getTime());
+            Log.e("VVV", cal.getTime() + "");
             String update = "Last update: " + dateAndTime;
             lastUpdate.setText(update);
 
@@ -326,6 +329,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
             }
 
             if (locPref.isSetLocation() && city.equals(locPref.getCity()) && country.equals(locPref.getCountry())) {
+                Log.e("VVV", "set shaared prefs");
                 locPref.setPreferredLocation(city, country, countryCode, icon, temp, minTemp,maxTemp, conditionn, feelsLikee, update);
             }
         }
@@ -391,8 +395,6 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         public void onClick(View v) {
             if(isOnline()) {
                 MyTask task = new MyTask();
-                //TODO remove next line
-                countryCode = DEFAULT_COUNTRY_CODE;
                 task.execute();
             } else {
                 Toast.makeText(context, "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
