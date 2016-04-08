@@ -18,13 +18,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name=".SwipeViewActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MyLocationActivity"></activity>
+        <activity android:name=".MyLocationsActivity">
+
+        </activity>
     </application>
 
 </manifest>

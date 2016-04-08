@@ -1,11 +1,7 @@
 package com.example.owner.skymood;
 
-import android.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -13,10 +9,6 @@ import com.example.owner.skymood.adapters.CustomPagerAdapter;
 import com.example.owner.skymood.fragments.HourlyWeatherFragment;
 import com.example.owner.skymood.fragments.ICommunicatior;
 import com.example.owner.skymood.fragments.MoreInfoFragment;
-import com.example.owner.skymood.model.WeatherCondition;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class SwipeViewActivity extends FragmentActivity implements ICommunicatior{
 
@@ -51,8 +43,7 @@ public class SwipeViewActivity extends FragmentActivity implements ICommunicatio
 
     @Override
     public void setInfo(String city, String code, String min, String max, String date) {
-        Log.e("DIDI", city + ", " + code);
-        adapter.setInfoWeather(city, code, min, max, date);
+        Log.e("didi", city + " "+ code);
         android.support.v4.app.Fragment fragment = adapter.getItem(1);
         ((HourlyWeatherFragment)fragment).setData(city, code);
         android.support.v4.app.Fragment fragment2 = adapter.getItem(2);

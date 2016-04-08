@@ -1,9 +1,6 @@
 package com.example.owner.skymood.fragments;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,20 +12,16 @@ import android.widget.TextView;
 
 import com.example.owner.skymood.R;
 import com.example.owner.skymood.SwipeViewActivity;
-import com.example.owner.skymood.model.HourlyWeather;
-import com.example.owner.skymood.model.WeatherCondition;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Calendar;
-import java.util.Locale;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 public class MoreInfoFragment extends Fragment  implements Swideable{
@@ -133,7 +126,7 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
         this.sunset.setText(sunsetTxt);
         this.moonAge.setText(moonAgeTxt+"");
         this.moonIlluminated.setText(moonIllumitatedTxt+"");
-        this.windSpeed.setText(windsSpeedtxt + "kmh");
+        this.windSpeed.setText(windsSpeedtxt + " kmh");
         this.condition.setText(conditionTxt);
         this.date.setText(dateTxt);
         this.day.setText(dayTxt);
@@ -159,14 +152,14 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
                 JSONObject jsonData = new JSONObject(info);
                 JSONObject observation = (JSONObject) jsonData.get("current_observation");
                 conditionTxt = observation.getString("weather");
-                tempTxt = observation.getString("temp_c") + "°";
-                feelsTxt = observation.getString("feelslike_c") + "℃";
+                tempTxt = observation.getString("temp_c");
+                feelsTxt = observation.getString("feelslike_c");
                 uvTxt = observation.getString("UV");
-                humidityTxt = observation.getString("relative_humidity") + " %";
+                humidityTxt = observation.getString("relative_humidity");
                 windsTxt = observation.getString("wind_string");
-                windsSpeedtxt = observation.getString("wind_kph") + " kph";
-                visibilityTxt = observation.getString("visibility_km") + " km";
-                preassureTxt = observation.getString("pressure_mb") + " hPa";
+                windsSpeedtxt = observation.getString("wind_kph");
+                visibilityTxt = observation.getString("visibility_km");
+                preassureTxt = observation.getString("pressure_mb");
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -177,10 +170,11 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
             }
 
             try {
-                URL astronomyUrl = new URL("http://api.wunderground.com/api/b4d0925e0429238f/astronomy/q/"+code+"/"+city+".json");
+                URL astronomyUrl = new URL("http://api.wunderground.com/api/9226ced37cb70c78/astronomy/q/"+code+"/"+city+".json");
+                Log.e("DIDI", code + " " + city);
                 HttpURLConnection secontConnection = (HttpURLConnection) astronomyUrl.openConnection();
                 secontConnection.connect();
-
+                Log.e("DIDI", "second try-catched");
                 Scanner sc2 = new Scanner(secontConnection.getInputStream());
                 StringBuilder bodyBuilder = new StringBuilder();
                 while(sc2.hasNextLine()){
@@ -188,16 +182,24 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
                 }
                 String astronomyJSON = bodyBuilder.toString();
 
+                Log.e("DIDI", astronomyJSON);
                 JSONObject jsonData = new JSONObject(astronomyJSON);
                 JSONObject moon = (JSONObject) jsonData.get("moon_phase");
-                JSONObject sun_rise = jsonData.getJSONObject("sunrise");
-                JSONObject sun_set = jsonData.getJSONObject("sunrise");
+                JSONObject sun_rise = moon.getJSONObject("sunrise");
+                JSONObject sun_set = jsonData.getJSONObject("sunset");
                 moonAgeTxt = Integer.valueOf(moon.getString("ageOfMoon"));
+                Log.e("DIDI", "moonAge " + moonAgeTxt);
                 moonIllumitatedTxt = Integer.valueOf(moon.getString("percentIlluminated"));
+
+                Log.e("DIDI", "moon illuminated " + moonIllumitatedTxt);
                 sunriseTxt = sun_rise.get("hour") + ":" + sun_rise.get("minute");
+
+                Log.e("DIDI", "sunriseTxt "+sunriseTxt);
                 sunsetTxt = sun_set.get("hour") + ":" + sun_set.get("minute");
-                Calendar c = Calendar.getInstance();
-                dayTxt = c.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.US);
+//                SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE");
+                Date d = new Date();
+                dayTxt = (String) android.text.format.DateFormat.format("EEEE", d);
+                Log.e("DIDI", "day "+dayTxt);
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -222,7 +224,7 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
         this.minTxt = min;
         this.maxTxt = max;
         this.dateTxt = date;
-        Log.e("DIDI", city +", "+ code);
-        new GetMoreInfoTask().execute();
+        if(city != null && code != null)
+            new GetMoreInfoTask().execute();
     }
 }

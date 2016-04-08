@@ -48,24 +48,6 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        Log.e("DIDI", "ON RESUME");
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.e("DIDI", "ON START");
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Log.e("DIDI", "ON ATTACH");
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -98,7 +80,7 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
         protected Void doInBackground(Void... params) {
             try {
 
-                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/hourly/q/"+code+"/"+city+".json");
+                URL url = new URL("http://api.wunderground.com/api/"+CurrentWeatherFragment.API_KEY+"/hourly/q/"+code+"/"+city+".json");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
@@ -144,9 +126,7 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
         @Override
         protected Void doInBackground(Void... params) {
             try{
-                Log.e("DIDI", "TASK STARTED");
-                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/forecast7day/q/"+code+"/"+city+".json");
-                Log.e("DIDI", city+", "+code);
+                URL url = new URL("http://api.wunderground.com/api/"+CurrentWeatherFragment.API_KEY+"/forecast7day/q/"+code+"/"+city+".json");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
@@ -192,8 +172,6 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
         @Override
         protected void onPostExecute(Void aVoid) {
             weerklyRecycler.getAdapter().notifyDataSetChanged();
-
-            Log.e("DIDI", "TASK FINISHED");
         }
     }
 
@@ -205,13 +183,4 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
             new GetWeeklyTask().execute();
         }
     }
-
-//    public void setUserVisibleHint(boolean isVisibleToUser) {
-//        super.setUserVisibleHint(isVisibleToUser);
-//        if (isVisibleToUser) {
-//            Log.e("DIDI", "VISIBLE");
-//
-//        }
-//        else {  }
-//    }
 }

@@ -16,7 +16,6 @@
         android:layout_height="wrap_content"
         android:textSize="25sp"
         android:gravity="center_horizontal"
-        android:text="WEDNESDAY"
         android:textStyle="bold"
         android:shadowColor="@color/veryDarkGrey"
         android:shadowRadius="3"
@@ -29,7 +28,6 @@
         android:id="@+id/more_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="06.04.2016"
         android:textColor="@color/white"
         android:textSize="20sp"/>
 
@@ -65,7 +63,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="weather condition"
+            android:text="condition"
             android:textColor="@color/white"
             android:textSize="20sp"/>
         <TextView
@@ -170,7 +168,6 @@
             android:id="@+id/more_temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="reaflfeel"
             android:textSize="20sp"
             android:textColor="@color/white"/>
 
@@ -178,7 +175,6 @@
             android:id="@+id/more_realfeel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="sadasdasdasdasd"
             android:textSize="20sp"
             android:textColor="@color/white"/>
 
@@ -186,28 +182,24 @@
             android:id="@+id/more_condition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="condition"
             android:textSize="20sp"
             android:textColor="@color/white"/>
         <TextView
             android:id="@+id/more_max"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="sadasdasdasdasd"
             android:textSize="20sp"
             android:textColor="@color/white"/>
         <TextView
             android:id="@+id/more_min"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="sadasdasdasdasd"
             android:textSize="20sp"
             android:textColor="@color/white"/>
         <TextView
             android:id="@+id/more_uv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="sadasdasdasdasd"
             android:textSize="20sp"
             android:textColor="@color/white"/>
 
@@ -215,14 +207,12 @@
             android:id="@+id/more_humidity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="sadasdasdasdasd"
             android:textSize="20sp"
             android:textColor="@color/white"/>
         <TextView
             android:id="@+id/more_winds"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="sadasdasdasdasd"
             android:textSize="20sp"
             android:textColor="@color/white"/>
 
@@ -230,42 +220,36 @@
             android:id="@+id/more_windsSpeed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="speed"
             android:textSize="20sp"
             android:textColor="@color/white"/>
         <TextView
             android:id="@+id/more_visibility"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="sadasdasdasdasd"
             android:textSize="20sp"
             android:textColor="@color/white"/>
         <TextView
             android:id="@+id/more_preassure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="sadasdasdasdasd"
             android:textSize="20sp"
             android:textColor="@color/white"/>
         <TextView
             android:id="@+id/more_sunrize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="sadasdasdasdasd"
             android:textSize="20sp"
             android:textColor="@color/white"/>
         <TextView
             android:id="@+id/more_sunset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="sadasdasdasdasd"
             android:textSize="20sp"
             android:textColor="@color/white"/>
         <TextView
             android:id="@+id/more_moonAge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="moon age"
             android:textSize="20sp"
             android:textColor="@color/white"/>
 
@@ -273,7 +257,6 @@
             android:id="@+id/more_moonIllumitated"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="moon illuminated"
             android:textSize="20sp"
             android:textColor="@color/white"/>
 

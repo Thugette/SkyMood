@@ -45,20 +45,16 @@ public class CustomPagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 fragment = new CurrentWeatherFragment();
                 fragment.setContext(context);
-                Log.e("DIDI", "1 created");
                 break;
 
             case 1:
-                    fragment = new HourlyWeatherFragment();
-                    fragment.setContext(context);
-                Log.e("DIDI", "2 created");
+                fragment = new HourlyWeatherFragment();
+                fragment.setContext(context);
                 break;
             case 2:
                 //return MoreInfoOnWeatherConditionFragment();
                 fragment = new MoreInfoFragment();
                 fragment.setContext(context);
-                Log.e("DIDI", "3 created");
-                ((MoreInfoFragment)fragment).setInfo(city, code, date, min, max);
                 break;
         }
         fragmentsArray[position] =  fragment;
@@ -92,10 +88,6 @@ public class CustomPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-    }
-
-    private static String makeFragmentName(int viewId, int index) {
-        return "android:switcher:" + viewId + ":" + index;
     }
 
     public Object instantiateItem(ViewGroup container, int position) {
