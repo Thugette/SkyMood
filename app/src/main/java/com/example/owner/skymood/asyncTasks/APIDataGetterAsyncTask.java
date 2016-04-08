@@ -3,6 +3,7 @@ package com.example.owner.skymood.asyncTasks;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -59,7 +60,7 @@ public class APIDataGetterAsyncTask extends AsyncTask<String, Void, Void> {
 
         try {
             //API 1
-            URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/conditions/q/" + countryCode + "/" + city + ".json");
+            URL url = new URL("http://api.wunderground.com/api/" + CurrentWeatherFragment.API_KEY + "/conditions/q/" + countryCode + "/" + city + ".json");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.connect();
 
@@ -78,7 +79,7 @@ public class APIDataGetterAsyncTask extends AsyncTask<String, Void, Void> {
             icon = observation.getString("icon");
 
             //API 2
-            URL url2 = new URL("http://api.wunderground.com/api/b4d0925e0429238f/forecast/q/" + countryCode + "/" + city + ".json");
+            URL url2 = new URL("http://api.wunderground.com/api/"+ CurrentWeatherFragment.API_KEY +"/forecast/q/" + countryCode + "/" + city + ".json");
             HttpURLConnection connection2 = (HttpURLConnection) url2.openConnection();
             connection2.connect();
 
@@ -151,7 +152,7 @@ public class APIDataGetterAsyncTask extends AsyncTask<String, Void, Void> {
 
         ((SwipeViewActivity)context).setInfo(city, countryCode, minTemp, maxTemp, dateAndTime);
 
-            ((CurrentWeatherFragment) fragment).apiDataGetterAsyncTaskOnPostExecute(temp, condition, feelsLike, minTemp, maxTemp, dateAndTime, lastUpdate);
+        ((CurrentWeatherFragment) fragment).apiDataGetterAsyncTaskOnPostExecute(temp, condition, feelsLike, minTemp, maxTemp, dateAndTime, lastUpdate);
 
     }
 

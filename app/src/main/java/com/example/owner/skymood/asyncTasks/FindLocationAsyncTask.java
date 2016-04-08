@@ -37,7 +37,7 @@ public class FindLocationAsyncTask extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... params) {
 
         try {
-            URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/geolookup/q/autoip.json");
+            URL url = new URL("http://api.wunderground.com/api/" + CurrentWeatherFragment.API_KEY + "/geolookup/q/autoip.json");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.connect();
 

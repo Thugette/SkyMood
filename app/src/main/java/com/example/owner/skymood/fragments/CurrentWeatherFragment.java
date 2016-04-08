@@ -3,11 +3,11 @@ package com.example.owner.skymood.fragments;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,32 +25,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.owner.skymood.R;
-import com.example.owner.skymood.SwipeViewActivity;
 import com.example.owner.skymood.asyncTasks.APIDataGetterAsyncTask;
 import com.example.owner.skymood.asyncTasks.AutoCompleteStringFillerAsyncTask;
 import com.example.owner.skymood.asyncTasks.FindLocationAsyncTask;
-import com.example.owner.skymood.listeners.KeyboardListener;
-import com.example.owner.skymood.listeners.LocationSearchButtonListener;
-import com.example.owner.skymood.listeners.MyLocationsSpinnerListener;
-import com.example.owner.skymood.listeners.SearchButtonListener;
-import com.example.owner.skymood.listeners.SyncButtonListener;
-import com.example.owner.skymood.listeners.TextChangedListener;
 import com.example.owner.skymood.model.LocationPreference;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 
 
 public class CurrentWeatherFragment extends Fragment implements Swideable {
+
+    public static final String API_KEY =  "9226ced37cb70c78";
 
     private static final String DEFAULT_CITY = "Sofia";
     private static final String DEFAULT_COUNTRY_CODE = "BG";
@@ -97,6 +83,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         ViewGroup rootView = (ViewGroup) inflater.inflate(
                 R.layout.fragment_current_weather, container, false);
 
+        //initializing components
         syncButton = (ImageView) rootView.findViewById(R.id.synchronize);
         locationSearchButton = (ImageView) rootView.findViewById(R.id.gpsSearch);
         citySearchButton = (ImageView) rootView.findViewById(R.id.citySearch);
@@ -114,31 +101,138 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         spinner = (Spinner) rootView.findViewById(R.id.locationSpinner);
 
+        //shared prefs
+        locPref = LocationPreference.getInstance(context);
+
+        //seting adapter to spinner
         //TODO filling the spinner from myLocations or from DB
         ArrayList<String> citiesSpinner =  new ArrayList<>();
         citiesSpinner.add("My Locations");
         citiesSpinner.add("Plovdiv, Bulgaria");
         ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, citiesSpinner);
         spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new MyLocationsSpinnerListener(this, weatherImage));
 
-        citySearchButton.setOnClickListener(new SearchButtonListener(context, this, writeCityEditText, keyboard));
+        //listeners
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //TODO correct logic, getting from DB
+                if (!((String) parent.getItemAtPosition(position)).equals("My Locations")) {
+                    if (isOnline()) {
+                        setCity((String) parent.getItemAtPosition(position));
+                        APIDataGetterAsyncTask task = new APIDataGetterAsyncTask(CurrentWeatherFragment.this, context, weatherImage);
+                        //TODO remove next line
+                        String countryCode = "BG";
+                        task.execute(countryCode, "Plovdiv", "Bulgaria");
+                    } else {
+                        //TODO check if there is information in DB
 
-        TextView.OnEditorActionListener searchButtonPressed = new KeyboardListener(this, writeCityEditText, keyboard, cities);
-        writeCityEditText.setOnEditorActionListener(searchButtonPressed);
+                        //if there isn't info in db
+                        Toast.makeText(context, "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
 
-        writeCityEditText.addTextChangedListener(new TextChangedListener(this, writeCityEditText));
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
-        syncButton.setOnClickListener(new SyncButtonListener(this, weatherImage, countryCode, city, country));
+        citySearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isOnline()) {
+                    if (writeCityEditText.getVisibility() == View.GONE) {
+                        changeVisibility(View.GONE);
 
-        locationSearchButton.setOnClickListener(new LocationSearchButtonListener(this));
+                        Animation slide = new AnimationUtils().loadAnimation(context, android.R.anim.fade_in);
+                        slide.setDuration(1000);
+                        writeCityEditText.startAnimation(slide);
+                        writeCityEditText.setVisibility(View.VISIBLE);
+                        writeCityEditText.setFocusable(true);
+                        writeCityEditText.requestFocus();
 
-        //shared prefs
-        locPref = LocationPreference.getInstance(context);
+                        keyboard = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        keyboard.showSoftInput(writeCityEditText, 0);
+                    } else {
+                        writeCityEditText.setVisibility(View.GONE);
+                        keyboard.hideSoftInputFromWindow(writeCityEditText.getWindowToken(), 0);
+                        changeVisibility(View.VISIBLE);
+                    }
+                } else {
+                    Toast.makeText(context, "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        syncButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isOnline()) {
+                    APIDataGetterAsyncTask task = new APIDataGetterAsyncTask(CurrentWeatherFragment.this, context, weatherImage);
+                    task.execute(countryCode, city, country);
+                } else {
+                    Toast.makeText(getContext(), "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        locationSearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isOnline()) {
+                    findLocation();
+                } else {
+                    Toast.makeText(getContext(), "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        writeCityEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (writeCityEditText != null && !writeCityEditText.getText().toString().isEmpty()
+                        && writeCityEditText.getText().toString().contains(",")) {
+                    String location = writeCityEditText.getText().toString();
+                    String countryCode = cities.get(location);
+                    String[] parts = location.split(",");
+                    String city = parts[0];
+                    String country = parts[1].trim();
+                    setLocation(city, country, countryCode);
+                    getWeatherInfoByCity(city);
+                } else {
+                    Toast.makeText(getContext(), "You must specify a country", Toast.LENGTH_SHORT).show();
+                    writeCityEditText.setVisibility(View.GONE);
+                    keyboard.hideSoftInputFromWindow(writeCityEditText.getWindowToken(), 0);
+                    changeVisibility(View.VISIBLE);
+                }
+                keyboard.hideSoftInputFromWindow(writeCityEditText.getWindowToken(), 0);
+                return false;
+            }
+        });
+
+        writeCityEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int chars = writeCityEditText.getText().toString().length();
+                if(chars >= 3){
+                    AutoCompleteStringFillerAsyncTask filler = new AutoCompleteStringFillerAsyncTask(CurrentWeatherFragment.this, context);
+                    filler.execute(writeCityEditText.getText().toString());
+                }
+            }
+        });
 
         //TODO remove, for now hard coded for demo
         //locPref.setPreferredLocation("Burgas", "Bulgaria", "BG", "clear", "19.9", "15", "21", "Clear", "Feels like: 20", "Last update: 05.04.2016, 18:00");
 
+        //logic
         if(isOnline()){
             APIDataGetterAsyncTask task = new APIDataGetterAsyncTask(this, context, weatherImage);
             //first: check shared prefs
@@ -147,14 +241,19 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                 countryCode = locPref.getCountryCode();
                 country = locPref.getCountry();
                 task.execute(countryCode, city, country);
+                Log.e("VVV", "if shared pref - " + city + " " + country + " " + countryCode);
             } else {
                 //API autoIP
                 findLocation();
+
+                Log.e("VVV", "if no shared prefs auto IP - " + city + " " + country + " " + countryCode);
             }
             if(city == null) {
                 setCity(DEFAULT_CITY);
                 countryCode = DEFAULT_COUNTRY_CODE;
                 country = DEFAULT_COUNTRY;
+
+                Log.e("VVV", "defaukt vaues - " + city + " " + country + " " + countryCode);
                 task.execute(countryCode, city, country);
             }
         } else {
@@ -230,6 +329,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         this.chosenCityTextView.setText(cityToDisplay);
         this.countryTextView.setVisibility(View.VISIBLE);
         this.countryTextView.setText(country);
+
         if(temp != null) {
             this.temperature.setText(temp + "°");
             this.condition.setText(condition);
