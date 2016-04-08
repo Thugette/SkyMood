@@ -5,7 +5,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
+import android.view.ViewGroup;
 
+import com.example.owner.skymood.R;
 import com.example.owner.skymood.SwipeViewActivity;
 import com.example.owner.skymood.fragments.CurrentWeatherFragment;
 import com.example.owner.skymood.fragments.HourlyWeatherFragment;
@@ -25,36 +27,41 @@ public class CustomPagerAdapter extends FragmentStatePagerAdapter {
     private String max;
     private String date;
     private int id = 0;
+    private FragmentManager mFragmentManager;
+    private Swideable[] fragmentsArray = new Swideable[getCount()];
 
     public CustomPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
+        mFragmentManager = fm;
     }
 
     @Override
     public Fragment getItem(int position) {
+        if(fragmentsArray[position]!=null)
+            return (Fragment)fragmentsArray[position];
         Swideable fragment = null;
         switch(position){
             case 0:
                 fragment = new CurrentWeatherFragment();
                 fragment.setContext(context);
+                Log.e("DIDI", "1 created");
                 break;
 
             case 1:
-                //return new HourlyWeatherFragment();
-                fragment = new HourlyWeatherFragment();
-                ((HourlyWeatherFragment)fragment).setData(city, code);
-                fragment.setContext(context);
-                this.id = ((HourlyWeatherFragment) fragment).getMyId();
-                Log.e("DIDI", "ID after creation"+id);
+                    fragment = new HourlyWeatherFragment();
+                    fragment.setContext(context);
+                Log.e("DIDI", "2 created");
                 break;
             case 2:
                 //return MoreInfoOnWeatherConditionFragment();
                 fragment = new MoreInfoFragment();
                 fragment.setContext(context);
+                Log.e("DIDI", "3 created");
                 ((MoreInfoFragment)fragment).setInfo(city, code, date, min, max);
                 break;
         }
+        fragmentsArray[position] =  fragment;
         return (Fragment)fragment;
     }
 
@@ -83,7 +90,17 @@ public class CustomPagerAdapter extends FragmentStatePagerAdapter {
         this.date = date;
     }
 
-    public int getHourlyId(){
-        return id;
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+    }
+
+    private static String makeFragmentName(int viewId, int index) {
+        return "android:switcher:" + viewId + ":" + index;
+    }
+
+    public Object instantiateItem(ViewGroup container, int position) {
+        Swideable fragment = (Swideable) super.instantiateItem(container, position);
+        fragmentsArray[position] = fragment;
+        return fragment;
     }
 }

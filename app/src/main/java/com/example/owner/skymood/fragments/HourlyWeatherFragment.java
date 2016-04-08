@@ -48,10 +48,29 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        Log.e("DIDI", "ON RESUME");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e("DIDI", "ON START");
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.e("DIDI", "ON ATTACH");
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_hourly_weather, container, false);
+        this.setRetainInstance(true);
         hourlyWeather = new ArrayList<>();
         weatherArray = new ArrayList<>();
         hourlyRecycler = (RecyclerView) view.findViewById(R.id.recycler_hourly);
@@ -64,7 +83,7 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
         WeeklyAdapter weeklyAdapte = new WeeklyAdapter(weatherArray, context);
         weerklyRecycler.setAdapter(weeklyAdapte);
 
-        this.id = this.getId();
+
 //        new GetWeeklyTask().execute();
         return view;
     }
@@ -92,6 +111,7 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
 
                 JSONObject jsonData = new JSONObject(info);
                 JSONArray hourlyArray = (JSONArray) jsonData.get("hourly_forecast");
+                hourlyWeather.removeAll(hourlyWeather);
                 for(int i = 0; i < hourlyArray.length(); i++){
                     JSONObject obj = hourlyArray.getJSONObject(i);
                     String hour = obj.getJSONObject("FCTTIME").getString("hour");
@@ -124,7 +144,9 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
         @Override
         protected Void doInBackground(Void... params) {
             try{
+                Log.e("DIDI", "TASK STARTED");
                 URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/forecast7day/q/"+code+"/"+city+".json");
+                Log.e("DIDI", city+", "+code);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
@@ -139,6 +161,8 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
                 JSONObject forecast = jsonData.getJSONObject("forecast");
                 JSONObject simpleforecast = forecast.getJSONObject("simpleforecast");
                 JSONArray forecastdayArray = (JSONArray) simpleforecast.get("forecastday");
+
+                weatherArray.removeAll(weatherArray);
                 for(int i = 0; i < forecastdayArray.length(); i++) {
                     JSONObject obj = forecastdayArray.getJSONObject(i);
                     JSONObject date = obj.getJSONObject("date");
@@ -168,6 +192,8 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
         @Override
         protected void onPostExecute(Void aVoid) {
             weerklyRecycler.getAdapter().notifyDataSetChanged();
+
+            Log.e("DIDI", "TASK FINISHED");
         }
     }
 
@@ -180,7 +206,12 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
         }
     }
 
-    public int getMyId(){
-        return this.id;
-    }
+//    public void setUserVisibleHint(boolean isVisibleToUser) {
+//        super.setUserVisibleHint(isVisibleToUser);
+//        if (isVisibleToUser) {
+//            Log.e("DIDI", "VISIBLE");
+//
+//        }
+//        else {  }
+//    }
 }

@@ -25,6 +25,7 @@ public class SwipeViewActivity extends FragmentActivity implements ICommunicatio
     CustomPagerAdapter adapter;
     ViewPager pager;
 
+
     private String[] tabs = {"Current", "Hourly", "More info"};
 
     @Override
@@ -34,6 +35,7 @@ public class SwipeViewActivity extends FragmentActivity implements ICommunicatio
 
         adapter = new CustomPagerAdapter(getSupportFragmentManager(), this);
         pager = (ViewPager) findViewById(R.id.pager);
+        pager.setOffscreenPageLimit(3);
         pager.setAdapter(adapter);
     }
 
@@ -49,12 +51,11 @@ public class SwipeViewActivity extends FragmentActivity implements ICommunicatio
 
     @Override
     public void setInfo(String city, String code, String min, String max, String date) {
+        Log.e("DIDI", city + ", " + code);
         adapter.setInfoWeather(city, code, min, max, date);
-        int id = adapter.getHourlyId();
-        Log.e("DIDI", id+" w setInfo");
-        if(id !=  0) {
-            android.support.v4.app.Fragment frag = getSupportFragmentManager().findFragmentById(id);
-            ((HourlyWeatherFragment)frag).setData(city, code);
-        }
+        android.support.v4.app.Fragment fragment = adapter.getItem(1);
+        ((HourlyWeatherFragment)fragment).setData(city, code);
+        android.support.v4.app.Fragment fragment2 = adapter.getItem(2);
+        ((MoreInfoFragment)fragment2).setInfo(city, code, date, min, max);
     }
 }

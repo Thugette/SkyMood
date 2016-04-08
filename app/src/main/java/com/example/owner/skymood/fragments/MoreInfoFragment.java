@@ -222,6 +222,7 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
         this.minTxt = min;
         this.maxTxt = max;
         this.dateTxt = date;
+        Log.e("DIDI", city +", "+ code);
         new GetMoreInfoTask().execute();
     }
 }
