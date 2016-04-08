@@ -2,6 +2,7 @@ package com.example.owner.skymood.asyncTasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 
 import com.example.owner.skymood.fragments.CurrentWeatherFragment;
@@ -63,6 +64,8 @@ public class AutoCompleteStringFillerAsyncTask extends AsyncTask<String, Void, V
                 autoCompleteNames.add(name);
             }
 
+            fragment.setCities(cities);
+
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -76,7 +79,7 @@ public class AutoCompleteStringFillerAsyncTask extends AsyncTask<String, Void, V
     @Override
     protected void onPostExecute(Void aVoid) {
         ArrayAdapter adapterAutoComplete = new ArrayAdapter(context, android.R.layout.simple_list_item_1, autoCompleteNames);
-        fragment.autoCompleteStringFillerAsyncTaskOnPostExecute(adapterAutoComplete, cities);
+        fragment.autoCompleteStringFillerAsyncTaskOnPostExecute(adapterAutoComplete);
     }
 
 }

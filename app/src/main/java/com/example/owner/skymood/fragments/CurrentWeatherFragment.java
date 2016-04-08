@@ -100,6 +100,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         chosenCityTextView = (TextView) rootView.findViewById(R.id.chosenCity);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         spinner = (Spinner) rootView.findViewById(R.id.locationSpinner);
+        cities = new HashMap<>();
 
         //shared prefs
         locPref = LocationPreference.getInstance(context);
@@ -194,11 +195,11 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                 if (writeCityEditText != null && !writeCityEditText.getText().toString().isEmpty()
                         && writeCityEditText.getText().toString().contains(",")) {
                     String location = writeCityEditText.getText().toString();
-                    String countryCode = cities.get(location);
+                    Log.e("VVV", countryCode + "  " + cities + "");
+                    countryCode = cities.get(location);
                     String[] parts = location.split(",");
                     String city = parts[0];
-                    String country = parts[1].trim();
-                    setLocation(city, country, countryCode);
+                    country = parts[1].trim();
                     getWeatherInfoByCity(city);
                 } else {
                     Toast.makeText(getContext(), "You must specify a country", Toast.LENGTH_SHORT).show();
@@ -353,9 +354,12 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         }
     }
 
-    public void autoCompleteStringFillerAsyncTaskOnPostExecute(ArrayAdapter adapterAutoComplete, HashMap<String, String> cities){
+    public void autoCompleteStringFillerAsyncTaskOnPostExecute(ArrayAdapter adapterAutoComplete){
         this.writeCityEditText.setAdapter(adapterAutoComplete);
         this.adapterAutoComplete = adapterAutoComplete;
+    }
+
+    public void setCities(HashMap<String, String> cities){
         this.cities = cities;
     }
 
@@ -369,12 +373,6 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         syncButton.setVisibility(visibility);
         locationSearchButton.setVisibility(visibility);
         weatherImage.setAdjustViewBounds(true);
-    }
-
-    public void setLocation(String city, String country, String countryCode){
-        this.city = city;
-        this.country = country;
-        this.countryCode = countryCode;
     }
 }
 
