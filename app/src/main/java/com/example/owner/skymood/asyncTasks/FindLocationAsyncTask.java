@@ -52,6 +52,7 @@ public class FindLocationAsyncTask extends AsyncTask<Void, Void, Void> {
             JSONObject location = data.getJSONObject("location");
             countryCode = location.getString("country_iso3166");
             country = location.getString("country_name");
+            country.trim();
             city = location.getString("city");
 
         } catch (MalformedURLException e) {

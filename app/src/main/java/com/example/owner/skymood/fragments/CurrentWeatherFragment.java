@@ -117,13 +117,15 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //TODO correct logic, getting from DB
                 if (!((String) parent.getItemAtPosition(position)).equals("My Locations")) {
                     if (isOnline()) {
-                        setCity((String) parent.getItemAtPosition(position));
+                        String[] location = ((String) parent.getItemAtPosition(position)).split(",");
+                        setCity(location[0]);
+                        country = location[1].trim();
+                        //countryCode from  DB
                         APIDataGetterAsyncTask task = new APIDataGetterAsyncTask(CurrentWeatherFragment.this, context, weatherImage);
                         //TODO remove next line
-                        String countryCode = "BG";
+                        countryCode = "BG";
                         task.execute(countryCode, "Plovdiv", "Bulgaria");
                     } else {
                         //TODO check if there is information in DB
@@ -132,6 +134,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                         Toast.makeText(context, "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
                     }
                 }
+                spinner.setSelection(0);
             }
 
             @Override
