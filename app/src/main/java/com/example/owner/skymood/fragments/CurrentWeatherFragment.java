@@ -195,7 +195,6 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                 if (writeCityEditText != null && !writeCityEditText.getText().toString().isEmpty()
                         && writeCityEditText.getText().toString().contains(",")) {
                     String location = writeCityEditText.getText().toString();
-                    Log.e("VVV", countryCode + "  " + cities + "");
                     countryCode = cities.get(location);
                     String[] parts = location.split(",");
                     String city = parts[0];
@@ -242,19 +241,14 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                 countryCode = locPref.getCountryCode();
                 country = locPref.getCountry();
                 task.execute(countryCode, city, country);
-                Log.e("VVV", "if shared pref - " + city + " " + country + " " + countryCode);
             } else {
                 //API autoIP
                 findLocation();
-
-                Log.e("VVV", "if no shared prefs auto IP - " + city + " " + country + " " + countryCode);
             }
             if(city == null) {
                 setCity(DEFAULT_CITY);
                 countryCode = DEFAULT_COUNTRY_CODE;
                 country = DEFAULT_COUNTRY;
-
-                Log.e("VVV", "defaukt vaues - " + city + " " + country + " " + countryCode);
                 task.execute(countryCode, city, country);
             }
         } else {
