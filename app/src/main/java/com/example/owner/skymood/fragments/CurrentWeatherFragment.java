@@ -248,7 +248,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
             this.lastUpdate.setText("");
             this.maxTempTextView.setText("");
             this.minTempTextView.setText("");
-            this.feelsLike.setText("Sorry, there is no \ninformation for this location.");
+            this.feelsLike.setText("Sorry, there is no information.");
             this.lastUpdate.setText("This location does not exist\nor you have weak internet connection");
         }
     }
