@@ -69,11 +69,11 @@ public class CustomPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {  switch(position){
         case 0:
-            return "CURRENT";
+            return "\uD83C\uDF08 CURRENT";
         case 1:
-            return "HOURLY";
+            return "⛅ HOURLY";
         case 2:
-            return "MORE INFO";
+            return "⚡ MORE INFO";
     }
         return null;
     }
