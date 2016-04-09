@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/night_backgr"
     android:padding="10dp"
+    android:id="@+id/swipe_view_activity"
     tools:context="com.example.owner.skymood.SwipeViewActivity">
 
     <include

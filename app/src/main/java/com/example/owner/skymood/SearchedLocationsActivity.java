@@ -83,6 +83,6 @@ public class SearchedLocationsActivity extends AppCompatActivity implements View
     @Override
     public void onClick(View v) {
         String location = ((Button)v).getText().toString();
-        //implement logic
+        //TODO implement logic
     }
 }

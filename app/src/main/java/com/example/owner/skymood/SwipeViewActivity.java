@@ -9,6 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
+import android.widget.LinearLayout;
 
 import com.example.owner.skymood.adapters.CustomPagerAdapter;
 import com.example.owner.skymood.asyncTasks.GetHourlyTask;
@@ -19,6 +21,8 @@ import com.example.owner.skymood.fragments.MoreInfoFragment;
 public class SwipeViewActivity extends AppCompatActivity implements ICommunicatior{
 
     public static final int NUMBER_OF_PAGES = 3;
+    public static final String DAY = "day";
+    public static final String NIGHT = "night";
 
     CustomPagerAdapter adapter;
     ViewPager pager;
@@ -26,6 +30,7 @@ public class SwipeViewActivity extends AppCompatActivity implements ICommunicati
     private String moreInfoJSON;
     private String hourlyJSON;
     private String weeklyJSON;
+    private LinearLayout layout;
 
     private String[] tabs = {"Current", "Hourly", "More info"};
 
@@ -33,6 +38,8 @@ public class SwipeViewActivity extends AppCompatActivity implements ICommunicati
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_swipe_view);
+
+        layout = (LinearLayout) findViewById(R.id.swipe_view_activity);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
@@ -118,4 +125,13 @@ public class SwipeViewActivity extends AppCompatActivity implements ICommunicati
     public void setWeeklyJSON(String weeklyJSON) {
         this.weeklyJSON = weeklyJSON;
     }
+
+    public void changeBackground(String partOfDay){
+        if(partOfDay == DAY){
+            layout.setBackgroundResource(R.drawable.backgr_day);
+        } else if(partOfDay == NIGHT){
+            layout.setBackgroundResource(R.drawable.night_backgr);
+        }
+    }
+
 }

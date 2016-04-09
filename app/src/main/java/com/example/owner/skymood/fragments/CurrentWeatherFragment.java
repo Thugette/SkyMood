@@ -33,6 +33,7 @@ import com.example.owner.skymood.asyncTasks.GetHourlyTask;
 import com.example.owner.skymood.model.LocationPreference;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 
@@ -106,6 +107,9 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
 
         //shared prefs
         locPref = LocationPreference.getInstance(context);
+
+        //setting bacground
+        setBackground();
 
         //seting adapter to spinner
         //TODO filling the spinner from myLocations or from DB
@@ -293,6 +297,11 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         feelsLike.setText(locPref.getFeelsLike());
         lastUpdate.setText(locPref.getLastUpdate());
 
+        if(locPref.getIcon().contains("night")){
+            ((SwipeViewActivity)context).changeBackground(SwipeViewActivity.NIGHT);
+        } else {
+            ((SwipeViewActivity)context).changeBackground(SwipeViewActivity.DAY);
+        }
         Context con = weatherImage.getContext();
         weatherImage.setImageResource(context.getResources().getIdentifier(locPref.getIcon(), "drawable", con.getPackageName()));
     }
@@ -379,6 +388,15 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         syncButton.setVisibility(visibility);
         locationSearchButton.setVisibility(visibility);
         weatherImage.setAdjustViewBounds(true);
+    }
+
+    private void setBackground(){
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        if (hour >= 6 && hour <= 19) {
+            ((SwipeViewActivity)context).changeBackground(SwipeViewActivity.DAY);
+        } else {
+            ((SwipeViewActivity)context).changeBackground(SwipeViewActivity.NIGHT);
+        }
     }
 }
 

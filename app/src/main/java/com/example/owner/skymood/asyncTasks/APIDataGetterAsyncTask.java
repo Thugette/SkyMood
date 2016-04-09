@@ -144,9 +144,11 @@ public class APIDataGetterAsyncTask extends AsyncTask<String, Void, Void> {
             } else {
                 if (hour >= 6 && hour <= 19) {
                     id = context.getResources().getIdentifier(icon, "drawable", con.getPackageName());
+                    ((SwipeViewActivity)context).changeBackground(SwipeViewActivity.DAY);
                 } else {
                     icon = icon + "_night";
                     id = context.getResources().getIdentifier(icon, "drawable", con.getPackageName());
+                    ((SwipeViewActivity)context).changeBackground(SwipeViewActivity.NIGHT);
                 }
                 weatherImage.setImageResource(id);
             }
