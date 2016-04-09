@@ -8,7 +8,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    android:background="@drawable/background_sky"
+    android:background="@drawable/colorful_background"
     tools:context="com.example.owner.skymood.SearchedLocationsActivity">
 
     <include
@@ -28,14 +28,14 @@
         android:drawableLeft="@drawable/searchedicon"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:background="@color/foreground"
-        android:shadowColor="@color/searchedLoc"
+        android:background="@drawable/button_last_searched"
         android:gravity="center"
         android:textSize="27dp"
+        style="@style/searched_locations_text"
         android:clickable="true"
-        android:textStyle="bold"
         android:visibility="invisible"
-        android:textColor="@color/veryDarkGrey"
+        android:textStyle="bold"
+        android:textColor="@color/white"
         android:text="Location, Blahblah"/>
 
     <Button
@@ -45,13 +45,13 @@
         android:layout_weight="1"
         android:layout_margin="5dp"
         android:drawableLeft="@drawable/searchedicon"
-        android:background="@color/foreground"
-        android:shadowColor="@color/searchedLoc"
+        android:background="@drawable/button_last_searched"
         android:gravity="center"
+        style="@style/searched_locations_text"
         android:textSize="27dp"
         android:textStyle="bold"
         android:visibility="invisible"
-        android:textColor="@color/veryDarkGrey"
+        android:textColor="@color/white"
         android:text="Location, Blahblah"/>
 
     <Button
@@ -60,14 +60,14 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_margin="5dp"
-        android:background="@color/foreground"
-        android:shadowColor="@color/searchedLoc"
+        style="@style/searched_locations_text"
+        android:background="@drawable/button_last_searched"
         android:drawableLeft="@drawable/searchedicon"
         android:gravity="center"
         android:textSize="27dp"
         android:textStyle="bold"
         android:visibility="invisible"
-        android:textColor="@color/veryDarkGrey"
+        android:textColor="@color/white"
         android:text="Location, Blahblah"/>
 
     <Button
@@ -76,14 +76,14 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_margin="5dp"
-        android:background="@color/foreground"
-        android:shadowColor="@color/searchedLoc"
+        style="@style/searched_locations_text"
+        android:background="@drawable/button_last_searched"
         android:drawableLeft="@drawable/searchedicon"
         android:gravity="center"
         android:textSize="27dp"
         android:textStyle="bold"
         android:visibility="invisible"
-        android:textColor="@color/veryDarkGrey"
+        android:textColor="@color/white"
         android:text="Location, Blahblah"/>
 
     <Button
@@ -92,14 +92,14 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_margin="5dp"
-        android:background="@color/foreground"
-        android:shadowColor="@color/searchedLoc"
+        style="@style/searched_locations_text"
+        android:background="@drawable/button_last_searched"
         android:drawableLeft="@drawable/searchedicon"
         android:gravity="center"
         android:textSize="27dp"
         android:textStyle="bold"
         android:visibility="invisible"
-        android:textColor="@color/veryDarkGrey"
+        android:textColor="@color/white"
         android:text="Location, Blahblah"/>
 
 </LinearLayout>

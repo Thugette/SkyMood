@@ -11,7 +11,7 @@
     <item
         android:id="@+id/searched_locations"
         android:icon="@drawable/menu"
-        android:title="☀ Last Moods"
+        android:title="☀ Last Searched"
         />
 
     <item
