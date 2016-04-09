@@ -9,6 +9,7 @@
     <color name="foreground">#5d000000</color>
     <color name="red">#e4f7101f</color>
     <color name="blue">#e2384aea</color>
+    <color name="toolbar">#8eb1b1b6</color>
 
 
 </resources>

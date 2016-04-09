@@ -8,43 +8,15 @@
     android:padding="10dp"
     tools:context="com.example.owner.skymood.SwipeViewActivity">
 
-    <LinearLayout
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/toolbar_main"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_weight="1">
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:layout_gravity="left"
-            android:src="@drawable/sky_mood_3"/>
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:gravity="center"
-            android:src="@drawable/searched_3"/>
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:adjustViewBounds="true"
-            android:src="@drawable/locations_3"/>
-
-    </LinearLayout>
+        android:layout_height="wrap_content"/>
 
     <android.support.v4.view.ViewPager
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="9"
+        android:layout_height="wrap_content"
         android:id="@+id/pager">
 
         <android.support.v4.view.PagerTabStrip
