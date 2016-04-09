@@ -72,11 +72,18 @@ public class FindLocationAsyncTask extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         fragment.setCity(city);
         APIDataGetterAsyncTask task = new APIDataGetterAsyncTask(fragment, context, weatherImage);
+
+        //get current weather
         task.execute(countryCode, city, country);
         HourlyWeatherFragment fr = ((SwipeViewActivity)context).getHourlyFragment();
+
+        //get 24 hours forecast
         GetHourlyTask hourTask = new GetHourlyTask(context, fr, fr.getHourlyWeatherArray());
         hourTask.execute(city, countryCode);
-        Log.e("didi", "fina location task started");
+
+        //get 7 days forecast
+        GetWeeklyTask weeklyTask = new GetWeeklyTask(context, fr, fr.getWeeklyWeatherArray());
+        weeklyTask.execute(city, countryCode);
     }
 
 }

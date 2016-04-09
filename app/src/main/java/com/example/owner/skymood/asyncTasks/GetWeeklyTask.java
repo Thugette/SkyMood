@@ -1,16 +1,15 @@
 package com.example.owner.skymood.asyncTasks;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 
 import com.example.owner.skymood.SwipeViewActivity;
 import com.example.owner.skymood.fragments.HourlyWeatherFragment;
 import com.example.owner.skymood.model.HourlyWeather;
+import com.example.owner.skymood.model.WeeklyWeather;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,30 +24,28 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Created by owner on 09/04/2016.
+ * Created by owner on 10/04/2016.
  */
-public class GetHourlyTask extends AsyncTask<String, Void, Void> {
+public class GetWeeklyTask extends AsyncTask<String, Void, Void> {
 
     private final static String API_KEY = "9d48021d05e97609";
     private Context context;
     private SwipeViewActivity activity;
     private Fragment fragment;
-    private ArrayList<HourlyWeather> hourlyWeather;
+    private ArrayList<WeeklyWeather> weeklyWeather;
 
-    public GetHourlyTask(Context context, Fragment fragment, ArrayList<HourlyWeather> hourlyWeather) {
+    public GetWeeklyTask(Context context, Fragment fragment, ArrayList<WeeklyWeather> weeklyWeather) {
         this.context = context;
         this.fragment = fragment;
         activity = (SwipeViewActivity)context;
-        this.hourlyWeather = hourlyWeather;
+        this.weeklyWeather = weeklyWeather;
     }
 
     protected Void doInBackground(String... params) {
-        try {
-
+        try{
             String city = params[0];
             String code = params[1];
-
-            URL url = new URL("http://api.wunderground.com/api/"+API_KEY+"/hourly/q/"+code+"/"+city+".json");
+            URL url = new URL("http://api.wunderground.com/api/"+API_KEY+"/forecast7day/q/"+code+"/"+city+".json");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.connect();
 
@@ -58,23 +55,29 @@ public class GetHourlyTask extends AsyncTask<String, Void, Void> {
                 body.append(sc.nextLine());
             }
             String info = body.toString();
+            activity.setWeeklyJSON(info);
             JSONObject jsonData = new JSONObject(info);
-            activity.setHourlyJSON(info);
-            JSONArray hourlyArray = (JSONArray) jsonData.get("hourly_forecast");
+            JSONObject forecast = jsonData.getJSONObject("forecast");
+            JSONObject simpleforecast = forecast.getJSONObject("simpleforecast");
+            JSONArray forecastdayArray = (JSONArray) simpleforecast.get("forecastday");
 
-            if(!hourlyWeather.isEmpty())
-                hourlyWeather.removeAll(hourlyWeather);
+            weeklyWeather.removeAll(weeklyWeather);
+            for(int i = 0; i < forecastdayArray.length(); i++) {
+                JSONObject obj = forecastdayArray.getJSONObject(i);
+                JSONObject date = obj.getJSONObject("date");
 
-            for(int i = 0; i < hourlyArray.length(); i++){
-                JSONObject obj = hourlyArray.getJSONObject(i);
-                String hour = obj.getJSONObject("FCTTIME").getString("hour");
-                String condition = obj.getString("condition");
-                String temp = obj.getJSONObject("temp").getString("metric");
+                String day = date.getString("weekday");
+                JSONObject high = obj.getJSONObject("high");
+                String max = high.getString("celsius");
+                JSONObject low = obj.getJSONObject("low");
+                String min = low.getString("celsius");
+
+                String condition = obj.getString("conditions");
+
                 String iconURL = obj.getString("icon_url");
                 Bitmap icon = BitmapFactory.decodeStream((InputStream) new URL(iconURL).getContent());
-                hourlyWeather.add(new HourlyWeather(hour, condition, temp, icon));
+                weeklyWeather.add(new WeeklyWeather(day, min, max, condition, icon));
             }
-
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -82,13 +85,11 @@ public class GetHourlyTask extends AsyncTask<String, Void, Void> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        ((HourlyWeatherFragment)fragment).getAdapter().notifyDataSetChanged();
-
+        ((HourlyWeatherFragment)fragment).getWeekAdapter().notifyDataSetChanged();
     }
 }

@@ -40,12 +40,6 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
     private RecyclerView hourlyRecycler;
     private RecyclerView weerklyRecycler;
     private Context context;
-    private String city;
-    private String code;
-    private int id;
-    private static String API_KEY = "9d48021d05e97609";
-    private SwipeViewActivity mainActivity;
-    private String hourlyJSON;
 
     public HourlyWeatherFragment() {
         // Required empty public constructor
@@ -58,24 +52,23 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
 
         View view =  inflater.inflate(R.layout.fragment_hourly_weather, container, false);
         this.setRetainInstance(true);
+
         hourlyWeather = new ArrayList<>();
-        Log.e("didi", "ARRAY created: " + System.currentTimeMillis());
         weatherArray = new ArrayList<>();
+
+        // hourly recycler
         hourlyRecycler = (RecyclerView) view.findViewById(R.id.recycler_hourly);
         hourlyRecycler.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         HourlyAdapter adapter = new HourlyAdapter(context, hourlyWeather);
-        Log.e("DIDI", "Adapter created");
         hourlyRecycler.setAdapter(adapter);
 
+        //weekly recycler
         weerklyRecycler = (RecyclerView) view.findViewById(R.id.recycler_weekly);
         weerklyRecycler.setLayoutManager(new LinearLayoutManager(context));
         WeeklyAdapter weeklyAdapte = new WeeklyAdapter(weatherArray, context);
         weerklyRecycler.setAdapter(weeklyAdapte);
 
-        mainActivity = (SwipeViewActivity)context;
 
-
-//        new GetWeeklyTask().execute();
         return view;
     }
 
@@ -83,127 +76,19 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
         this.context = context;
     }
 
-
-//    class GetHoursTask extends AsyncTask<String, Void, Void> {
-//        @Override
-//        protected Void doInBackground(String... params) {
-//            try {
-//
-//                String city = params[0];
-//                String code = params[1];
-//
-//                URL url = new URL("http://api.wunderground.com/api/"+API_KEY+"/hourly/q/"+code+"/"+city+".json");
-//                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//                connection.connect();
-//
-//                Scanner sc = new Scanner(connection.getInputStream());
-//                StringBuilder body = new StringBuilder();
-//                while(sc.hasNextLine()){
-//                    body.append(sc.nextLine());
-//                }
-//                String info = body.toString();
-//
-//                JSONObject jsonData = new JSONObject(info);
-//                mainActivity.setHourlyJSON(info);
-//                JSONArray hourlyArray = (JSONArray) jsonData.get("hourly_forecast");
-//                hourlyWeather.removeAll(hourlyWeather);
-//                for(int i = 0; i < hourlyArray.length(); i++){
-//                    JSONObject obj = hourlyArray.getJSONObject(i);
-//                    String hour = obj.getJSONObject("FCTTIME").getString("hour");
-//                    String condition = obj.getString("condition");
-//                    String temp = obj.getJSONObject("temp").getString("metric");
-//                    String iconURL = obj.getString("icon_url");
-//                    Bitmap icon = BitmapFactory.decodeStream((InputStream) new URL(iconURL).getContent());
-//                    hourlyWeather.add(new HourlyWeather(hour, condition, temp, icon));
-//                }
-//
-//            } catch (MalformedURLException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            hourlyRecycler.getAdapter().notifyDataSetChanged();
-//        }
-//    }
-
-    class GetWeeklyTask extends AsyncTask<String, Void, Void>{
-
-        @Override
-        protected Void doInBackground(String... params) {
-            try{
-                String city = params[0];
-                String code = params[1];
-                URL url = new URL("http://api.wunderground.com/api/"+API_KEY+"/forecast7day/q/"+code+"/"+city+".json");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-
-                Scanner sc = new Scanner(connection.getInputStream());
-                StringBuilder body = new StringBuilder();
-                while(sc.hasNextLine()){
-                    body.append(sc.nextLine());
-                }
-                String info = body.toString();
-                mainActivity.setWeeklyJSON(info);
-                JSONObject jsonData = new JSONObject(info);
-                JSONObject forecast = jsonData.getJSONObject("forecast");
-                JSONObject simpleforecast = forecast.getJSONObject("simpleforecast");
-                JSONArray forecastdayArray = (JSONArray) simpleforecast.get("forecastday");
-
-                weatherArray.removeAll(weatherArray);
-                for(int i = 0; i < forecastdayArray.length(); i++) {
-                    JSONObject obj = forecastdayArray.getJSONObject(i);
-                    JSONObject date = obj.getJSONObject("date");
-
-                    String day = date.getString("weekday");
-                    JSONObject high = obj.getJSONObject("high");
-                    String max = high.getString("celsius");
-                    JSONObject low = obj.getJSONObject("low");
-                    String min = low.getString("celsius");
-
-                    String condition = obj.getString("conditions");
-
-                    String iconURL = obj.getString("icon_url");
-                    Bitmap icon = BitmapFactory.decodeStream((InputStream) new URL(iconURL).getContent());
-                    weatherArray.add(new WeeklyWeather(day, min, max, condition, icon));
-                }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            weerklyRecycler.getAdapter().notifyDataSetChanged();
-        }
-    }
-
-    public void setData(String city, String code){
-        this.city = city;
-        this.code = code;
-        if(city != null && code != null) {
-            //new GetHoursTask().execute();
-            new GetWeeklyTask().execute(city, code);
-        }
-    }
-
     public HourlyAdapter getAdapter(){
         return (HourlyAdapter)this.hourlyRecycler.getAdapter();
     }
 
+    public WeeklyAdapter getWeekAdapter(){
+        return (WeeklyAdapter)this.weerklyRecycler.getAdapter();
+    }
+
     public ArrayList<HourlyWeather> getHourlyWeatherArray() {
         return this.hourlyWeather;
+    }
+
+    public ArrayList<WeeklyWeather> getWeeklyWeatherArray() {
+        return this.weatherArray;
     }
 }

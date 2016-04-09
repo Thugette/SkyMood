@@ -30,6 +30,7 @@ import com.example.owner.skymood.asyncTasks.APIDataGetterAsyncTask;
 import com.example.owner.skymood.asyncTasks.AutoCompleteStringFillerAsyncTask;
 import com.example.owner.skymood.asyncTasks.FindLocationAsyncTask;
 import com.example.owner.skymood.asyncTasks.GetHourlyTask;
+import com.example.owner.skymood.asyncTasks.GetWeeklyTask;
 import com.example.owner.skymood.model.LocationPreference;
 
 import java.util.ArrayList;
@@ -246,6 +247,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
             APIDataGetterAsyncTask task = new APIDataGetterAsyncTask(this, context, weatherImage);
             HourlyWeatherFragment fr = ((SwipeViewActivity)context).getHourlyFragment();
             GetHourlyTask hourTask = new GetHourlyTask(context, fr, fr.getHourlyWeatherArray());
+            GetWeeklyTask weeklyTask = new GetWeeklyTask(context, fr, fr.getWeeklyWeatherArray());
 
             //first: check shared prefs
             if(locPref.isSetLocation()){
@@ -254,7 +256,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                 country = locPref.getCountry();
                 task.execute(countryCode, city, country);
                 hourTask.execute(city, countryCode);
-                Log.e("didi", "if loc pref is set task started");
+                weeklyTask.execute(city, countryCode);
             } else {
                 //API autoIP
                 findLocation();

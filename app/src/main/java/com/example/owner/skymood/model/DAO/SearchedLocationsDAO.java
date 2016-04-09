@@ -137,7 +137,7 @@ public class SearchedLocationsDAO implements ISearchedLocations{
         values.put(helper.TEMP, location.getTemp());
         values.put(helper.CONDITION, location.getCondition());
         values.put(helper.MORE_INFO, "null");
-        values.put(helper.HOURLY_WEATHER, "null");
+        values.put(helper.HOURLY_WEATHER, location.getHourlyJSON());
         values.put(helper.WEEKLY_WEATHER,"null");
         values.put(helper.COUNTRY, location.getCountry());
         values.put(helper.COUNTRY_CODE, location.getCode());
