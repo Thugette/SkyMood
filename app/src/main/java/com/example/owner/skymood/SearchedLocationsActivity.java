@@ -40,8 +40,10 @@ public class SearchedLocationsActivity extends AppCompatActivity implements View
         //initializing buttons
         for(int i=0; i<locations.size(); i++){
             Button location = (Button) findViewById(buttonIDs[i]);
+            SearchedLocation loc = locations.get(i);
             location.setVisibility(View.VISIBLE);
-            location.setText(locations.get(i).getCity() + ", " + locations.get(i).getCountry());
+            location.setText(loc.getCity() + ", " + loc.getCountry());
+            location.setTag(loc);
         }
         location1 = (Button) findViewById(R.id.location1);
         location2 = (Button) findViewById(R.id.location2);

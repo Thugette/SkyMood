@@ -1,5 +1,6 @@
 package com.example.owner.skymood.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -43,6 +44,7 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
     private String code;
     private int id;
     private static String API_KEY = "9d48021d05e97609";
+    private SwipeViewActivity mainActivity;
 
     public HourlyWeatherFragment() {
         // Required empty public constructor
@@ -65,6 +67,8 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
         weerklyRecycler.setLayoutManager(new LinearLayoutManager(context));
         WeeklyAdapter weeklyAdapte = new WeeklyAdapter(weatherArray, context);
         weerklyRecycler.setAdapter(weeklyAdapte);
+
+        mainActivity = (SwipeViewActivity)context;
 
 
 //        new GetWeeklyTask().execute();
@@ -93,6 +97,7 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
                 String info = body.toString();
 
                 JSONObject jsonData = new JSONObject(info);
+                mainActivity.setHourlyJSON(info);
                 JSONArray hourlyArray = (JSONArray) jsonData.get("hourly_forecast");
                 hourlyWeather.removeAll(hourlyWeather);
                 for(int i = 0; i < hourlyArray.length(); i++){
@@ -137,7 +142,7 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
                     body.append(sc.nextLine());
                 }
                 String info = body.toString();
-
+                mainActivity.setWeeklyJSON(info);
                 JSONObject jsonData = new JSONObject(info);
                 JSONObject forecast = jsonData.getJSONObject("forecast");
                 JSONObject simpleforecast = forecast.getJSONObject("simpleforecast");

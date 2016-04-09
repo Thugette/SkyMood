@@ -48,6 +48,7 @@ public class APIDataGetterAsyncTask extends AsyncTask<String, Void, Void> {
     private String country;
 
     SearchedLocationManager manager;
+    SwipeViewActivity activity;
 
     public APIDataGetterAsyncTask(Fragment f, Context context, ImageView weatherImage){
         this.fragment = f;
@@ -55,6 +56,7 @@ public class APIDataGetterAsyncTask extends AsyncTask<String, Void, Void> {
         this.weatherImage = weatherImage;
         this.locPref = LocationPreference.getInstance(context);
         this.manager = SearchedLocationManager.getInstance(context);
+        activity = (SwipeViewActivity) context;
     }
 
     @Override
@@ -148,7 +150,7 @@ public class APIDataGetterAsyncTask extends AsyncTask<String, Void, Void> {
                 }
                 weatherImage.setImageResource(id);
             }
-            ((SwipeViewActivity)context).setInfo(city, countryCode, minTemp, maxTemp, dateAndTime);
+            activity.setInfo(city, countryCode, minTemp, maxTemp, dateAndTime);
             if(temp != null && icon != null) {
                 if (locPref.isSetLocation() && city.equals(locPref.getCity()) && countryCode.equals(locPref.getCountryCode())) {
                     //insert in shared prefs
@@ -156,7 +158,7 @@ public class APIDataGetterAsyncTask extends AsyncTask<String, Void, Void> {
                 }
                 else {
                     //insert into DB
-                    SearchedLocation loc = new SearchedLocation(city, temp, condition, null, null, null, country, countryCode, maxTemp, minTemp, lastUpdate, icon);
+                    SearchedLocation loc = new SearchedLocation(city, temp, condition, activity.getMoreInfoJSON(), activity.getHourlyJSON(), activity.getWeeklyJSON(), country, countryCode, maxTemp, minTemp, lastUpdate, icon);
                     manager.insertSearchedLocation(loc);
                 }
             }

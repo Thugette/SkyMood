@@ -22,6 +22,10 @@ public class SwipeViewActivity extends AppCompatActivity implements ICommunicati
     CustomPagerAdapter adapter;
     ViewPager pager;
 
+    private String moreInfoJSON;
+    private String hourlyJSON;
+    private String weeklyJSON;
+
     private String[] tabs = {"Current", "Hourly", "More info"};
 
     @Override
@@ -82,5 +86,29 @@ public class SwipeViewActivity extends AppCompatActivity implements ICommunicati
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public String getMoreInfoJSON() {
+        return moreInfoJSON;
+    }
+
+    public void setMoreInfoJSON(String moreInfoJSON) {
+        this.moreInfoJSON = moreInfoJSON;
+    }
+
+    public String getHourlyJSON() {
+        return hourlyJSON;
+    }
+
+    public void setHourlyJSON(String hourlyJSON) {
+        this.hourlyJSON = hourlyJSON;
+    }
+
+    public String getWeeklyJSON() {
+        return weeklyJSON;
+    }
+
+    public void setWeeklyJSON(String weeklyJSON) {
+        this.weeklyJSON = weeklyJSON;
     }
 }
