@@ -39,12 +39,12 @@ public class MyCardViewAdapter extends RecyclerView.Adapter<MyCardViewAdapter.Ca
 
         String city = data.get(position);
         holder.city.setText(city);
-        holder.city.setText(city);
+        holder.country.setText(city);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return data.size();
     }
 
     public class CardViewHolder extends RecyclerView.ViewHolder{

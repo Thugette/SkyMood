@@ -35,7 +35,6 @@ public class MyLocationsActivity extends AppCompatActivity {
         data.add("Sofia");
         data.add("Plovdiv");
         data.add("London");
-        this.cardView = (CardView) findViewById(R.id.mylocation_cardview);
         this.recycler = (RecyclerView) findViewById(R.id.mylocation_recycler);
         this.recycler.setLayoutManager(new LinearLayoutManager(this));
         MyCardViewAdapter adapter = new MyCardViewAdapter(this, data);

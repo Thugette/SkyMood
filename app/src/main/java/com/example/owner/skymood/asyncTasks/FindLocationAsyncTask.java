@@ -2,9 +2,12 @@ package com.example.owner.skymood.asyncTasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.ImageView;
 
+import com.example.owner.skymood.SwipeViewActivity;
 import com.example.owner.skymood.fragments.CurrentWeatherFragment;
+import com.example.owner.skymood.fragments.HourlyWeatherFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,6 +73,10 @@ public class FindLocationAsyncTask extends AsyncTask<Void, Void, Void> {
         fragment.setCity(city);
         APIDataGetterAsyncTask task = new APIDataGetterAsyncTask(fragment, context, weatherImage);
         task.execute(countryCode, city, country);
+        HourlyWeatherFragment fr = ((SwipeViewActivity)context).getHourlyFragment();
+        GetHourlyTask hourTask = new GetHourlyTask(context, fr, fr.getHourlyWeatherArray());
+        hourTask.execute(city, countryCode);
+        Log.e("didi", "fina location task started");
     }
 
 }

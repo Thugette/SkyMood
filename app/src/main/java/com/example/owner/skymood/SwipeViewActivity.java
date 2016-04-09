@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.owner.skymood.adapters.CustomPagerAdapter;
+import com.example.owner.skymood.asyncTasks.GetHourlyTask;
 import com.example.owner.skymood.fragments.HourlyWeatherFragment;
 import com.example.owner.skymood.fragments.ICommunicatior;
 import com.example.owner.skymood.fragments.MoreInfoFragment;
@@ -61,10 +62,16 @@ public class SwipeViewActivity extends AppCompatActivity implements ICommunicati
 
     @Override
     public void setInfo(String city, String code, String min, String max, String date) {
-        android.support.v4.app.Fragment fragment = adapter.getItem(1);
-        ((HourlyWeatherFragment)fragment).setData(city, code);
+        HourlyWeatherFragment fragment = (HourlyWeatherFragment) adapter.getItem(1);
+        fragment.setData(city, code);
+        GetHourlyTask getHour = new GetHourlyTask(this, fragment, fragment.getHourlyWeatherArray());
+        getHour.execute(city, code);
         android.support.v4.app.Fragment fragment2 = adapter.getItem(2);
         ((MoreInfoFragment)fragment2).setInfo(city, code, date, min, max);
+    }
+
+    public  HourlyWeatherFragment getHourlyFragment(){
+        return (HourlyWeatherFragment)adapter.getItem(1);
     }
 
     @Override

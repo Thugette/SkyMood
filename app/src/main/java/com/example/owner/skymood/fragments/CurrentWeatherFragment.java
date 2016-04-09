@@ -25,9 +25,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.owner.skymood.R;
+import com.example.owner.skymood.SwipeViewActivity;
 import com.example.owner.skymood.asyncTasks.APIDataGetterAsyncTask;
 import com.example.owner.skymood.asyncTasks.AutoCompleteStringFillerAsyncTask;
 import com.example.owner.skymood.asyncTasks.FindLocationAsyncTask;
+import com.example.owner.skymood.asyncTasks.GetHourlyTask;
 import com.example.owner.skymood.model.LocationPreference;
 
 import java.util.ArrayList;
@@ -238,22 +240,29 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         //logic
         if(isOnline()){
             APIDataGetterAsyncTask task = new APIDataGetterAsyncTask(this, context, weatherImage);
+            HourlyWeatherFragment fr = ((SwipeViewActivity)context).getHourlyFragment();
+            GetHourlyTask hourTask = new GetHourlyTask(context, fr, fr.getHourlyWeatherArray());
+
             //first: check shared prefs
             if(locPref.isSetLocation()){
                 setCity(locPref.getCity());
                 countryCode = locPref.getCountryCode();
                 country = locPref.getCountry();
                 task.execute(countryCode, city, country);
+                hourTask.execute(city, countryCode);
+                Log.e("didi", "if loc pref is set task started");
             } else {
                 //API autoIP
                 findLocation();
             }
-            if(city == null) {
-                setCity(DEFAULT_CITY);
-                countryCode = DEFAULT_COUNTRY_CODE;
-                country = DEFAULT_COUNTRY;
-                task.execute(countryCode, city, country);
-            }
+//            if(city == null) {
+//                setCity(DEFAULT_CITY);
+//                countryCode = DEFAULT_COUNTRY_CODE;
+//                country = DEFAULT_COUNTRY;
+//                task.execute(countryCode, city, country);
+//                hourTask.execute(city, countryCode);
+//                Log.e("didi", "null city task started");
+//            }
         } else {
             if(locPref.isSetLocation()){
                 Toast.makeText(context, "NO INTERNET CONNECTION\nFor up to date info connect to Internet", Toast.LENGTH_LONG).show();

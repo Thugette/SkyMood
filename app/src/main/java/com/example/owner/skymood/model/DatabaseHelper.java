@@ -20,6 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CITY = "city";
     public static final String LOCATION_ID = "id";
+    public static final String LOCATION = "location";
 
     // last searched
     public static final String SEARCHED_ID = "id";
@@ -40,7 +41,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_MY_LOCATIONS = "CREATE TABLE IF NOT EXISTS " + MY_LOCATIONS + " ("
             + LOCATION_ID +" INTEGER PRIMARY KEY AUTOINCREMENT , "
             + CITY + " VARCHAR(30) NOT NULL, "
-            + COUNTRY + " VARCHAR(30) NOT NULL)";
+            + COUNTRY + " VARCHAR(30) NOT NULL, "
+            + COUNTRY_CODE + " VARCHAR(30) NOT NULL, "
+            + LOCATION + " VARCHAR(80) NOT NULL)";
 
     private static final String CREATE_LAST_SEARCHED = "CREATE TABLE IF NOT EXISTS " + LAST_SEARCHED + " ("
             + SEARCHED_ID +" INTEGER PRIMARY KEY AUTOINCREMENT , "

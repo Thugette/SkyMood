@@ -67,16 +67,13 @@ public class SearchedLocationsDAO implements ISearchedLocations{
     public long insertSearchedLocation(SearchedLocation location) {
         long id = checkCity(location.getCity());
         if (id != -1){
-            Log.e("DIDI", "DAO update existing city");
             return updateLocation(id, location);
         }
         else if(getCount() < 5){
-            Log.e("DIDI", "DAO new location inserted");
             return insertLocation(location);
         }
         else{
             id = selectFirstSearchedCity().getId();
-            Log.e("DIDI", "DAO location REinserted");
             return updateLocation(id, location);
         }
     }
