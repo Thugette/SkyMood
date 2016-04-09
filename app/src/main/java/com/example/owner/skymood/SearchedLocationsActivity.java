@@ -6,8 +6,16 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
-public class SearchedLocationsActivity extends AppCompatActivity {
+public class SearchedLocationsActivity extends AppCompatActivity implements View.OnClickListener{
+
+    private Button location1;
+    private Button location2;
+    private Button location3;
+    private Button location4;
+    private Button location5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +26,13 @@ public class SearchedLocationsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        //initializing buttons
+        location1 = (Button) findViewById(R.id.location1);
+        location2 = (Button) findViewById(R.id.location2);
+        location3 = (Button) findViewById(R.id.location3);
+        location4 = (Button) findViewById(R.id.location4);
+        location5 = (Button) findViewById(R.id.location5);
     }
 
 
@@ -46,5 +61,11 @@ public class SearchedLocationsActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        String location = ((Button)v).getText().toString();
+        //implement logic
     }
 }

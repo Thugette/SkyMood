@@ -11,5 +11,7 @@
     <color name="blue">#e2384aea</color>
     <color name="toolbar">#8eb1b1b6</color>
 
+    <color name="searchedLoc">#6d000dff</color>
+
 
 </resources>
