@@ -57,7 +57,6 @@ public class SwipeViewActivity extends AppCompatActivity implements ICommunicati
 
     @Override
     public void setInfo(String city, String code, String min, String max, String date) {
-        Log.e("didi", city + " "+ code);
         android.support.v4.app.Fragment fragment = adapter.getItem(1);
         ((HourlyWeatherFragment)fragment).setData(city, code);
         android.support.v4.app.Fragment fragment2 = adapter.getItem(2);

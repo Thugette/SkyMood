@@ -67,6 +67,7 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
     private String conditionTxt;
     private int moonAgeTxt;
     private int moonIllumitatedTxt;
+    private static final String API_KEY = "7fc23227bbbc9a36";
 
 
     public MoreInfoFragment() {
@@ -138,7 +139,7 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                URL url = new URL("http://api.wunderground.com/api/b4d0925e0429238f/conditions/q/"+code+"/"+city+".json");
+                URL url = new URL("http://api.wunderground.com/api/"+API_KEY+"/conditions/q/"+code+"/"+city+".json");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
@@ -170,7 +171,7 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
             }
 
             try {
-                URL astronomyUrl = new URL("http://api.wunderground.com/api/9226ced37cb70c78/astronomy/q/"+code+"/"+city+".json");
+                URL astronomyUrl = new URL("http://api.wunderground.com/api/"+API_KEY+"/astronomy/q/"+code+"/"+city+".json");
                 Log.e("DIDI", code + " " + city);
                 HttpURLConnection secontConnection = (HttpURLConnection) astronomyUrl.openConnection();
                 secontConnection.connect();

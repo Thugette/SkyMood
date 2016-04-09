@@ -45,10 +45,11 @@ public class MyLocationDAO implements IMyLocationDAO{
     }
 
     @Override
-    public long insertMyLocation(String city) {
+    public long insertMyLocation(String city, String country) {
         SQLiteDatabase db = helper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(helper.CITY, city);
+        values.put(helper.COUNTRY, country);
         long id = -1;
         if(selectMyCity(city) == null)
             id = db.insert(helper.MY_LOCATIONS, null, values);

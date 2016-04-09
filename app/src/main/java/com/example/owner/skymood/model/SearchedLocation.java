@@ -12,19 +12,36 @@ public class SearchedLocation {
     private String hourlyJSON;
     private String weeklyJSON;
     private String date;
+    private String country;
+    private String code;
+    private String max;
+    private String min;
+    private String lastUpdate;
+    private String icon;
 
-    public SearchedLocation(String city, String temp, String condition, String moreInfo, String hourlyJSON, String weeklyJSON, String date) {
+
+    public SearchedLocation(String city, String temp, String condition, String moreInfo, String hourlyJSON, String weeklyJSON, String country, String code, String max, String min, String lastUpdate, String icon) {
         this.city = city;
         this.temp = temp;
         this.condition = condition;
         this.moreInfo = moreInfo;
         this.hourlyJSON = hourlyJSON;
         this.weeklyJSON = weeklyJSON;
+        this.country = country;
+        this.code = code;
+        this.max = max;
+        this.min = min;
+        this.lastUpdate = lastUpdate;
+        this.icon = icon;
+    }
+
+    public SearchedLocation( String city, String temp, String condition, String moreInfo, String hourlyJSON, String weeklyJSON, String date, String country, String code, String max, String min, String lastUpdate, String icon) {
+        this(city, temp, condition, moreInfo, hourlyJSON, weeklyJSON, country, code, max, min, lastUpdate, icon);
         this.date = date;
     }
 
-    public SearchedLocation(long id, String city, String temp, String condition, String moreInfo, String hourlyJSON, String weeklyJSON, String date) {
-        this(city, temp, condition, moreInfo, hourlyJSON, weeklyJSON, date);
+    public SearchedLocation(long id, String city, String temp, String condition, String moreInfo, String hourlyJSON, String weeklyJSON, String date, String country, String code, String max, String min, String lastUpdate, String icon) {
+        this(city, temp, condition, moreInfo, hourlyJSON, weeklyJSON, date, country, code, max, min, lastUpdate, icon);
         this.id = id;
     }
 
@@ -62,5 +79,29 @@ public class SearchedLocation {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getMax() {
+        return max;
+    }
+
+    public String getMin() {
+        return min;
+    }
+
+    public String getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public String getIcon() {
+        return icon;
     }
 }

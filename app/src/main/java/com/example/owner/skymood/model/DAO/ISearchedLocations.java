@@ -13,7 +13,7 @@ public interface ISearchedLocations {
     long insertSearchedLocation(SearchedLocation location);
     SearchedLocation selectFirstSearchedCity();
     long getCount();
-    boolean checkCity(String city);
+    long checkCity(String city);
     long insertLocation(SearchedLocation location);
     long updateLocation(long id, SearchedLocation location);
 }

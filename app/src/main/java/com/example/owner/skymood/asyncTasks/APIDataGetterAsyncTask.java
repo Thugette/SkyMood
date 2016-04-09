@@ -11,6 +11,8 @@ import com.example.owner.skymood.R;
 import com.example.owner.skymood.SwipeViewActivity;
 import com.example.owner.skymood.fragments.CurrentWeatherFragment;
 import com.example.owner.skymood.model.LocationPreference;
+import com.example.owner.skymood.model.SearchedLocation;
+import com.example.owner.skymood.model.SearchedLocationManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,11 +47,14 @@ public class APIDataGetterAsyncTask extends AsyncTask<String, Void, Void> {
     private String countryCode;
     private String country;
 
+    SearchedLocationManager manager;
+
     public APIDataGetterAsyncTask(Fragment f, Context context, ImageView weatherImage){
         this.fragment = f;
         this.context = context;
         this.weatherImage = weatherImage;
         this.locPref = LocationPreference.getInstance(context);
+        this.manager = SearchedLocationManager.getInstance(context);
     }
 
     @Override
@@ -143,14 +148,20 @@ public class APIDataGetterAsyncTask extends AsyncTask<String, Void, Void> {
                 }
                 weatherImage.setImageResource(id);
             }
-
+            ((SwipeViewActivity)context).setInfo(city, countryCode, minTemp, maxTemp, dateAndTime);
             if(temp != null && icon != null) {
                 if (locPref.isSetLocation() && city.equals(locPref.getCity()) && countryCode.equals(locPref.getCountryCode())) {
+                    //insert in shared prefs
                     locPref.setPreferredLocation(city, country, countryCode, icon, temp, minTemp, maxTemp, condition, feelsLike, lastUpdate);
+                }
+                else {
+                    //insert into DB
+                    SearchedLocation loc = new SearchedLocation(city, temp, condition, null, null, null, country, countryCode, maxTemp, minTemp, lastUpdate, icon);
+                    manager.insertSearchedLocation(loc);
                 }
             }
 
-        ((SwipeViewActivity)context).setInfo(city, countryCode, minTemp, maxTemp, dateAndTime);
+
 
         ((CurrentWeatherFragment) fragment).apiDataGetterAsyncTaskOnPostExecute(temp, condition, feelsLike, minTemp, maxTemp, dateAndTime, lastUpdate);
 

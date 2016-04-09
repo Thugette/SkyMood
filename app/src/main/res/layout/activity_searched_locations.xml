@@ -34,6 +34,7 @@
         android:textSize="27dp"
         android:clickable="true"
         android:textStyle="bold"
+        android:visibility="invisible"
         android:textColor="@color/veryDarkGrey"
         android:text="Location, Blahblah"/>
 
@@ -49,6 +50,7 @@
         android:gravity="center"
         android:textSize="27dp"
         android:textStyle="bold"
+        android:visibility="invisible"
         android:textColor="@color/veryDarkGrey"
         android:text="Location, Blahblah"/>
 
@@ -64,6 +66,7 @@
         android:gravity="center"
         android:textSize="27dp"
         android:textStyle="bold"
+        android:visibility="invisible"
         android:textColor="@color/veryDarkGrey"
         android:text="Location, Blahblah"/>
 
@@ -79,6 +82,7 @@
         android:gravity="center"
         android:textSize="27dp"
         android:textStyle="bold"
+        android:visibility="invisible"
         android:textColor="@color/veryDarkGrey"
         android:text="Location, Blahblah"/>
 
@@ -94,6 +98,7 @@
         android:gravity="center"
         android:textSize="27dp"
         android:textStyle="bold"
+        android:visibility="invisible"
         android:textColor="@color/veryDarkGrey"
         android:text="Location, Blahblah"/>
 

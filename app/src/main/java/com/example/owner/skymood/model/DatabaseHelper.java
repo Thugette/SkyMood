@@ -12,7 +12,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static DatabaseHelper instance;
 
     public static final String DATABASE_NAME = "SKY_MOOD_DATABASE";
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 6;
 
     //tables
     public static final String MY_LOCATIONS = "my_locations";
@@ -28,12 +28,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TEMP = "temp";
     public static final String CONDITION = "condition";
     public static final String MORE_INFO = "more_info";
-    public static final String DATE = "date";
+    public static final String DATE = "date_time";
+    public static final String COUNTRY = "country";
+    public static final String COUNTRY_CODE = "country_code";
+    public static final String ICON = "icon";
+    public static final String MAX_TEMP = "max_temp";
+    public static final String MIN_TEMP = "min_temp";
+    public static final String LAST_UPDATE = "last_update";
 
     //create table statements
     private static final String CREATE_MY_LOCATIONS = "CREATE TABLE IF NOT EXISTS " + MY_LOCATIONS + " ("
             + LOCATION_ID +" INTEGER PRIMARY KEY AUTOINCREMENT , "
-            + CITY + " VARCHAR(30) NOT NULL)";
+            + CITY + " VARCHAR(30) NOT NULL, "
+            + COUNTRY + " VARCHAR(30) NOT NULL)";
 
     private static final String CREATE_LAST_SEARCHED = "CREATE TABLE IF NOT EXISTS " + LAST_SEARCHED + " ("
             + SEARCHED_ID +" INTEGER PRIMARY KEY AUTOINCREMENT , "
@@ -43,7 +50,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + TEMP + " text NOT NULL, "
             + CONDITION + " text NOT NULL, "
             + MORE_INFO + " text NOT NULL, "
-            + DATE + " DATE NOT NULL, "
+            + DATE + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
+            + COUNTRY + " text NOT NULL, "
+            + COUNTRY_CODE + " text NOT NULL, "
+            + ICON + " text NOT NULL, "
+            + MAX_TEMP + " text NOT NULL, "
+            + MIN_TEMP + " text NOT NULL, "
+            + LAST_UPDATE + " text NOT NULL "
             +") ";
 
     private DatabaseHelper(Context context) {
@@ -53,8 +66,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL(MY_LOCATIONS);
-        db.execSQL(LAST_SEARCHED);
+        db.execSQL(CREATE_MY_LOCATIONS);
+        db.execSQL(CREATE_LAST_SEARCHED);
     }
 
     @Override

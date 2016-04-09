@@ -42,6 +42,7 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
     private String city;
     private String code;
     private int id;
+    private static String API_KEY = "9d48021d05e97609";
 
     public HourlyWeatherFragment() {
         // Required empty public constructor
@@ -80,7 +81,7 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
         protected Void doInBackground(Void... params) {
             try {
 
-                URL url = new URL("http://api.wunderground.com/api/"+CurrentWeatherFragment.API_KEY+"/hourly/q/"+code+"/"+city+".json");
+                URL url = new URL("http://api.wunderground.com/api/"+API_KEY+"/hourly/q/"+code+"/"+city+".json");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
@@ -126,7 +127,7 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
         @Override
         protected Void doInBackground(Void... params) {
             try{
-                URL url = new URL("http://api.wunderground.com/api/"+CurrentWeatherFragment.API_KEY+"/forecast7day/q/"+code+"/"+city+".json");
+                URL url = new URL("http://api.wunderground.com/api/"+API_KEY+"/forecast7day/q/"+code+"/"+city+".json");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 

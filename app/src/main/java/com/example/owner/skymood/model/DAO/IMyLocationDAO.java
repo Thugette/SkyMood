@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public interface IMyLocationDAO {
 
     ArrayList<String> getAllMyLocations();
-    long insertMyLocation(String city);
+    long insertMyLocation(String city, String country);
     String selectMyCity(String city);
     long deleteMyLocation(String city);
 }

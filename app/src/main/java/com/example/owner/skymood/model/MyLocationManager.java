@@ -27,8 +27,8 @@ public class MyLocationManager {
         return locationDAO.getAllMyLocations();
     }
 
-    public long insertMyLocation(String city){
-        return locationDAO.insertMyLocation(city);
+    public long insertMyLocation(String city, String country){
+        return locationDAO.insertMyLocation(city, country);
     }
 
     public String selectMyCity(String city) {

@@ -5,11 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.util.Log;
 
 import com.example.owner.skymood.model.DatabaseHelper;
 import com.example.owner.skymood.model.SearchedLocation;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by owner on 05/04/2016.
@@ -45,24 +48,35 @@ public class SearchedLocationsDAO implements ISearchedLocations{
                 String hourlyJSON = c.getString(c.getColumnIndex(helper.HOURLY_WEATHER));
                 String weeklyJSON = c.getString(c.getColumnIndex(helper.WEEKLY_WEATHER));
                 String date = c.getString(c.getColumnIndex(helper.DATE));
+                String country = c.getString(c.getColumnIndex(helper.COUNTRY));
+                String code = c.getString(c.getColumnIndex(helper.COUNTRY_CODE));
+                String max = c.getString(c.getColumnIndex(helper.MAX_TEMP));
+                String min = c.getString(c.getColumnIndex(helper.MIN_TEMP));
+                String lastUpdate = c.getString(c.getColumnIndex(helper.LAST_UPDATE));
+                String icon = c.getString(c.getColumnIndex(helper.ICON));
 
-                SearchedLocation location = new SearchedLocation(id, city, temp, condition, moreinfo, hourlyJSON, weeklyJSON, date);
+
+                SearchedLocation location = new SearchedLocation(id, city, temp, condition, moreinfo, hourlyJSON, weeklyJSON, date, country, code, max, min, lastUpdate, icon);
                 cities.add(location);
             }
-            while (c.moveToFirst());
+            while (c.moveToNext());
         return cities;
     }
 
     @Override
     public long insertSearchedLocation(SearchedLocation location) {
-        if(checkCity(location.getCity())){
-            return -1;
+        long id = checkCity(location.getCity());
+        if (id != -1){
+            Log.e("DIDI", "DAO update existing city");
+            return updateLocation(id, location);
         }
         else if(getCount() < 5){
+            Log.e("DIDI", "DAO new location inserted");
             return insertLocation(location);
         }
         else{
-            long id = selectFirstSearchedCity().getId();
+            id = selectFirstSearchedCity().getId();
+            Log.e("DIDI", "DAO location REinserted");
             return updateLocation(id, location);
         }
     }
@@ -70,7 +84,7 @@ public class SearchedLocationsDAO implements ISearchedLocations{
     @Override
     public SearchedLocation selectFirstSearchedCity() {
         SQLiteDatabase db = helper.getReadableDatabase();
-        String query = "SELECT * FROM "+ helper.LAST_SEARCHED +" ORDER BY date("+ helper.DATE +") Limit 1";
+        String query = "SELECT * FROM "+ helper.LAST_SEARCHED +" ORDER BY datetime("+ helper.DATE +") Limit 1";
         Cursor c = db.rawQuery(query, null);
         SearchedLocation location = null;
         if(c.moveToFirst())
@@ -79,12 +93,18 @@ public class SearchedLocationsDAO implements ISearchedLocations{
                 String city = c.getString(c.getColumnIndex(helper.CITY));
                 String temp = c.getString(c.getColumnIndex(helper.TEMP));
                 String condition = c.getString(c.getColumnIndex(helper.CONDITION));
-                String moreInfo = c.getString(c.getColumnIndex(helper.MORE_INFO));
+                String moreinfo = c.getString(c.getColumnIndex(helper.MORE_INFO));
                 String hourlyJSON = c.getString(c.getColumnIndex(helper.HOURLY_WEATHER));
                 String weeklyJSON = c.getString(c.getColumnIndex(helper.WEEKLY_WEATHER));
                 String date = c.getString(c.getColumnIndex(helper.DATE));
+                String country = c.getString(c.getColumnIndex(helper.COUNTRY));
+                String code = c.getString(c.getColumnIndex(helper.COUNTRY_CODE));
+                String max = c.getString(c.getColumnIndex(helper.MAX_TEMP));
+                String min = c.getString(c.getColumnIndex(helper.MIN_TEMP));
+                String lastUpdate = c.getString(c.getColumnIndex(helper.LAST_UPDATE));
+                String icon = c.getString(c.getColumnIndex(helper.ICON));
 
-                location = new SearchedLocation(id, city, temp, condition, moreInfo, hourlyJSON, weeklyJSON, date);
+                location = new SearchedLocation(id, city, temp, condition, moreinfo, hourlyJSON, weeklyJSON, date, country, code, max, min, lastUpdate, icon);
 
             }
             while (c.moveToFirst());
@@ -100,15 +120,16 @@ public class SearchedLocationsDAO implements ISearchedLocations{
     }
 
     @Override
-    public boolean checkCity(String city) {
+    public long checkCity(String city) {
         SQLiteDatabase db = helper.getReadableDatabase();
-        String query = "SELECT "+ helper.CITY +" FROM " + helper.LAST_SEARCHED
-                + " WHERE " + helper.CITY + " = " + city;
+        String query = "SELECT "+ helper.SEARCHED_ID +", "+ helper.CITY +" FROM " + helper.LAST_SEARCHED
+                + " WHERE " + helper.CITY + " = " + "\"" + city+ "\"";
         Cursor c = db.rawQuery(query,  null);
-        if(c.moveToFirst())
-            return true;
+        if(c.moveToFirst()) {
+            return c.getLong(c.getColumnIndex(helper.SEARCHED_ID));
+        }
         else
-            return false;
+            return -1;
     }
 
     @Override
@@ -118,9 +139,18 @@ public class SearchedLocationsDAO implements ISearchedLocations{
         values.put(helper.CITY, location.getCity());
         values.put(helper.TEMP, location.getTemp());
         values.put(helper.CONDITION, location.getCondition());
-        values.put(helper.MORE_INFO, location.getMoreInfo());
-        values.put(helper.HOURLY_WEATHER, location.getHourlyJSON());
-        values.put(helper.WEEKLY_WEATHER, location.getWeeklyJSON());
+        values.put(helper.MORE_INFO, "null");
+        values.put(helper.HOURLY_WEATHER, "null");
+        values.put(helper.WEEKLY_WEATHER,"null");
+        values.put(helper.COUNTRY, location.getCountry());
+        values.put(helper.COUNTRY_CODE, location.getCode());
+        values.put(helper.MAX_TEMP, location.getMax());
+        values.put(helper.MIN_TEMP, location.getMin());
+        values.put(helper.LAST_UPDATE, location.getLastUpdate());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String strDate = sdf.format(new Date());
+        values.put(helper.DATE, strDate);
+        values.put(helper.ICON, location.getIcon());
         long id = db.insert(helper.LAST_SEARCHED, null, values);
         return id;
     }
@@ -132,9 +162,18 @@ public class SearchedLocationsDAO implements ISearchedLocations{
         values.put(helper.CITY, location.getCity());
         values.put(helper.TEMP, location.getTemp());
         values.put(helper.CONDITION, location.getCondition());
-        values.put(helper.MORE_INFO, location.getMoreInfo());
-        values.put(helper.HOURLY_WEATHER, location.getHourlyJSON());
-        values.put(helper.WEEKLY_WEATHER, location.getWeeklyJSON());
+        values.put(helper.MORE_INFO, "null");
+        values.put(helper.HOURLY_WEATHER, "null");
+        values.put(helper.WEEKLY_WEATHER, "null");
+        values.put(helper.COUNTRY, location.getCountry());
+        values.put(helper.COUNTRY_CODE, location.getCode());
+        values.put(helper.MAX_TEMP, location.getMax());
+        values.put(helper.MIN_TEMP, location.getMin());
+        values.put(helper.LAST_UPDATE, location.getLastUpdate());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String strDate = sdf.format(new Date());
+        values.put(helper.DATE, strDate);
+        values.put(helper.ICON, location.getIcon());
         long result = db.update(helper.LAST_SEARCHED, values, helper.SEARCHED_ID + " = ? ", new String[]{""+id});
         return result;
     }

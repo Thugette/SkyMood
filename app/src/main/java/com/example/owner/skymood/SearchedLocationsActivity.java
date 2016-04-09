@@ -9,6 +9,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.owner.skymood.model.SearchedLocation;
+import com.example.owner.skymood.model.SearchedLocationManager;
+
+import java.util.ArrayList;
+
 public class SearchedLocationsActivity extends AppCompatActivity implements View.OnClickListener{
 
     private Button location1;
@@ -16,18 +21,28 @@ public class SearchedLocationsActivity extends AppCompatActivity implements View
     private Button location3;
     private Button location4;
     private Button location5;
+    private ArrayList<SearchedLocation> locations;
+    private SearchedLocationManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_searched_locations);
 
+        manager = SearchedLocationManager.getInstance(this);
+        locations = manager.getAllSearchedLocations();
         //setting toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        int[] buttonIDs = new int[] {R.id.location1, R.id.location2, R.id.location3, R.id.location4,R.id.location5 };
         //initializing buttons
+        for(int i=0; i<locations.size(); i++){
+            Button location = (Button) findViewById(buttonIDs[i]);
+            location.setVisibility(View.VISIBLE);
+            location.setText(locations.get(i).getCity() + ", " + locations.get(i).getCountry());
+        }
         location1 = (Button) findViewById(R.id.location1);
         location2 = (Button) findViewById(R.id.location2);
         location3 = (Button) findViewById(R.id.location3);
