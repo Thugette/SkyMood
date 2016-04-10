@@ -53,23 +53,27 @@ public class MyWidgedProvider extends AppWidgetProvider {
 
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
                     R.layout.widget_layout);
-            remoteViews.setTextViewText(R.id.widget_city, city);
-            remoteViews.setTextViewText(R.id.widget_country, country);
-            this.condition = pref.getCondition();
-            remoteViews.setTextViewText(R.id.condition, this.condition);
-            this.temp = pref.getTemperature();
-            remoteViews.setTextViewText(R.id.degree, this.temp + "℃");
+            if(!pref.hasNull()) {
+                remoteViews.setTextViewText(R.id.widget_city, city);
+                remoteViews.setTextViewText(R.id.widget_country, country);
+                this.condition = pref.getCondition();
+                remoteViews.setTextViewText(R.id.condition, this.condition);
+                this.temp = pref.getTemperature();
+                remoteViews.setTextViewText(R.id.degree, this.temp + "℃");
 
-            Field field = null;
-            try {
-                field = R.drawable.class.getDeclaredField(pref.getIcon());
-                iconId = field.getInt(this);
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Field field = null;
+                try {
+                    field = R.drawable.class.getDeclaredField(pref.getIcon());
+                    iconId = field.getInt(this);
+                } catch (NoSuchFieldException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                remoteViews.setImageViewResource(R.id.icon, iconId);
+            } else {
+                remoteViews.setTextViewText(R.id.condition, "No Internet Connection :(");
             }
-            remoteViews.setImageViewResource(R.id.icon, iconId);
 
             //update when the update button is clicked
             Intent intent = new Intent(context, MyWidgedProvider.class);

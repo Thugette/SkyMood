@@ -97,4 +97,14 @@ public class LocationPreference {
         return pref.getString(LAST_UPDATE, null);
     }
 
+    public boolean hasNull(){
+        if(getCity() == null || getCountry() == null || getCountryCode() == null || getIcon() == null
+                || getTemperature() == null || getMinTemp() == null || getMaxTemp() == null
+                || getCondition() == null || getFeelsLike() == null || getLastUpdate() == null){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
