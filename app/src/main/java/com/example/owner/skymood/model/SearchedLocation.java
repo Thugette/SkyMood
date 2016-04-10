@@ -1,9 +1,11 @@
 package com.example.owner.skymood.model;
 
+import java.io.Serializable;
+
 /**
  * Created by owner on 05/04/2016.
  */
-public class SearchedLocation {
+public class SearchedLocation implements Serializable{
     private long id;
     private String city;
     private String temp;

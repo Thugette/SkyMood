@@ -160,7 +160,7 @@ public class APIDataGetterAsyncTask extends AsyncTask<String, Void, Void> {
                 }
                 else {
                     //insert into DB
-                    SearchedLocation loc = new SearchedLocation(city, temp, condition, activity.getMoreInfoJSON(), activity.getHourlyJSON(), activity.getWeeklyJSON(), country, countryCode, maxTemp, minTemp, lastUpdate, icon);
+                    SearchedLocation loc = new SearchedLocation(city, temp, condition, activity.getMoreInfoJSON(), activity.getHourlyJSON(), activity.getWeeklyJSON(), country, countryCode, maxTemp, minTemp, lastUpdate, icon, feelsLike);
                     manager.insertSearchedLocation(loc);
                     Log.e("DIDI", "insert invoked");
                 }

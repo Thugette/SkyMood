@@ -14,7 +14,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static DatabaseHelper instance;
 
     public static final String DATABASE_NAME = "SKY_MOOD_DATABASE";
-    public static final int DATABASE_VERSION = 8;
+    public static final int DATABASE_VERSION = 9;
 
     //tables
     public static final String MY_LOCATIONS = "my_locations";
