@@ -1,5 +1,6 @@
 package com.example.owner.skymood;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -13,17 +14,21 @@ import android.webkit.WebView;
 import android.widget.LinearLayout;
 
 import com.example.owner.skymood.adapters.CustomPagerAdapter;
+import com.example.owner.skymood.asyncTasks.APIDataGetterAsyncTask;
 import com.example.owner.skymood.asyncTasks.GetHourlyTask;
 import com.example.owner.skymood.asyncTasks.GetWeeklyTask;
+import com.example.owner.skymood.fragments.CurrentWeatherFragment;
 import com.example.owner.skymood.fragments.HourlyWeatherFragment;
 import com.example.owner.skymood.fragments.ICommunicatior;
 import com.example.owner.skymood.fragments.MoreInfoFragment;
+import com.example.owner.skymood.model.SearchedLocation;
 
 public class SwipeViewActivity extends AppCompatActivity implements ICommunicatior{
 
     public static final int NUMBER_OF_PAGES = 3;
     public static final String DAY = "day";
     public static final String NIGHT = "night";
+    public static final int REQUEST_CODE_SEARCHED_LOCATIONS = 5;
 
     CustomPagerAdapter adapter;
     ViewPager pager;
@@ -94,11 +99,10 @@ public class SwipeViewActivity extends AppCompatActivity implements ICommunicati
         Intent intent = null;
         switch (item.getItemId()) {
             case R.id.sky_mood:
-                intent = new Intent(this, SwipeViewActivity.class);
-                startActivity(intent);
                 return true;
             case R.id.searched_locations:
                 intent = new Intent(this, SearchedLocationsActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_SEARCHED_LOCATIONS);
                 startActivity(intent);
                 return true;
             case R.id.my_locations:
@@ -107,6 +111,27 @@ public class SwipeViewActivity extends AppCompatActivity implements ICommunicati
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_SEARCHED_LOCATIONS) {
+            if(resultCode == Activity.RESULT_OK){
+                String city = data.getStringExtra(SearchedLocationsActivity.CITY);
+                String country = data.getStringExtra(SearchedLocationsActivity.COUNTRY);
+                String countryCode = data.getStringExtra(SearchedLocationsActivity.COUNTRY_CODE);
+                SearchedLocation object = data.getParcelableExtra(SearchedLocationsActivity.SEARCHED_LOCATION_OBJECT);
+
+                CurrentWeatherFragment fragment = (CurrentWeatherFragment)adapter.getItem(0);
+                if(fragment.isOnline()) {
+                    APIDataGetterAsyncTask task = new APIDataGetterAsyncTask(fragment, this, fragment.getWeatherImage());
+                    task.execute(countryCode, city, country);
+                } else {
+                    fragment.setInfoData(city, country, object.getIcon(), object.getTemp(), object.getMin(), object.getMax(),
+                            object.getCondition(), object.getFeelsLike(), object.getLastUpdate());
+                }
+            }
         }
     }
 
