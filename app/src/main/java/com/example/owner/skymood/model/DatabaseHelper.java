@@ -38,6 +38,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String MAX_TEMP = "max_temp";
     public static final String MIN_TEMP = "min_temp";
     public static final String LAST_UPDATE = "last_update";
+    public static final String FEELS_LIKE = "feels_like";
 
     //create table statements
     private static final String CREATE_MY_LOCATIONS = "CREATE TABLE IF NOT EXISTS " + MY_LOCATIONS + " ("
@@ -61,7 +62,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + ICON + " text NOT NULL, "
             + MAX_TEMP + " text NOT NULL, "
             + MIN_TEMP + " text NOT NULL, "
-            + LAST_UPDATE + " text NOT NULL "
+            + LAST_UPDATE + " text NOT NULL, "
+            + FEELS_LIKE + " text NOT NULL "
             +") ";
 
     private DatabaseHelper(Context context) {

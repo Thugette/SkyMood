@@ -54,9 +54,9 @@ public class SearchedLocationsDAO implements ISearchedLocations{
                 String min = c.getString(c.getColumnIndex(helper.MIN_TEMP));
                 String lastUpdate = c.getString(c.getColumnIndex(helper.LAST_UPDATE));
                 String icon = c.getString(c.getColumnIndex(helper.ICON));
+                String feelsLike = c.getString(c.getColumnIndex(helper.FEELS_LIKE));
 
-
-                SearchedLocation location = new SearchedLocation(id, city, temp, condition, moreinfo, hourlyJSON, weeklyJSON, date, country, code, max, min, lastUpdate, icon);
+                SearchedLocation location = new SearchedLocation(id, city, temp, condition, moreinfo, hourlyJSON, weeklyJSON, date, country, code, max, min, lastUpdate, icon, feelsLike);
                 cities.add(location);
             }
             while (c.moveToNext());
@@ -102,8 +102,9 @@ public class SearchedLocationsDAO implements ISearchedLocations{
                 String min = c.getString(c.getColumnIndex(helper.MIN_TEMP));
                 String lastUpdate = c.getString(c.getColumnIndex(helper.LAST_UPDATE));
                 String icon = c.getString(c.getColumnIndex(helper.ICON));
+                String feelsLike = c.getString(c.getColumnIndex(helper.FEELS_LIKE));
 
-                location = new SearchedLocation(id, city, temp, condition, moreinfo, hourlyJSON, weeklyJSON, date, country, code, max, min, lastUpdate, icon);
+                location = new SearchedLocation(id, city, temp, condition, moreinfo, hourlyJSON, weeklyJSON, date, country, code, max, min, lastUpdate, icon, feelsLike);
 
             }
             while (c.moveToNext());
@@ -159,6 +160,7 @@ public class SearchedLocationsDAO implements ISearchedLocations{
         String strDate = sdf.format(new Date());
         values.put(helper.DATE, strDate);
         values.put(helper.ICON, location.getIcon());
+        values.put(helper.FEELS_LIKE, location.getFeelsLike());
         long id = db.insert(helper.LAST_SEARCHED, null, values);
 
         db.close();
@@ -184,6 +186,7 @@ public class SearchedLocationsDAO implements ISearchedLocations{
         String strDate = sdf.format(new Date());
         values.put(helper.DATE, strDate);
         values.put(helper.ICON, location.getIcon());
+        values.put(helper.FEELS_LIKE, location.getFeelsLike());
         long result = db.update(helper.LAST_SEARCHED, values, helper.SEARCHED_ID + " = ? ", new String[]{""+id});
 
         db.close();

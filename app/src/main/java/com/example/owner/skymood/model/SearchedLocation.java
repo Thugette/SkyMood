@@ -18,9 +18,10 @@ public class SearchedLocation {
     private String min;
     private String lastUpdate;
     private String icon;
+    private String feelsLike;
 
 
-    public SearchedLocation(String city, String temp, String condition, String moreInfo, String hourlyJSON, String weeklyJSON, String country, String code, String max, String min, String lastUpdate, String icon) {
+    public SearchedLocation(String city, String temp, String condition, String moreInfo, String hourlyJSON, String weeklyJSON, String country, String code, String max, String min, String lastUpdate, String icon, String feelsLike) {
         this.city = city;
         this.temp = temp;
         this.condition = condition;
@@ -33,14 +34,15 @@ public class SearchedLocation {
         this.min = min;
         this.lastUpdate = lastUpdate;
         this.icon = icon;
+        this.feelsLike = feelsLike;
     }
 
-    public SearchedLocation( String city, String temp, String condition, String moreInfo, String hourlyJSON, String weeklyJSON, String date, String country, String code, String max, String min, String lastUpdate, String icon) {
-        this(city, temp, condition, moreInfo, hourlyJSON, weeklyJSON, country, code, max, min, lastUpdate, icon);
+    public SearchedLocation( String city, String temp, String condition, String moreInfo, String hourlyJSON, String weeklyJSON, String date, String country, String code, String max, String min, String lastUpdate, String icon, String feelsLike) {
+        this(city, temp, condition, moreInfo, hourlyJSON, weeklyJSON, country, code, max, min, lastUpdate, icon, feelsLike);
         this.date = date;
     }
 
-    public SearchedLocation(long id, String city, String temp, String condition, String moreInfo, String hourlyJSON, String weeklyJSON, String date, String country, String code, String max, String min, String lastUpdate, String icon) {
+    public SearchedLocation(long id, String city, String temp, String condition, String moreInfo, String hourlyJSON, String weeklyJSON, String date, String country, String code, String max, String min, String lastUpdate, String icon, String feelsLike) {
         this(city, temp, condition, moreInfo, hourlyJSON, weeklyJSON, date, country, code, max, min, lastUpdate, icon);
         this.id = id;
     }
@@ -103,5 +105,9 @@ public class SearchedLocation {
 
     public String getIcon() {
         return icon;
+    }
+
+    public String getFeelsLike() {
+        return feelsLike;
     }
 }
