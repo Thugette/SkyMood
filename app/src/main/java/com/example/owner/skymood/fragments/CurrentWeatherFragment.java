@@ -112,14 +112,12 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         locPref = LocationPreference.getInstance(context);
         manager = MyLocationManager.getInstance(context);
 
-        //setting bacground
+        //setting background
         setBackground();
 
-        //seting adapter to spinner
-        //TODO filling the spinner from myLocations or from DB
+        //setting adapter to spinner
         ArrayList<String> citiesSpinner =  new ArrayList<>();
         citiesSpinner.add("My Locations");
-//        citiesSpinner.add("Plovdiv, Bulgaria");
         citiesSpinner.addAll(manager.getAllStringLocations());
         ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, citiesSpinner);
         spinner.setAdapter(adapter);

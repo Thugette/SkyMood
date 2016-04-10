@@ -1,11 +1,14 @@
 package com.example.owner.skymood.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
  * Created by owner on 05/04/2016.
  */
-public class SearchedLocation implements Serializable{
+public class SearchedLocation implements Parcelable{
     private long id;
     private String city;
     private String temp;
@@ -47,6 +50,17 @@ public class SearchedLocation implements Serializable{
     public SearchedLocation(long id, String city, String temp, String condition, String moreInfo, String hourlyJSON, String weeklyJSON, String country, String code, String max, String min, String lastUpdate, String icon, String feelsLike, String date) {
         this(city, temp, condition, moreInfo, hourlyJSON, weeklyJSON, country, code, max, min, lastUpdate, icon, feelsLike, date);
         this.id = id;
+    }
+
+    public SearchedLocation(Parcel p){
+        this.city = p.readString();
+        this.country = p.readString();
+        this.icon = p.readString();
+        this.temp = p.readString();
+        this.min = p.readString();
+        this.max = p.readString();
+        this.feelsLike = p.readString();
+        this.lastUpdate = p.readString();
     }
 
     public long getId() {
@@ -112,4 +126,34 @@ public class SearchedLocation implements Serializable{
     public String getFeelsLike() {
         return feelsLike;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(city);
+        dest.writeString(country);
+        dest.writeString(icon);
+        dest.writeString(min);
+        dest.writeString(max);
+        dest.writeString(condition);
+        dest.writeString(feelsLike);
+        dest.writeString(lastUpdate);
+    }
+
+    public static final Parcelable.Creator<SearchedLocation> CREATOR = new Parcelable.Creator<SearchedLocation>() {
+
+        @Override
+        public SearchedLocation createFromParcel(Parcel source) {
+            return new SearchedLocation(source);
+        }
+
+        @Override
+        public SearchedLocation[] newArray(int size) {
+            return new SearchedLocation[size];
+        }
+    };
 }
