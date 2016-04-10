@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.owner.skymood.asyncTasks.APIDataGetterAsyncTask;
 import com.example.owner.skymood.model.SearchedLocation;
 import com.example.owner.skymood.model.SearchedLocationManager;
 
@@ -82,7 +83,7 @@ public class SearchedLocationsActivity extends AppCompatActivity implements View
 
     @Override
     public void onClick(View v) {
-        String location = ((Button)v).getText().toString();
-        //TODO implement logic
+        String code =((SearchedLocation)v.getTag()).getCode();
+        //Intent intent = new Intent()
     }
 }
