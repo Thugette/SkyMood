@@ -11,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.owner.skymood.adapters.MyCardViewAdapter;
+import com.example.owner.skymood.model.MyLocation;
+import com.example.owner.skymood.model.MyLocationManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,22 +21,21 @@ public class MyLocationsActivity extends AppCompatActivity {
 
     CardView cardView;
     RecyclerView recycler;
-    ArrayList<String> data;
+    ArrayList<MyLocation> data;
+    MyLocationManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_locations);
+        manager = MyLocationManager.getInstance(this);
 
         //setting toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        data = new ArrayList<>();
-        data.add("Sofia");
-        data.add("Plovdiv");
-        data.add("London");
+        data = manager.getAllMyLocations();
         this.recycler = (RecyclerView) findViewById(R.id.mylocation_recycler);
         this.recycler.setLayoutManager(new LinearLayoutManager(this));
         MyCardViewAdapter adapter = new MyCardViewAdapter(this, data);

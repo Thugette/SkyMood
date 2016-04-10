@@ -9,6 +9,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.example.owner.skymood.R;
+import com.example.owner.skymood.model.MyLocation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,9 +21,9 @@ import java.util.zip.Inflater;
 public class MyCardViewAdapter extends RecyclerView.Adapter<MyCardViewAdapter.CardViewHolder>{
 
     private Context context;
-    private ArrayList<String> data;
+    private ArrayList<MyLocation> data;
 
-    public MyCardViewAdapter(Context context, ArrayList<String> data) {
+    public MyCardViewAdapter(Context context, ArrayList<MyLocation> data) {
         this.context = context;
         this.data = data;
     }
@@ -37,9 +38,9 @@ public class MyCardViewAdapter extends RecyclerView.Adapter<MyCardViewAdapter.Ca
     @Override
     public void onBindViewHolder(CardViewHolder holder, int position) {
 
-        String city = data.get(position);
-        holder.city.setText(city);
-        holder.country.setText(city);
+        MyLocation location = data.get(position);
+        holder.city.setText(location.getCity());
+        holder.country.setText(location.getCity());
     }
 
     @Override

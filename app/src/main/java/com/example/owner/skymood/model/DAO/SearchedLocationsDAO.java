@@ -60,6 +60,8 @@ public class SearchedLocationsDAO implements ISearchedLocations{
                 cities.add(location);
             }
             while (c.moveToNext());
+        c.close();
+        db.close();
         return cities;
     }
 
@@ -104,7 +106,9 @@ public class SearchedLocationsDAO implements ISearchedLocations{
                 location = new SearchedLocation(id, city, temp, condition, moreinfo, hourlyJSON, weeklyJSON, date, country, code, max, min, lastUpdate, icon);
 
             }
-            while (c.moveToFirst());
+            while (c.moveToNext());
+        c.close();
+        db.close();
         return location;
     }
 
@@ -113,6 +117,7 @@ public class SearchedLocationsDAO implements ISearchedLocations{
         String query = "SELECT COUNT(*) FROM " + helper.LAST_SEARCHED;
         SQLiteStatement statement = db.compileStatement(query);
         long count = statement.simpleQueryForLong();
+        db.close();
         return count;
     }
 
@@ -123,10 +128,16 @@ public class SearchedLocationsDAO implements ISearchedLocations{
                 + " WHERE " + helper.CITY + " = " + "\"" + city+ "\"";
         Cursor c = db.rawQuery(query,  null);
         if(c.moveToFirst()) {
-            return c.getLong(c.getColumnIndex(helper.SEARCHED_ID));
+            long id = c.getLong(c.getColumnIndex(helper.SEARCHED_ID));
+            c.close();
+            db.close();
+            return id;
         }
-        else
+        else {
+            c.close();
+            db.close();
             return -1;
+        }
     }
 
     @Override
@@ -149,6 +160,8 @@ public class SearchedLocationsDAO implements ISearchedLocations{
         values.put(helper.DATE, strDate);
         values.put(helper.ICON, location.getIcon());
         long id = db.insert(helper.LAST_SEARCHED, null, values);
+
+        db.close();
         return id;
     }
 
@@ -172,6 +185,8 @@ public class SearchedLocationsDAO implements ISearchedLocations{
         values.put(helper.DATE, strDate);
         values.put(helper.ICON, location.getIcon());
         long result = db.update(helper.LAST_SEARCHED, values, helper.SEARCHED_ID + " = ? ", new String[]{""+id});
+
+        db.close();
         return result;
     }
 

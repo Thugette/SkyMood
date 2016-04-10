@@ -37,8 +37,8 @@ public class MyLocationDAO implements IMyLocationDAO{
         String query = "SELECT * FROM " + helper.MY_LOCATIONS;
         Cursor c = db.rawQuery(query, null);
         ArrayList<MyLocation> cities = new ArrayList<MyLocation>();
-        if(c.moveToFirst())
-            do{
+        if(c.moveToFirst()) {
+            do {
                 long id = c.getLong(c.getColumnIndex(helper.LOCATION_ID));
                 String city = c.getString(c.getColumnIndex(helper.CITY));
                 String code = c.getString(c.getColumnIndex(helper.COUNTRY_CODE));
@@ -46,7 +46,10 @@ public class MyLocationDAO implements IMyLocationDAO{
                 String location = c.getString(c.getColumnIndex(helper.LOCATION));
                 cities.add(new MyLocation(id, city, code, country, location));
             }
-            while (c.moveToFirst());
+            while (c.moveToNext());
+        }
+        c.close();
+        db.close();
         return cities;
     }
 
@@ -62,6 +65,8 @@ public class MyLocationDAO implements IMyLocationDAO{
 
         if(selectMyLocation(location) == null)
             id = db.insert(helper.MY_LOCATIONS, null, values);
+
+        db.close();
         return id;
     }
 
@@ -80,17 +85,22 @@ public class MyLocationDAO implements IMyLocationDAO{
             String country = c.getString(c.getColumnIndex(helper.COUNTRY));
             String loc = c.getString(c.getColumnIndex(helper.LOCATION));
 
+            db.close();
             return new MyLocation(id, city, code, country, loc);
         }
-        else
+        else{
+            db.close();
             return null;
+        }
     }
 
     @Override
     public long deleteMyLocation(MyLocation location) {
         SQLiteDatabase db = helper.getReadableDatabase();
-        return db.delete(helper.MY_LOCATIONS, helper.CITY + " = ? AND " + helper.COUNTRY + " = ?",
+        long id =  db.delete(helper.MY_LOCATIONS, helper.CITY + " = ? AND " + helper.COUNTRY + " = ?",
                 new String[] {location.getCity(), location.getCountry()});
+        db.close();
+        return id;
     }
 
     @Override
@@ -100,10 +110,16 @@ public class MyLocationDAO implements IMyLocationDAO{
                 + " WHERE " + helper.CITY + " = \"" + city + "\" AND " + helper.COUNTRY + " = \"" + country + "\"";
         Cursor c = db.rawQuery(query, null);
         if(c.moveToFirst()){
-            return c.getString(c.getColumnIndex(helper.COUNTRY_CODE));
+            String s = c.getString(c.getColumnIndex(helper.COUNTRY_CODE));
+            c.close();
+            db.close();
+            return s;
         }
-        else
+        else {
+            c.close();
+            db.close();
             return null;
+        }
     }
 
     @Override
@@ -118,6 +134,8 @@ public class MyLocationDAO implements IMyLocationDAO{
             }
             while(c.moveToNext());
         }
+        c.close();
+        db.close();
         return locations;
     }
 
