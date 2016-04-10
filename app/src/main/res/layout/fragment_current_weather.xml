@@ -47,6 +47,8 @@
                android:shadowDy="2"
                android:id="@+id/country"/>
 
+
+
        </LinearLayout>
 
 
@@ -214,7 +216,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:orientation="horizontal"
         android:gravity="center">
+
+        <ImageView
+            android:id="@+id/add_favourite"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:visibility="gone"
+            android:src="@drawable/add_favorite"/>
 
         <TextView
             android:layout_width="wrap_content"

@@ -61,10 +61,11 @@ public class GetWeeklyTask extends AsyncTask<String, Void, Void> {
             JSONObject simpleforecast = forecast.getJSONObject("simpleforecast");
             JSONArray forecastdayArray = (JSONArray) simpleforecast.get("forecastday");
 
+            weeklyWeather = ((HourlyWeatherFragment)fragment).getWeeklyWeatherArray();
             if(weeklyWeather == null){
                 Thread.sleep(1000);
             }
-            weeklyWeather = ((HourlyWeatherFragment)fragment).getWeeklyWeatherArray();
+
             weeklyWeather.removeAll(weeklyWeather);
             weeklyWeather.removeAll(weeklyWeather);
             for(int i = 0; i < forecastdayArray.length(); i++) {

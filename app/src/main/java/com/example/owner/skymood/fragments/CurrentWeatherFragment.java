@@ -32,6 +32,7 @@ import com.example.owner.skymood.asyncTasks.FindLocationAsyncTask;
 import com.example.owner.skymood.asyncTasks.GetHourlyTask;
 import com.example.owner.skymood.asyncTasks.GetWeeklyTask;
 import com.example.owner.skymood.model.LocationPreference;
+import com.example.owner.skymood.model.MyLocation;
 import com.example.owner.skymood.model.MyLocationManager;
 
 import java.util.ArrayList;
@@ -62,6 +63,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
     private TextView minTempTextView;
     private TextView maxTempTextView;
     private ImageView weatherImage;
+    private ImageView addImage;
 
     private String city;
     private String country;
@@ -73,6 +75,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
     private HashMap<String, String> cities;
     private ArrayList<String> autoCopleteNames;
     private ArrayAdapter adapterAutoComplete;
+    ArrayList<String> citiesSpinner;
 
     private InputMethodManager keyboard;
     private Context context;
@@ -106,6 +109,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         chosenCityTextView = (TextView) rootView.findViewById(R.id.chosenCity);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         spinner = (Spinner) rootView.findViewById(R.id.locationSpinner);
+        addImage = (ImageView) rootView.findViewById(R.id.add_favourite);
         cities = new HashMap<>();
 
         //shared prefs
@@ -116,7 +120,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         setBackground();
 
         //setting adapter to spinner
-        ArrayList<String> citiesSpinner =  new ArrayList<>();
+        citiesSpinner =  new ArrayList<>();
         citiesSpinner.add("My Locations");
         citiesSpinner.addAll(manager.getAllStringLocations());
         ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, citiesSpinner);
@@ -259,7 +263,6 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                 country = locPref.getCountry();
                 task.execute(countryCode, city, country);
                 hourTask.execute(city, countryCode);
-                Log.e("DIDI", "task started from set prefs");
                 weeklyTask.execute(city, countryCode);
             } else {
                 //API autoIP
@@ -276,8 +279,23 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                 feelsLike.setText("Please connect to Internet");
             }
         }
+
+        addImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(city != null && country != null) {
+                    MyLocation myloc = new MyLocation(city, countryCode, country, city + ", " + country);
+                    if (manager.selectMyLocation(myloc) == null) {
+                        manager.insertMyLocation(myloc);
+                        Toast.makeText(context, "location inserted to MyLocations", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, "location already exists", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
         return rootView;
-    }
+    }// end of onCreate
 
     @Override
     public void setContext(Context context) {
@@ -343,6 +361,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         this.chosenCityTextView.setText(cityToDisplay);
         this.countryTextView.setVisibility(View.VISIBLE);
         this.countryTextView.setText(country);
+        this.addImage.setVisibility(View.VISIBLE);
 
         if(temp != null) {
             this.temperature.setText(temp + "°");

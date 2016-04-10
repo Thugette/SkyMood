@@ -96,7 +96,7 @@ public class APIDataGetterAsyncTask extends AsyncTask<String, Void, Void> {
                 data.append(sc2.nextLine());
             }
             String dataJson = data.toString();
-
+            Log.e("DIDI", dataJson);
             JSONObject dataJsonObj = new JSONObject(dataJson);
             JSONObject forecast = dataJsonObj.getJSONObject("forecast");
             JSONObject simpleForecast = forecast.getJSONObject("simpleforecast");

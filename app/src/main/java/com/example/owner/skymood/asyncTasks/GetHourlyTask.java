@@ -66,6 +66,10 @@ public class GetHourlyTask extends AsyncTask<String, Void, Void> {
 
 
             hourlyWeather = fragment.getHourlyWeatherArray();
+            if(hourlyWeather == null){
+                Thread.sleep(1000);
+                hourlyWeather = fragment.getHourlyWeatherArray();
+            }
             hourlyWeather.removeAll(hourlyWeather);
 
             for(int i = 0; i < hourlyArray.length(); i++){
@@ -83,6 +87,8 @@ public class GetHourlyTask extends AsyncTask<String, Void, Void> {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 

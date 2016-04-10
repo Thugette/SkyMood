@@ -85,11 +85,9 @@ public class MyLocationDAO implements IMyLocationDAO{
             String country = c.getString(c.getColumnIndex(helper.COUNTRY));
             String loc = c.getString(c.getColumnIndex(helper.LOCATION));
 
-            db.close();
             return new MyLocation(id, city, code, country, loc);
         }
         else{
-            db.close();
             return null;
         }
     }
