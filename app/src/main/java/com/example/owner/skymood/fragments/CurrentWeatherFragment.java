@@ -266,14 +266,6 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                 //API autoIP
                 findLocation();
             }
-//            if(city == null) {
-//                setCity(DEFAULT_CITY);
-//                countryCode = DEFAULT_COUNTRY_CODE;
-//                country = DEFAULT_COUNTRY;
-//                task.execute(countryCode, city, country);
-//                hourTask.execute(city, countryCode);
-//                Log.e("didi", "null city task started");
-//            }
         } else {
             if(locPref.isSetLocation()){
                 Toast.makeText(context, "NO INTERNET CONNECTION\nFor up to date info connect to Internet", Toast.LENGTH_LONG).show();

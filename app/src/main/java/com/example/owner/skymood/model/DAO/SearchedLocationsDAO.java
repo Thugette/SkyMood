@@ -56,7 +56,7 @@ public class SearchedLocationsDAO implements ISearchedLocations{
                 String icon = c.getString(c.getColumnIndex(helper.ICON));
                 String feelsLike = c.getString(c.getColumnIndex(helper.FEELS_LIKE));
 
-                SearchedLocation location = new SearchedLocation(id, city, temp, condition, moreinfo, hourlyJSON, weeklyJSON, date, country, code, max, min, lastUpdate, icon, feelsLike);
+                SearchedLocation location = new SearchedLocation(id, city, temp, condition, moreinfo, hourlyJSON, weeklyJSON, country, code, max, min, lastUpdate, icon, feelsLike, date);
                 cities.add(location);
             }
             while (c.moveToNext());
@@ -149,8 +149,8 @@ public class SearchedLocationsDAO implements ISearchedLocations{
         values.put(helper.TEMP, location.getTemp());
         values.put(helper.CONDITION, location.getCondition());
         values.put(helper.MORE_INFO, "null");
-        values.put(helper.HOURLY_WEATHER, location.getHourlyJSON());
-        values.put(helper.WEEKLY_WEATHER,"null");
+        values.put(helper.HOURLY_WEATHER, "null");
+        values.put(helper.WEEKLY_WEATHER, "null");
         values.put(helper.COUNTRY, location.getCountry());
         values.put(helper.COUNTRY_CODE, location.getCode());
         values.put(helper.MAX_TEMP, location.getMax());

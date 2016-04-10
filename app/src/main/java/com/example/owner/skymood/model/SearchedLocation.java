@@ -39,13 +39,13 @@ public class SearchedLocation implements Serializable{
         this.feelsLike = feelsLike;
     }
 
-    public SearchedLocation( String city, String temp, String condition, String moreInfo, String hourlyJSON, String weeklyJSON, String date, String country, String code, String max, String min, String lastUpdate, String icon, String feelsLike) {
+    public SearchedLocation( String city, String temp, String condition, String moreInfo, String hourlyJSON, String weeklyJSON, String country, String code, String max, String min, String lastUpdate, String icon, String feelsLike, String date) {
         this(city, temp, condition, moreInfo, hourlyJSON, weeklyJSON, country, code, max, min, lastUpdate, icon, feelsLike);
         this.date = date;
     }
 
-    public SearchedLocation(long id, String city, String temp, String condition, String moreInfo, String hourlyJSON, String weeklyJSON, String date, String country, String code, String max, String min, String lastUpdate, String icon, String feelsLike) {
-        this(city, temp, condition, moreInfo, hourlyJSON, weeklyJSON, date, country, code, max, min, lastUpdate, icon);
+    public SearchedLocation(long id, String city, String temp, String condition, String moreInfo, String hourlyJSON, String weeklyJSON, String country, String code, String max, String min, String lastUpdate, String icon, String feelsLike, String date) {
+        this(city, temp, condition, moreInfo, hourlyJSON, weeklyJSON, country, code, max, min, lastUpdate, icon, feelsLike, date);
         this.id = id;
     }
 
