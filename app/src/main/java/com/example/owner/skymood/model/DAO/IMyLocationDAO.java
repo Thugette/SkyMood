@@ -1,5 +1,7 @@
 package com.example.owner.skymood.model.DAO;
 
+import com.example.owner.skymood.model.MyLocation;
+
 import java.util.ArrayList;
 
 /**
@@ -7,8 +9,10 @@ import java.util.ArrayList;
  */
 public interface IMyLocationDAO {
 
-    ArrayList<String> getAllMyLocations();
-    long insertMyLocation(String city, String country);
-    String selectMyCity(String city);
-    long deleteMyLocation(String city);
+    ArrayList<MyLocation> getAllMyLocations();
+    long insertMyLocation(MyLocation location);
+    MyLocation selectMyLocation(MyLocation location);
+    long deleteMyLocation(MyLocation location);
+    String selectCuntryCode(String city, String country);
+    ArrayList<String> getAllStringLocations();
 }

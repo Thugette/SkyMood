@@ -23,16 +23,28 @@ public class MyLocationManager {
         return ourInstance;
     }
 
-    public ArrayList<String> getAllMyLocations(){
+    public ArrayList<MyLocation> getAllMyLocations(){
         return locationDAO.getAllMyLocations();
     }
 
-    public long insertMyLocation(String city, String country){
-        return locationDAO.insertMyLocation(city, country);
+    public long insertMyLocation(MyLocation location){
+        return locationDAO.insertMyLocation(location);
     }
 
-    public String selectMyCity(String city) {
-        return locationDAO.selectMyCity(city);
+    public MyLocation selectMyLocation(MyLocation location) {
+        return locationDAO.selectMyLocation(location);
+    }
+
+    public long deleteMyLocation(MyLocation location){
+        return locationDAO.deleteMyLocation(location);
+    }
+
+    public ArrayList<String> getAllStringLocations(){
+        return locationDAO.getAllStringLocations();
+    }
+
+    public String selectCuntryCode(String city, String country){
+        return locationDAO.selectCuntryCode(city, country);
     }
 
 }

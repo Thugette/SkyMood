@@ -1,6 +1,8 @@
 package com.example.owner.skymood.model;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -12,7 +14,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static DatabaseHelper instance;
 
     public static final String DATABASE_NAME = "SKY_MOOD_DATABASE";
-    public static final int DATABASE_VERSION = 6;
+    public static final int DATABASE_VERSION = 8;
 
     //tables
     public static final String MY_LOCATIONS = "my_locations";
@@ -71,6 +73,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(CREATE_MY_LOCATIONS);
         db.execSQL(CREATE_LAST_SEARCHED);
+        insertMyLocations(db);
     }
 
     @Override
@@ -86,5 +89,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(instance == null)
             instance = new DatabaseHelper(context);
         return instance;
+    }
+
+    //TODO remove query
+    public void insertMyLocations(SQLiteDatabase db){
+        ContentValues values = new ContentValues();
+        values.put(CITY, "Sofia");
+        values.put(COUNTRY, "Bulgaria");
+        values.put(COUNTRY_CODE, "BG");
+        values.put(LOCATION, "Sofia, Bulgaria");
+        db.insert(MY_LOCATIONS, null, values);
     }
 }

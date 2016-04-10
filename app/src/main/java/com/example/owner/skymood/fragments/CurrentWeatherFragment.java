@@ -32,6 +32,7 @@ import com.example.owner.skymood.asyncTasks.FindLocationAsyncTask;
 import com.example.owner.skymood.asyncTasks.GetHourlyTask;
 import com.example.owner.skymood.asyncTasks.GetWeeklyTask;
 import com.example.owner.skymood.model.LocationPreference;
+import com.example.owner.skymood.model.MyLocationManager;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -76,6 +77,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
     private InputMethodManager keyboard;
     private Context context;
     private LocationPreference locPref;
+    private MyLocationManager manager;
 
     public CurrentWeatherFragment() {
         // Required empty public constructor
@@ -108,6 +110,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
 
         //shared prefs
         locPref = LocationPreference.getInstance(context);
+        manager = MyLocationManager.getInstance(context);
 
         //setting bacground
         setBackground();
@@ -116,7 +119,8 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         //TODO filling the spinner from myLocations or from DB
         ArrayList<String> citiesSpinner =  new ArrayList<>();
         citiesSpinner.add("My Locations");
-        citiesSpinner.add("Plovdiv, Bulgaria");
+//        citiesSpinner.add("Plovdiv, Bulgaria");
+        citiesSpinner.addAll(manager.getAllStringLocations());
         ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, citiesSpinner);
         spinner.setAdapter(adapter);
 
@@ -132,8 +136,9 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                         //countryCode from  DB
                         APIDataGetterAsyncTask task = new APIDataGetterAsyncTask(CurrentWeatherFragment.this, context, weatherImage);
                         //TODO remove next line
-                        countryCode = "BG";
-                        task.execute(countryCode, "Plovdiv", "Bulgaria");
+                        //countryCode = "BG";
+                        countryCode = manager.selectCuntryCode(city, country);
+                        task.execute(countryCode, city, country);
                     } else {
                         //TODO check if there is information in DB
 

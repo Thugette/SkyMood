@@ -117,7 +117,7 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
         this.min.setText(minTxt + "℃");
         this.max.setText(maxTxt + "℃");
         this.uv.setText(uvTxt);
-        this.humidity.setText(humidityTxt + "%");
+        this.humidity.setText(humidityTxt);
         this.preassure.setText(preassureTxt + " hPa");
         this.visibility.setText(visibilityTxt+" km");
         this.sunrise.setText(sunriseTxt);
