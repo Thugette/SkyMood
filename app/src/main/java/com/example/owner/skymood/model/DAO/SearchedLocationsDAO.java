@@ -44,9 +44,6 @@ public class SearchedLocationsDAO implements ISearchedLocations{
                 String city = c.getString(c.getColumnIndex(helper.CITY));
                 String temp = c.getString(c.getColumnIndex(helper.TEMP));
                 String condition = c.getString(c.getColumnIndex(helper.CONDITION));
-                String moreinfo = c.getString(c.getColumnIndex(helper.MORE_INFO));
-                String hourlyJSON = c.getString(c.getColumnIndex(helper.HOURLY_WEATHER));
-                String weeklyJSON = c.getString(c.getColumnIndex(helper.WEEKLY_WEATHER));
                 String date = c.getString(c.getColumnIndex(helper.DATE));
                 String country = c.getString(c.getColumnIndex(helper.COUNTRY));
                 String code = c.getString(c.getColumnIndex(helper.COUNTRY_CODE));
@@ -56,7 +53,7 @@ public class SearchedLocationsDAO implements ISearchedLocations{
                 String icon = c.getString(c.getColumnIndex(helper.ICON));
                 String feelsLike = c.getString(c.getColumnIndex(helper.FEELS_LIKE));
 
-                SearchedLocation location = new SearchedLocation(id, city, temp, condition, moreinfo, hourlyJSON, weeklyJSON, country, code, max, min, lastUpdate, icon, feelsLike, date);
+                SearchedLocation location = new SearchedLocation(id, city, temp, condition, country, code, max, min, lastUpdate, icon, feelsLike, date);
                 cities.add(location);
             }
             while (c.moveToNext());
@@ -92,9 +89,6 @@ public class SearchedLocationsDAO implements ISearchedLocations{
                 String city = c.getString(c.getColumnIndex(helper.CITY));
                 String temp = c.getString(c.getColumnIndex(helper.TEMP));
                 String condition = c.getString(c.getColumnIndex(helper.CONDITION));
-                String moreinfo = c.getString(c.getColumnIndex(helper.MORE_INFO));
-                String hourlyJSON = c.getString(c.getColumnIndex(helper.HOURLY_WEATHER));
-                String weeklyJSON = c.getString(c.getColumnIndex(helper.WEEKLY_WEATHER));
                 String date = c.getString(c.getColumnIndex(helper.DATE));
                 String country = c.getString(c.getColumnIndex(helper.COUNTRY));
                 String code = c.getString(c.getColumnIndex(helper.COUNTRY_CODE));
@@ -104,7 +98,7 @@ public class SearchedLocationsDAO implements ISearchedLocations{
                 String icon = c.getString(c.getColumnIndex(helper.ICON));
                 String feelsLike = c.getString(c.getColumnIndex(helper.FEELS_LIKE));
 
-                location = new SearchedLocation(id, city, temp, condition, moreinfo, hourlyJSON, weeklyJSON, date, country, code, max, min, lastUpdate, icon, feelsLike);
+                location = new SearchedLocation(id, city, temp, condition, date, country, code, max, min, lastUpdate, icon, feelsLike);
 
             }
             while (c.moveToNext());
@@ -148,9 +142,6 @@ public class SearchedLocationsDAO implements ISearchedLocations{
         values.put(helper.CITY, location.getCity());
         values.put(helper.TEMP, location.getTemp());
         values.put(helper.CONDITION, location.getCondition());
-        values.put(helper.MORE_INFO, "null");
-        values.put(helper.HOURLY_WEATHER, "null");
-        values.put(helper.WEEKLY_WEATHER, "null");
         values.put(helper.COUNTRY, location.getCountry());
         values.put(helper.COUNTRY_CODE, location.getCode());
         values.put(helper.MAX_TEMP, location.getMax());
@@ -174,9 +165,6 @@ public class SearchedLocationsDAO implements ISearchedLocations{
         values.put(helper.CITY, location.getCity());
         values.put(helper.TEMP, location.getTemp());
         values.put(helper.CONDITION, location.getCondition());
-        values.put(helper.MORE_INFO, "null");
-        values.put(helper.HOURLY_WEATHER, "null");
-        values.put(helper.WEEKLY_WEATHER, "null");
         values.put(helper.COUNTRY, location.getCountry());
         values.put(helper.COUNTRY_CODE, location.getCode());
         values.put(helper.MAX_TEMP, location.getMax());

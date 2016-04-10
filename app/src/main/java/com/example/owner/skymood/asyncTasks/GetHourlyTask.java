@@ -61,7 +61,6 @@ public class GetHourlyTask extends AsyncTask<String, Void, Void> {
             }
             String info = body.toString();
             JSONObject jsonData = new JSONObject(info);
-            activity.setHourlyJSON(info);
             JSONArray hourlyArray = (JSONArray) jsonData.get("hourly_forecast");
 
 

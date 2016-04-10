@@ -14,7 +14,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static DatabaseHelper instance;
 
     public static final String DATABASE_NAME = "SKY_MOOD_DATABASE";
-    public static final int DATABASE_VERSION = 11;
+    public static final int DATABASE_VERSION = 13;
 
     //tables
     public static final String MY_LOCATIONS = "my_locations";
@@ -26,11 +26,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // last searched
     public static final String SEARCHED_ID = "id";
-    public static final String HOURLY_WEATHER = "hourly_weather";
-    public static final String WEEKLY_WEATHER = "weekly_weather";
     public static final String TEMP = "temp";
     public static final String CONDITION = "condition";
-    public static final String MORE_INFO = "more_info";
     public static final String DATE = "date_time";
     public static final String COUNTRY = "country";
     public static final String COUNTRY_CODE = "country_code";
@@ -51,11 +48,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_LAST_SEARCHED = "CREATE TABLE IF NOT EXISTS " + LAST_SEARCHED + " ("
             + SEARCHED_ID +" INTEGER PRIMARY KEY AUTOINCREMENT , "
             + CITY + " VARCHAR(30) NOT NULL, "
-            + HOURLY_WEATHER + " text NOT NULL, "
-            + WEEKLY_WEATHER + " text NOT NULL, "
             + TEMP + " text NOT NULL, "
             + CONDITION + " text NOT NULL, "
-            + MORE_INFO + " text NOT NULL, "
             + DATE + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
             + COUNTRY + " text NOT NULL, "
             + COUNTRY_CODE + " text NOT NULL, "
@@ -75,7 +69,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(CREATE_MY_LOCATIONS);
         db.execSQL(CREATE_LAST_SEARCHED);
-        insertMyLocations(db);
     }
 
     @Override
@@ -91,45 +84,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(instance == null)
             instance = new DatabaseHelper(context);
         return instance;
-    }
-
-    //TODO remove query
-    public void insertMyLocations(SQLiteDatabase db){
-        ContentValues values = new ContentValues();
-        values.put(CITY, "Sofia");
-        values.put(COUNTRY, "Bulgaria");
-        values.put(COUNTRY_CODE, "BG");
-        values.put(LOCATION, "Sofia, Bulgaria");
-        db.insert(MY_LOCATIONS, null, values);
-
-        values.put(CITY, "Plovdiv");
-        values.put(COUNTRY, "Bulgaria");
-        values.put(COUNTRY_CODE, "BG");
-        values.put(LOCATION, "Plovdiv, Bulgaria");
-        db.insert(MY_LOCATIONS, null, values);
-
-        values.put(CITY, "Varna");
-        values.put(COUNTRY, "Bulgaria");
-        values.put(COUNTRY_CODE, "BG");
-        values.put(LOCATION, "Varna, Bulgaria");
-        db.insert(MY_LOCATIONS, null, values);
-
-        values.put(CITY, "Burgas");
-        values.put(COUNTRY, "Bulgaria");
-        values.put(COUNTRY_CODE, "BG");
-        values.put(LOCATION, "Burgas, Bulgaria");
-        db.insert(MY_LOCATIONS, null, values);
-
-        values.put(CITY, "Karlovo");
-        values.put(COUNTRY, "Bulgaria");
-        values.put(COUNTRY_CODE, "BG");
-        values.put(LOCATION, "Karlovo, Bulgaria");
-        db.insert(MY_LOCATIONS, null, values);
-
-        values.put(CITY, "Sliven");
-        values.put(COUNTRY, "Bulgaria");
-        values.put(COUNTRY_CODE, "BG");
-        values.put(LOCATION, "Sliven, Bulgaria");
-        db.insert(MY_LOCATIONS, null, values);
     }
 }

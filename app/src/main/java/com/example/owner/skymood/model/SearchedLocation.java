@@ -13,9 +13,6 @@ public class SearchedLocation implements Parcelable{
     private String city;
     private String temp;
     private String condition;
-    private String moreInfo;
-    private String hourlyJSON;
-    private String weeklyJSON;
     private String date;
     private String country;
     private String code;
@@ -26,13 +23,10 @@ public class SearchedLocation implements Parcelable{
     private String feelsLike;
 
 
-    public SearchedLocation(String city, String temp, String condition, String moreInfo, String hourlyJSON, String weeklyJSON, String country, String code, String max, String min, String lastUpdate, String icon, String feelsLike) {
+    public SearchedLocation(String city, String temp, String condition, String country, String code, String max, String min, String lastUpdate, String icon, String feelsLike) {
         this.city = city;
         this.temp = temp;
         this.condition = condition;
-        this.moreInfo = moreInfo;
-        this.hourlyJSON = hourlyJSON;
-        this.weeklyJSON = weeklyJSON;
         this.country = country;
         this.code = code;
         this.max = max;
@@ -42,13 +36,13 @@ public class SearchedLocation implements Parcelable{
         this.feelsLike = feelsLike;
     }
 
-    public SearchedLocation( String city, String temp, String condition, String moreInfo, String hourlyJSON, String weeklyJSON, String country, String code, String max, String min, String lastUpdate, String icon, String feelsLike, String date) {
-        this(city, temp, condition, moreInfo, hourlyJSON, weeklyJSON, country, code, max, min, lastUpdate, icon, feelsLike);
+    public SearchedLocation( String city, String temp, String condition, String country, String code, String max, String min, String lastUpdate, String icon, String feelsLike, String date) {
+        this(city, temp, condition, country, code, max, min, lastUpdate, icon, feelsLike);
         this.date = date;
     }
 
-    public SearchedLocation(long id, String city, String temp, String condition, String moreInfo, String hourlyJSON, String weeklyJSON, String country, String code, String max, String min, String lastUpdate, String icon, String feelsLike, String date) {
-        this(city, temp, condition, moreInfo, hourlyJSON, weeklyJSON, country, code, max, min, lastUpdate, icon, feelsLike, date);
+    public SearchedLocation(long id, String city, String temp, String condition, String country, String code, String max, String min, String lastUpdate, String icon, String feelsLike, String date) {
+        this(city, temp, condition, country, code, max, min, lastUpdate, icon, feelsLike, date);
         this.id = id;
     }
 
@@ -77,18 +71,6 @@ public class SearchedLocation implements Parcelable{
 
     public String getCondition() {
         return condition;
-    }
-
-    public String getMoreInfo() {
-        return moreInfo;
-    }
-
-    public String getHourlyJSON() {
-        return hourlyJSON;
-    }
-
-    public String getWeeklyJSON() {
-        return weeklyJSON;
     }
 
     public String getDate() {

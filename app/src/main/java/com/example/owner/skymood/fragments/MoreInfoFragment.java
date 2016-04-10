@@ -148,7 +148,6 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
                 }
                 String info = body.toString();
 
-                activity.setMoreInfoJSON(info);
                 JSONObject jsonData = new JSONObject(info);
                 JSONObject observation = (JSONObject) jsonData.get("current_observation");
                 conditionTxt = observation.getString("weather");

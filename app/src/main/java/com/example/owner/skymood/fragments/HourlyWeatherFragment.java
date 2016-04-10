@@ -41,8 +41,6 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
     private RecyclerView hourlyRecycler;
     private RecyclerView weerklyRecycler;
     private Context context;
-    private ProgressBar hourlyProgress;
-    private ProgressBar weeklyProgress;
 
     public HourlyWeatherFragment() {
         // Required empty public constructor
@@ -95,11 +93,4 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
         return this.weatherArray;
     }
 
-    public ProgressBar getHourlyProgress() {
-        return hourlyProgress;
-    }
-
-    public ProgressBar getWeeklyProgress() {
-        return weeklyProgress;
-    }
 }

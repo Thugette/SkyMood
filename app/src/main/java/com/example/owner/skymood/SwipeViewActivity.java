@@ -32,6 +32,7 @@ public class SwipeViewActivity extends AppCompatActivity implements ICommunicati
 
     CustomPagerAdapter adapter;
     ViewPager pager;
+    Toolbar toolbar;
 
     private String moreInfoJSON;
     private String hourlyJSON;
@@ -47,7 +48,7 @@ public class SwipeViewActivity extends AppCompatActivity implements ICommunicati
 
         layout = (LinearLayout) findViewById(R.id.swipe_view_activity);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -139,20 +140,8 @@ public class SwipeViewActivity extends AppCompatActivity implements ICommunicati
         return moreInfoJSON;
     }
 
-    public void setMoreInfoJSON(String moreInfoJSON) {
-        this.moreInfoJSON = moreInfoJSON;
-    }
-
-    public String getHourlyJSON() {
-        return hourlyJSON;
-    }
-
-    public void setHourlyJSON(String hourlyJSON) {
-        this.hourlyJSON = hourlyJSON;
-    }
-
-    public String getWeeklyJSON() {
-        return weeklyJSON;
+    public Toolbar getToolbar(){
+        return this.toolbar;
     }
 
     public void setWeeklyJSON(String weeklyJSON) {

@@ -107,11 +107,11 @@ public class APIDataGetterAsyncTask extends AsyncTask<String, Void, Void> {
             JSONObject low = day.getJSONObject("low");
             minTemp = low.getString("celsius");
 
-            if(Double.parseDouble(temp) > Double.parseDouble(maxTemp)){
-                Double max = Math.ceil(Double.parseDouble(temp));
-                Integer maxTempInt = max.intValue();
-                maxTemp = maxTempInt.toString();
-            }
+//            if(Double.parseDouble(temp) > Double.parseDouble(maxTemp)){
+//                Double max = Math.ceil(Double.parseDouble(temp));
+//                Integer maxTempInt = max.intValue();
+//                maxTemp = maxTempInt.toString();
+//            }
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -160,7 +160,7 @@ public class APIDataGetterAsyncTask extends AsyncTask<String, Void, Void> {
                 }
                 else {
                     //insert into DB
-                    SearchedLocation loc = new SearchedLocation(city, temp, condition, activity.getMoreInfoJSON(), activity.getHourlyJSON(), activity.getWeeklyJSON(), country, countryCode, maxTemp, minTemp, lastUpdate, icon, feelsLike);
+                    SearchedLocation loc = new SearchedLocation(city, temp, condition, country, countryCode, maxTemp, minTemp, lastUpdate, icon, feelsLike);
                     manager.insertSearchedLocation(loc);
                 }
             }

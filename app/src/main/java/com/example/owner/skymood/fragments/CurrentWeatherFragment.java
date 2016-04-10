@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -109,7 +110,8 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         chosenCityTextView = (TextView) rootView.findViewById(R.id.chosenCity);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         spinner = (Spinner) rootView.findViewById(R.id.locationSpinner);
-        addImage = (ImageView) rootView.findViewById(R.id.add_favourite);
+        Toolbar toolbar = ((SwipeViewActivity)context).getToolbar();
+        addImage = (ImageView) toolbar.findViewById(R.id.add_favourite1);
         cities = new HashMap<>();
 
         //shared prefs
@@ -123,7 +125,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         citiesSpinner =  new ArrayList<>();
         citiesSpinner.add("My Locations");
         citiesSpinner.addAll(manager.getAllStringLocations());
-        ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, citiesSpinner);
+        final ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, citiesSpinner);
         spinner.setAdapter(adapter);
 
         //listeners
@@ -287,6 +289,8 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                     MyLocation myloc = new MyLocation(city, countryCode, country, city + ", " + country);
                     if (manager.selectMyLocation(myloc) == null) {
                         manager.insertMyLocation(myloc);
+                        citiesSpinner.add(city + ", " + country);
+                        adapter.notifyDataSetChanged();
                         Toast.makeText(context, "location inserted to MyLocations", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(context, "location already exists", Toast.LENGTH_SHORT).show();

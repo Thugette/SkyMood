@@ -17,4 +17,13 @@
         android:textColor="@android:color/white"
         style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title" />
 
+
+    <ImageView
+        android:id="@+id/add_favourite1"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="right"
+        android:clickable="true"
+        android:src="@drawable/add_favorite"/>
+
 </android.support.v7.widget.Toolbar>
