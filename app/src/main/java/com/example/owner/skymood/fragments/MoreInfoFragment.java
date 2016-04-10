@@ -1,6 +1,8 @@
 package com.example.owner.skymood.fragments;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -101,7 +103,13 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
         this.windSpeed = (TextView) root.findViewById(R.id.more_windsSpeed);
         this.moonPhase = (TextView)root.findViewById(R.id.more_phase_of_moon);
 
-        new GetMoreInfoTask().execute();
+        if(isOnline()) {
+            root.findViewById(R.id.more_no_internet).setVisibility(View.GONE);
+            new GetMoreInfoTask().execute();
+        }
+        else{
+            root.findViewById(R.id.more_no_internet).setVisibility(View.VISIBLE);
+        }
         activity = (SwipeViewActivity) context;
         return root;
     }
@@ -219,4 +227,11 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
         if(city != null && code != null)
             new GetMoreInfoTask().execute();
     }
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
 }

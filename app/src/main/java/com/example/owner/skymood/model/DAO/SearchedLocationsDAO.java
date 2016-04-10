@@ -54,6 +54,7 @@ public class SearchedLocationsDAO implements ISearchedLocations{
                 String feelsLike = c.getString(c.getColumnIndex(helper.FEELS_LIKE));
 
                 SearchedLocation location = new SearchedLocation(id, city, temp, condition, country, code, max, min, lastUpdate, icon, feelsLike, date);
+                Log.e("DIDI", location.getCondition() + " " + location.getMax());
                 cities.add(location);
             }
             while (c.moveToNext());

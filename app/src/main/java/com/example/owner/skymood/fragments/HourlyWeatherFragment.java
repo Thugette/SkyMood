@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -57,17 +59,23 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
         hourlyWeather = new ArrayList<>();
         weatherArray = new ArrayList<>();
 
-        // hourly recycler
-        hourlyRecycler = (RecyclerView) view.findViewById(R.id.recycler_hourly);
-        hourlyRecycler.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        HourlyAdapter adapter = new HourlyAdapter(context, hourlyWeather);
-        hourlyRecycler.setAdapter(adapter);
+        if(isOnline()) {
+            view.findViewById(R.id.hour_no_internet).setVisibility(View.GONE);
+            // hourly recycler
+            hourlyRecycler = (RecyclerView) view.findViewById(R.id.recycler_hourly);
+            hourlyRecycler.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+            HourlyAdapter adapter = new HourlyAdapter(context, hourlyWeather);
+            hourlyRecycler.setAdapter(adapter);
 
-        //weekly recycler
-        weerklyRecycler = (RecyclerView) view.findViewById(R.id.recycler_weekly);
-        weerklyRecycler.setLayoutManager(new LinearLayoutManager(context));
-        WeeklyAdapter weeklyAdapte = new WeeklyAdapter(weatherArray, context);
-        weerklyRecycler.setAdapter(weeklyAdapte);
+            //weekly recycler
+            weerklyRecycler = (RecyclerView) view.findViewById(R.id.recycler_weekly);
+            weerklyRecycler.setLayoutManager(new LinearLayoutManager(context));
+            WeeklyAdapter weeklyAdapte = new WeeklyAdapter(weatherArray, context);
+            weerklyRecycler.setAdapter(weeklyAdapte);
+        }
+        else{
+            view.findViewById(R.id.hour_no_internet).setVisibility(View.VISIBLE);
+        }
 
 
         return view;
@@ -91,6 +99,13 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
 
     public ArrayList<WeeklyWeather> getWeeklyWeatherArray() {
         return this.weatherArray;
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
 }
