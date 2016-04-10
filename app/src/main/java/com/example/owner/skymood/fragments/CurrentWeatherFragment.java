@@ -397,5 +397,27 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
             ((SwipeViewActivity)context).changeBackground(SwipeViewActivity.NIGHT);
         }
     }
+
+    public ImageView getWeatherImage(){
+        return this.weatherImage;
+    }
+
+    public void setInfoData(String city, String country, String icon, String temp, String minTemp, String maxTemp,
+                            String condition, String feelsLike, String lastUpdate){
+
+        this.chosenCityTextView.setText(city);
+        this.countryTextView.setText(country);
+        this.temperature.setText(temp + "°");
+        this.minTempTextView.setText("⬇" + minTemp + "°");
+        this.maxTempTextView.setText("⬆" + maxTemp + "°");
+        this.condition.setText(condition);
+        this.feelsLike.setText(feelsLike);
+        this.lastUpdate.setText(lastUpdate);
+
+        Context con = weatherImage.getContext();
+        weatherImage.setImageResource(context.getResources().getIdentifier(icon, "drawable", con.getPackageName()));
+
+    }
+
 }
 

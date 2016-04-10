@@ -1,5 +1,6 @@
 package com.example.owner.skymood;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +19,10 @@ import java.util.ArrayList;
 
 public class SearchedLocationsActivity extends AppCompatActivity implements View.OnClickListener{
 
+    public static final String CITY = "city";
+    public static final String COUNTRY = "country";
+    public static final String COUNTRY_CODE = "countryCode";
+    public static final String SEARCHED_LOCATION_OBJECT = "SearchedLocation object";
     private Button location1;
     private Button location2;
     private Button location3;
@@ -48,10 +53,15 @@ public class SearchedLocationsActivity extends AppCompatActivity implements View
             location.setTag(loc);
         }
         location1 = (Button) findViewById(R.id.location1);
+        location1.setOnClickListener(this);
         location2 = (Button) findViewById(R.id.location2);
+        location2.setOnClickListener(this);
         location3 = (Button) findViewById(R.id.location3);
+        location3.setOnClickListener(this);
         location4 = (Button) findViewById(R.id.location4);
+        location4.setOnClickListener(this);
         location5 = (Button) findViewById(R.id.location5);
+        location5.setOnClickListener(this);
     }
 
 
@@ -70,8 +80,6 @@ public class SearchedLocationsActivity extends AppCompatActivity implements View
                 startActivity(intent);
                 return true;
             case R.id.searched_locations:
-                intent = new Intent(this, SearchedLocationsActivity.class);
-                startActivity(intent);
                 return true;
             case R.id.my_locations:
                 intent = new Intent(this, MyLocationsActivity.class);
@@ -84,7 +92,19 @@ public class SearchedLocationsActivity extends AppCompatActivity implements View
 
     @Override
     public void onClick(View v) {
-        String code =((SearchedLocation)v.getTag()).getCode();
-        //Intent intent = new Intent()
+        SearchedLocation object = (SearchedLocation) v.getTag();
+        String city = object.getCity();
+        String country = object.getCountry();
+        String countryCode = object.getCode();
+
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra(CITY, city);
+        returnIntent.putExtra(COUNTRY, country);
+        returnIntent.putExtra(COUNTRY_CODE, countryCode);
+        returnIntent.putExtra(SEARCHED_LOCATION_OBJECT, object);
+
+        setResult(Activity.RESULT_OK, returnIntent);
+        finish();
     }
+
 }
