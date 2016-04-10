@@ -49,6 +49,7 @@ public class SearchedLocation implements Parcelable{
     public SearchedLocation(Parcel p){
         this.city = p.readString();
         this.country = p.readString();
+        this.condition = p.readString();
         this.icon = p.readString();
         this.temp = p.readString();
         this.min = p.readString();
@@ -118,12 +119,15 @@ public class SearchedLocation implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(city);
         dest.writeString(country);
+        dest.writeString(condition);
         dest.writeString(icon);
+        dest.writeString(temp);
         dest.writeString(min);
         dest.writeString(max);
-        dest.writeString(condition);
         dest.writeString(feelsLike);
         dest.writeString(lastUpdate);
+
+
     }
 
     public static final Parcelable.Creator<SearchedLocation> CREATOR = new Parcelable.Creator<SearchedLocation>() {
