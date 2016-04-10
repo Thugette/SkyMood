@@ -14,7 +14,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static DatabaseHelper instance;
 
     public static final String DATABASE_NAME = "SKY_MOOD_DATABASE";
-    public static final int DATABASE_VERSION = 9;
+    public static final int DATABASE_VERSION = 11;
 
     //tables
     public static final String MY_LOCATIONS = "my_locations";
@@ -100,6 +100,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COUNTRY, "Bulgaria");
         values.put(COUNTRY_CODE, "BG");
         values.put(LOCATION, "Sofia, Bulgaria");
+        db.insert(MY_LOCATIONS, null, values);
+
+        values.put(CITY, "Plovdiv");
+        values.put(COUNTRY, "Bulgaria");
+        values.put(COUNTRY_CODE, "BG");
+        values.put(LOCATION, "Plovdiv, Bulgaria");
+        db.insert(MY_LOCATIONS, null, values);
+
+        values.put(CITY, "Varna");
+        values.put(COUNTRY, "Bulgaria");
+        values.put(COUNTRY_CODE, "BG");
+        values.put(LOCATION, "Varna, Bulgaria");
+        db.insert(MY_LOCATIONS, null, values);
+
+        values.put(CITY, "Burgas");
+        values.put(COUNTRY, "Bulgaria");
+        values.put(COUNTRY_CODE, "BG");
+        values.put(LOCATION, "Burgas, Bulgaria");
+        db.insert(MY_LOCATIONS, null, values);
+
+        values.put(CITY, "Karlovo");
+        values.put(COUNTRY, "Bulgaria");
+        values.put(COUNTRY_CODE, "BG");
+        values.put(LOCATION, "Karlovo, Bulgaria");
+        db.insert(MY_LOCATIONS, null, values);
+
+        values.put(CITY, "Sliven");
+        values.put(COUNTRY, "Bulgaria");
+        values.put(COUNTRY_CODE, "BG");
+        values.put(LOCATION, "Sliven, Bulgaria");
         db.insert(MY_LOCATIONS, null, values);
     }
 }

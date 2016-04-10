@@ -7,6 +7,8 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.owner.skymood.SwipeViewActivity;
 import com.example.owner.skymood.fragments.HourlyWeatherFragment;
@@ -32,12 +34,12 @@ public class GetHourlyTask extends AsyncTask<String, Void, Void> {
     private final static String API_KEY = "9d48021d05e97609";
     private Context context;
     private SwipeViewActivity activity;
-    private Fragment fragment;
+    private HourlyWeatherFragment fragment;
     private ArrayList<HourlyWeather> hourlyWeather;
 
     public GetHourlyTask(Context context, Fragment fragment, ArrayList<HourlyWeather> hourlyWeather) {
         this.context = context;
-        this.fragment = fragment;
+        this.fragment = (HourlyWeatherFragment)fragment;
         activity = (SwipeViewActivity)context;
         this.hourlyWeather = hourlyWeather;
     }
@@ -62,8 +64,9 @@ public class GetHourlyTask extends AsyncTask<String, Void, Void> {
             activity.setHourlyJSON(info);
             JSONArray hourlyArray = (JSONArray) jsonData.get("hourly_forecast");
 
-            if(!hourlyWeather.isEmpty())
-                hourlyWeather.removeAll(hourlyWeather);
+
+            hourlyWeather = fragment.getHourlyWeatherArray();
+            hourlyWeather.removeAll(hourlyWeather);
 
             for(int i = 0; i < hourlyArray.length(); i++){
                 JSONObject obj = hourlyArray.getJSONObject(i);
@@ -88,7 +91,7 @@ public class GetHourlyTask extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        ((HourlyWeatherFragment)fragment).getAdapter().notifyDataSetChanged();
+       fragment.getAdapter().notifyDataSetChanged();
 
     }
 }

@@ -259,6 +259,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                 country = locPref.getCountry();
                 task.execute(countryCode, city, country);
                 hourTask.execute(city, countryCode);
+                Log.e("DIDI", "task started from set prefs");
                 weeklyTask.execute(city, countryCode);
             } else {
                 //API autoIP

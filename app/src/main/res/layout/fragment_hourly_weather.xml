@@ -1,10 +1,11 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/foreground"
     android:layout_margin="10dp"
     android:id="@+id/fragment_hourly"
+    android:orientation="vertical"
     tools:context="com.example.owner.skymood.fragments.HourlyWeatherFragment">
 
     <android.support.v7.widget.RecyclerView
@@ -27,4 +28,4 @@
 
 
 
-</RelativeLayout>
+</LinearLayout>

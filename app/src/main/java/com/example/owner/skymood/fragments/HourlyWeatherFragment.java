@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.example.owner.skymood.R;
 import com.example.owner.skymood.SwipeViewActivity;
@@ -40,6 +41,8 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
     private RecyclerView hourlyRecycler;
     private RecyclerView weerklyRecycler;
     private Context context;
+    private ProgressBar hourlyProgress;
+    private ProgressBar weeklyProgress;
 
     public HourlyWeatherFragment() {
         // Required empty public constructor
@@ -90,5 +93,13 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
 
     public ArrayList<WeeklyWeather> getWeeklyWeatherArray() {
         return this.weatherArray;
+    }
+
+    public ProgressBar getHourlyProgress() {
+        return hourlyProgress;
+    }
+
+    public ProgressBar getWeeklyProgress() {
+        return weeklyProgress;
     }
 }

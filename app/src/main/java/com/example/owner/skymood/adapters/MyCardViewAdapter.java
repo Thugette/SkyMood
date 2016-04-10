@@ -7,8 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.owner.skymood.R;
+import com.example.owner.skymood.model.LocationPreference;
 import com.example.owner.skymood.model.MyLocation;
 
 import java.util.ArrayList;
@@ -22,10 +24,14 @@ public class MyCardViewAdapter extends RecyclerView.Adapter<MyCardViewAdapter.Ca
 
     private Context context;
     private ArrayList<MyLocation> data;
+    private int lastCheckedPosition;
+    LocationPreference pref;
 
     public MyCardViewAdapter(Context context, ArrayList<MyLocation> data) {
         this.context = context;
         this.data = data;
+        lastCheckedPosition = -1;
+        pref = LocationPreference.getInstance(context);
     }
 
     @Override
@@ -40,7 +46,13 @@ public class MyCardViewAdapter extends RecyclerView.Adapter<MyCardViewAdapter.Ca
 
         MyLocation location = data.get(position);
         holder.city.setText(location.getCity());
-        holder.country.setText(location.getCity());
+        holder.country.setText(location.getCountry());
+        holder.code.setText(location.getCode());
+
+        if(pref.getCity() != null && location.getCity().equals(pref.getCity()) && location.getCountry().equals(pref.getCountry()))
+            holder.radio.setChecked(true);
+        else
+            holder.radio.setChecked(position == lastCheckedPosition);
     }
 
     @Override
@@ -52,6 +64,7 @@ public class MyCardViewAdapter extends RecyclerView.Adapter<MyCardViewAdapter.Ca
 
         TextView city;
         TextView country;
+        TextView code;
         RadioButton radio;
 
         public CardViewHolder(View itemView) {
@@ -59,7 +72,22 @@ public class MyCardViewAdapter extends RecyclerView.Adapter<MyCardViewAdapter.Ca
 
             this.city = (TextView) itemView.findViewById(R.id.mylocations_city);
             this.country = (TextView) itemView.findViewById(R.id.mylocations_country);
-            this.radio = (RadioButton) itemView.findViewById(R.id.location_radio);
+            this.code = (TextView) itemView.findViewById(R.id.mylocations_code);
+            this.radio = (RadioButton) itemView.findViewById(R.id.my_location_radio);
+
+            // onclick for setting location as default
+            radio.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    lastCheckedPosition = getAdapterPosition();
+                    notifyItemRangeChanged(0, data.size());
+                    String cityTxt = city.getText().toString();
+                    String countryTxt = country.getText().toString();
+                    String codeTxt = code.getText().toString();
+                    pref.setPreferredLocation(cityTxt, countryTxt, codeTxt, null, null, null, null, null, null, null);
+                    Toast.makeText(context, cityTxt + " was set as default location", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 }
