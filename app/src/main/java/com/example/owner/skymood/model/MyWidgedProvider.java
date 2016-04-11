@@ -1,13 +1,17 @@
 package com.example.owner.skymood.model;
 
+import android.app.AlarmManager;
+import android.app.IntentService;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.owner.skymood.R;
@@ -29,9 +33,9 @@ public class MyWidgedProvider extends AppWidgetProvider {
 
 
     private static final String ACTION_CLICK = "ACTION_CLICK";
-    private String city;
-    private String country;
-    private String countryCode;
+    private static String city;
+    private static String country;
+    private static String countryCode;
     private String temp;
     private String icon;
     private String condition;
@@ -39,16 +43,37 @@ public class MyWidgedProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-
         LocationPreference pref = LocationPreference.getInstance(context);
+        this.city = pref.getCity();
+        this.country = pref.getCountry();
+        this.countryCode = pref.getCountryCode();
+
+        for (int i = 0; i < appWidgetIds.length; i++) {
+            int widgetId = appWidgetIds[i];
+            RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
+                    R.layout.widget_layout);
+
+            Intent intent = new Intent(context, MyWidgedProvider.WidgedService.class);
+
+            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+
+            PendingIntent pendingIntent = PendingIntent.getService(context,
+                    0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            // request the AppWidgetManager object to update the app widget
+            remoteViews.setOnClickPendingIntent(R.id.syncWidget, pendingIntent);
+
+            appWidgetManager.updateAppWidget(widgetId, remoteViews);
+        }
+
+       /* LocationPreference pref = LocationPreference.getInstance(context);
         this.city = pref.getCity();
         this.country = pref.getCountry();
         this.countryCode = pref.getCountryCode();
 
         // iterate through all of our widgets (in case the user has placed multiple widgets)
         for (int i = 0; i < appWidgetIds.length; i++) {
-           // InfoGetter task = new InfoGetter();
-           // task.execute();
             int widgetId = appWidgetIds[i];
 
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
@@ -85,16 +110,24 @@ public class MyWidgedProvider extends AppWidgetProvider {
             // request the AppWidgetManager object to update the app widget
             remoteViews.setOnClickPendingIntent(R.id.syncWidget, pendingIntent);
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
-        }
+        } */
     }
 
-    private class InfoGetter extends AsyncTask<Void, Void, Void> {
+
+
+    public static class WidgedService extends IntentService {
+
+        public WidgedService() {
+            super("WidgedService");
+        }
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected void onHandleIntent(Intent intent) {
             try {
+                Log.e("VVV", "Widged Service");
                 URL url = new URL("http://api.wunderground.com/api/" + CurrentWeatherFragment.API_KEY + "/conditions/q/" + countryCode + "/" + city + ".json");
-                HttpURLConnection connection = connection = (HttpURLConnection) url.openConnection();connection.connect();
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
 
                 Scanner sc = new Scanner(connection.getInputStream());
                 StringBuilder body = new StringBuilder();
@@ -102,15 +135,34 @@ public class MyWidgedProvider extends AppWidgetProvider {
                     body.append(sc.nextLine());
                 }
                 String info = body.toString();
+                Log.e("VVV", "json - " + info);
 
                 JSONObject jsonData = new JSONObject(info);
                 JSONObject observation = (JSONObject) jsonData.get("current_observation");
-                condition = observation.getString("weather");
-                temp = observation.getString("temp_c");
-                icon = observation.getString("icon");
+                String condition = observation.getString("weather");
+                String temp = observation.getString("temp_c");
+                String icon = observation.getString("icon");
 
-                Field field = R.drawable.class.getDeclaredField("mydrawable_name");
-                iconId = field.getInt(this);
+                Field field = R.drawable.class.getDeclaredField(icon);
+                int iconId = field.getInt(this);
+
+                RemoteViews remoteV = new RemoteViews(this.getPackageName(), R.layout.widget_layout);
+                Log.e("VVV", "city - " + city);
+                remoteV.setTextViewText(R.id.widget_city, city);
+                Log.e("VVV", "country - " + country);
+                remoteV.setTextViewText(R.id.widget_country, country);
+                Log.e("VVV", "condition - " + condition);
+                remoteV.setTextViewText(R.id.condition, condition);
+                Log.e("VVV", "temp - " + temp);
+                remoteV.setTextViewText(R.id.degree, temp + "℃");
+                Log.e("VVV", "icon - " + icon);
+                remoteV.setImageViewResource(R.id.icon, iconId);
+
+
+                ComponentName thisWidget = new ComponentName(this, MyWidgedProvider.class);
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+
+                appWidgetManager.updateAppWidget(thisWidget, remoteV);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -121,8 +173,6 @@ public class MyWidgedProvider extends AppWidgetProvider {
             } catch (NoSuchFieldException e) {
                 e.printStackTrace();
             }
-
-            return null;
         }
     }
 }

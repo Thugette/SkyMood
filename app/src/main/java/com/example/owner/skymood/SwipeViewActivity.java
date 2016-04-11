@@ -132,8 +132,6 @@ public class SwipeViewActivity extends AppCompatActivity implements ICommunicati
                     APIDataGetterAsyncTask task = new APIDataGetterAsyncTask(fragment, this, fragment.getWeatherImage());
                     task.execute(countryCode, city, country);
                 } else {
-                    Log.e("ZZZ", object.getMax() + " - max");
-                    Log.e("ZZZ", object.getCondition() + " - condition");
                     fragment.setInfoData(city, country, object.getIcon(), object.getTemp(), object.getMin(), object.getMax(),
                             object.getCondition(), object.getFeelsLike(), object.getLastUpdate());
                 }
