@@ -77,12 +77,13 @@ public class GetWeeklyTask extends AsyncTask<String, Void, Void> {
                 String max = high.getString("celsius");
                 JSONObject low = obj.getJSONObject("low");
                 String min = low.getString("celsius");
-
                 String condition = obj.getString("conditions");
+                String icon = obj.getString("icon");
 
-                String iconURL = obj.getString("icon_url");
-                Bitmap icon = BitmapFactory.decodeStream((InputStream) new URL(iconURL).getContent());
-                weeklyWeather.add(new WeeklyWeather(day, min, max, condition, icon));
+                int id = context.getResources().getIdentifier(icon, "drawable", context.getPackageName());
+                Bitmap iconImage = BitmapFactory.decodeResource(context.getResources(), id);
+
+                weeklyWeather.add(new WeeklyWeather(day, min, max, condition, iconImage));
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();

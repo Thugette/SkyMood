@@ -6,10 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.example.owner.skymood.R;
 import com.example.owner.skymood.SwipeViewActivity;
 import com.example.owner.skymood.fragments.HourlyWeatherFragment;
 import com.example.owner.skymood.model.HourlyWeather;
@@ -18,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -76,9 +79,20 @@ public class GetHourlyTask extends AsyncTask<String, Void, Void> {
                 String hour = obj.getJSONObject("FCTTIME").getString("hour");
                 String condition = obj.getString("condition");
                 String temp = obj.getJSONObject("temp").getString("metric");
-                String iconURL = obj.getString("icon_url");
-                Bitmap icon = BitmapFactory.decodeStream((InputStream) new URL(iconURL).getContent());
-                hourlyWeather.add(new HourlyWeather(hour, condition, temp, icon));
+                String icon = obj.getString("icon");
+
+                Integer hourInt = Integer.parseInt(hour);
+                int id = 0;
+                if (hourInt >= 6 && hourInt <= 19) {
+                    id = context.getResources().getIdentifier(icon, "drawable", context.getPackageName());
+                } else {
+                    icon = icon + "_night";
+                    id = context.getResources().getIdentifier(icon, "drawable", context.getPackageName());
+                }
+
+                Bitmap iconImage = BitmapFactory.decodeResource(context.getResources(), id);
+
+                hourlyWeather.add(new HourlyWeather(hour, condition, temp, iconImage));
             }
 
         } catch (MalformedURLException e) {

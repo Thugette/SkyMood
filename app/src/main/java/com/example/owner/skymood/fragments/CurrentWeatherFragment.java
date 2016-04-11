@@ -219,6 +219,10 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                     String city = parts[0];
                     country = parts[1].trim();
                     getWeatherInfoByCity(city);
+                }else if(writeCityEditText.getText().toString().equals("")){
+                    writeCityEditText.setVisibility(View.GONE);
+                    keyboard.hideSoftInputFromWindow(writeCityEditText.getWindowToken(), 0);
+                    changeVisibility(View.VISIBLE);
                 } else {
                     Toast.makeText(getContext(), "You must specify a country", Toast.LENGTH_SHORT).show();
                     writeCityEditText.setVisibility(View.GONE);

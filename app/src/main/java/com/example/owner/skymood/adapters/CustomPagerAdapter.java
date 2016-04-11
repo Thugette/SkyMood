@@ -71,7 +71,7 @@ public class CustomPagerAdapter extends FragmentStatePagerAdapter {
         case 0:
             return "\uD83C\uDF08 CURRENT";
         case 1:
-            return "⛅ HOURLY";
+            return "⛅ Hourly&Weekly";
         case 2:
             return "⚡ MORE INFO";
     }
