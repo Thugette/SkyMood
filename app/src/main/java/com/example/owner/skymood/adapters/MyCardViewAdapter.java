@@ -105,6 +105,9 @@ public class MyCardViewAdapter extends RecyclerView.Adapter<MyCardViewAdapter.Ca
                     if (position < lastCheckedPosition) {
                         lastCheckedPosition--;
                     }
+                    else if(position == lastCheckedPosition){
+                        pref.removeInfo();
+                    }
 
                 }
             });

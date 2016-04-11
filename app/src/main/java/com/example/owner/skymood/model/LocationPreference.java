@@ -107,4 +107,10 @@ public class LocationPreference {
         }
     }
 
+
+    public void removeInfo(){
+        editor.clear();
+        editor.commit();
+    }
+
 }

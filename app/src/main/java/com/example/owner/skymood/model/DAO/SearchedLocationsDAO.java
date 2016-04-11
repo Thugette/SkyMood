@@ -35,8 +35,9 @@ public class SearchedLocationsDAO implements ISearchedLocations{
     @Override
     public ArrayList<SearchedLocation> getAllSearchedLocations() {
         SQLiteDatabase db = helper.getReadableDatabase();
-        String query = "SELECT * FROM " + helper.LAST_SEARCHED;
-        Cursor c = db.rawQuery(query, null);
+        String[] colums = new String[]{helper.SEARCHED_ID, helper.CITY, helper.TEMP, helper.CONDITION, helper.DATE, helper.COUNTRY,
+                helper.COUNTRY_CODE, helper.MAX_TEMP, helper.MIN_TEMP, helper.LAST_UPDATE, helper.ICON, helper.FEELS_LIKE};
+        Cursor c = db.query(helper.LAST_SEARCHED, colums, null, null, null, null, null);
         ArrayList<SearchedLocation> cities = new ArrayList<SearchedLocation>();
         if(c.moveToFirst())
             do{
@@ -54,7 +55,6 @@ public class SearchedLocationsDAO implements ISearchedLocations{
                 String feelsLike = c.getString(c.getColumnIndex(helper.FEELS_LIKE));
 
                 SearchedLocation location = new SearchedLocation(id, city, temp, condition, country, code, max, min, lastUpdate, icon, feelsLike, date);
-                Log.e("DIDI", location.getCondition() + " " + location.getMax());
                 cities.add(location);
             }
             while (c.moveToNext());
@@ -81,8 +81,10 @@ public class SearchedLocationsDAO implements ISearchedLocations{
     @Override
     public SearchedLocation selectFirstSearchedCity() {
         SQLiteDatabase db = helper.getReadableDatabase();
-        String query = "SELECT * FROM "+ helper.LAST_SEARCHED +" ORDER BY datetime("+ helper.DATE +") Limit 1";
-        Cursor c = db.rawQuery(query, null);
+
+        String[] colums = new String[]{helper.SEARCHED_ID, helper.CITY, helper.TEMP, helper.CONDITION, helper.DATE, helper.COUNTRY,
+        helper.COUNTRY_CODE, helper.MAX_TEMP, helper.MIN_TEMP, helper.LAST_UPDATE, helper.ICON, helper.FEELS_LIKE};
+        Cursor c = db.query(helper.LAST_SEARCHED, colums, null, null, null, null, "datetime("+ helper.DATE +")", "1");
         SearchedLocation location = null;
         if(c.moveToFirst())
             do{
@@ -120,9 +122,10 @@ public class SearchedLocationsDAO implements ISearchedLocations{
     @Override
     public long checkCity(String city) {
         SQLiteDatabase db = helper.getReadableDatabase();
-        String query = "SELECT "+ helper.SEARCHED_ID +", "+ helper.CITY +" FROM " + helper.LAST_SEARCHED
-                + " WHERE " + helper.CITY + " = " + "\"" + city+ "\"";
-        Cursor c = db.rawQuery(query,  null);
+
+
+        String selection = helper.CITY + " = ?";
+        Cursor c = db.query(helper.LAST_SEARCHED, new String[]{helper.SEARCHED_ID, helper.CITY}, selection, new String[]{city}, null, null, null );
         if(c.moveToFirst()) {
             long id = c.getLong(c.getColumnIndex(helper.SEARCHED_ID));
             c.close();

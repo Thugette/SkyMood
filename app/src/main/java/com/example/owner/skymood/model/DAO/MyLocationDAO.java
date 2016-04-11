@@ -34,8 +34,9 @@ public class MyLocationDAO implements IMyLocationDAO{
     @Override
     public ArrayList<MyLocation> getAllMyLocations() {
         SQLiteDatabase db = helper.getReadableDatabase();
-        String query = "SELECT * FROM " + helper.MY_LOCATIONS;
-        Cursor c = db.rawQuery(query, null);
+
+        String[] columns = new String[] {helper.LOCATION_ID, helper.CITY, helper.COUNTRY, helper.COUNTRY_CODE, helper.LOCATION};
+        Cursor c = db.query(helper.MY_LOCATIONS, columns, null, null, null, null, null);
         ArrayList<MyLocation> cities = new ArrayList<MyLocation>();
         if(c.moveToFirst()) {
             do {
@@ -73,10 +74,10 @@ public class MyLocationDAO implements IMyLocationDAO{
     @Override
     public MyLocation selectMyLocation(MyLocation location) {
         SQLiteDatabase db = helper.getReadableDatabase();
-        String query = "SELECT * FROM " + helper.MY_LOCATIONS
-                + " WHERE " + helper.CITY + " = \"" + location.getCity()+"\""
-                + " AND " + helper.COUNTRY + " = \"" + location.getCountry() +"\"";
-        Cursor c = db.rawQuery(query, null);
+
+        String[] columns = new String[] {helper.LOCATION_ID, helper.CITY, helper.COUNTRY, helper.COUNTRY_CODE, helper.LOCATION};
+        String selection = helper.CITY + " = ? AND " + helper.COUNTRY + " = ?";
+        Cursor c = db.query(helper.MY_LOCATIONS, columns, selection, new String[]{location.getCity(), location.getCountry()}, null, null, null);
 
         if(c.moveToFirst()) {
             long id = c.getLong(c.getColumnIndex(helper.LOCATION_ID));
@@ -104,9 +105,9 @@ public class MyLocationDAO implements IMyLocationDAO{
     @Override
     public String selectCuntryCode(String city, String country) {
         SQLiteDatabase db = helper.getReadableDatabase();
-        String query = "SELECT " + helper.COUNTRY_CODE + " FROM " + helper.MY_LOCATIONS
-                + " WHERE " + helper.CITY + " = \"" + city + "\" AND " + helper.COUNTRY + " = \"" + country + "\"";
-        Cursor c = db.rawQuery(query, null);
+
+        String selection = helper.CITY + " = ? AND " + helper.COUNTRY + " = ?";
+        Cursor c = db.query(helper.MY_LOCATIONS, new String[]{helper.COUNTRY_CODE}, selection, new String[]{city, country}, null, null, null);
         if(c.moveToFirst()){
             String s = c.getString(c.getColumnIndex(helper.COUNTRY_CODE));
             c.close();
@@ -123,8 +124,7 @@ public class MyLocationDAO implements IMyLocationDAO{
     @Override
     public ArrayList<String> getAllStringLocations() {
         SQLiteDatabase db = helper.getReadableDatabase();
-        String query = "SELECT " + helper.LOCATION + " FROM " + helper.MY_LOCATIONS;
-        Cursor c = db.rawQuery(query, null);
+        Cursor c = db.query(helper.MY_LOCATIONS,new String[]{ helper.LOCATION}, null, null, null, null, null);
         ArrayList<String> locations = new ArrayList<>();
         if(c.moveToFirst()){
             do{
