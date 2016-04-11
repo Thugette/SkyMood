@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import com.example.owner.skymood.adapters.CustomPagerAdapter;
 import com.example.owner.skymood.asyncTasks.APIDataGetterAsyncTask;
 import com.example.owner.skymood.asyncTasks.GetHourlyTask;
+import com.example.owner.skymood.asyncTasks.GetMoreInfoTask;
 import com.example.owner.skymood.asyncTasks.GetWeeklyTask;
 import com.example.owner.skymood.fragments.CurrentWeatherFragment;
 import com.example.owner.skymood.fragments.HourlyWeatherFragment;
@@ -88,7 +89,9 @@ public class SwipeViewActivity extends AppCompatActivity implements ICommunicati
 
         // thirt fragment
         android.support.v4.app.Fragment fragment2 = adapter.getItem(2);
-        ((MoreInfoFragment)fragment2).setInfo(city, code, date, min, max);
+        ((MoreInfoFragment)fragment2).setExternalInfo(city, code, date, min, max);
+        GetMoreInfoTask infoTask = new GetMoreInfoTask(this, fragment2);
+        infoTask.execute(city, code);
     }
 
     public  HourlyWeatherFragment getHourlyFragment(){
@@ -136,10 +139,6 @@ public class SwipeViewActivity extends AppCompatActivity implements ICommunicati
                 }
             }
         }
-    }
-
-    public String getMoreInfoJSON() {
-        return moreInfoJSON;
     }
 
     public Toolbar getToolbar(){

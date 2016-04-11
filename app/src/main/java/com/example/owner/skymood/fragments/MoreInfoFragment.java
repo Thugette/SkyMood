@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.owner.skymood.R;
@@ -49,6 +51,8 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
     private TextView windSpeed;
     private TextView condition;
     private TextView moonPhase;
+    private ProgressBar progress;
+    private LinearLayout layout;
 
     private String dayTxt;
     private String dateTxt;
@@ -102,14 +106,11 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
         this.condition = (TextView) root.findViewById(R.id.more_condition);
         this.windSpeed = (TextView) root.findViewById(R.id.more_windsSpeed);
         this.moonPhase = (TextView)root.findViewById(R.id.more_phase_of_moon);
+        this.progress = (ProgressBar) root.findViewById(R.id.more_progress);
+        layout = (LinearLayout) root.findViewById(R.id.more_layout);
 
-        if(isOnline()) {
-            root.findViewById(R.id.more_no_internet).setVisibility(View.GONE);
-            new GetMoreInfoTask().execute();
-        }
-        else{
-            root.findViewById(R.id.more_no_internet).setVisibility(View.VISIBLE);
-        }
+        //root.findViewById(R.id.more_no_internet).setVisibility(View.GONE);
+            //new GetMoreInfoTask().execute();
         activity = (SwipeViewActivity) context;
         return root;
     }
@@ -135,103 +136,43 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
         this.windSpeed.setText(windsSpeedtxt + " kmh");
         this.condition.setText(conditionTxt);
         this.date.setText(dateTxt);
-        this.day.setText(dayTxt);
+        this.day.setText(city);
         this.moonPhase.setText(moonPhaseTxt);
     }
 
 
-    class GetMoreInfoTask extends AsyncTask<Void, Void, Void> {
 
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                URL url = new URL("http://api.wunderground.com/api/"+API_KEY+"/conditions/q/"+code+"/"+city+".json");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-
-                Scanner sc = new Scanner(connection.getInputStream());
-                StringBuilder body = new StringBuilder();
-                while(sc.hasNextLine()){
-                    body.append(sc.nextLine());
-                }
-                String info = body.toString();
-
-                JSONObject jsonData = new JSONObject(info);
-                JSONObject observation = (JSONObject) jsonData.get("current_observation");
-                conditionTxt = observation.getString("weather");
-                tempTxt = observation.getString("temp_c");
-                feelsTxt = observation.getString("feelslike_c");
-                uvTxt = observation.getString("UV");
-                humidityTxt = observation.getString("relative_humidity");
-                windsSpeedtxt = observation.getString("wind_kph");
-                visibilityTxt = observation.getString("visibility_km");
-                preassureTxt = observation.getString("pressure_mb");
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                URL astronomyUrl = new URL("http://api.wunderground.com/api/"+API_KEY+"/astronomy/q/"+code+"/"+city+".json");
-                HttpURLConnection secontConnection = (HttpURLConnection) astronomyUrl.openConnection();
-                secontConnection.connect();
-                Scanner sc2 = new Scanner(secontConnection.getInputStream());
-                StringBuilder bodyBuilder = new StringBuilder();
-                while(sc2.hasNextLine()){
-                    bodyBuilder.append(sc2.nextLine());
-                }
-                String astronomyJSON = bodyBuilder.toString();
-
-
-                JSONObject jsonData = new JSONObject(astronomyJSON);
-                JSONObject moon = (JSONObject) jsonData.get("moon_phase");
-                JSONObject sun = (JSONObject) jsonData.get("sun_phase");
-                JSONObject sun_rise = sun.getJSONObject("sunrise");
-                JSONObject sun_set = sun.getJSONObject("sunset");
-                moonAgeTxt = Integer.valueOf(moon.getString("ageOfMoon"));
-                moonIllumitatedTxt = Integer.valueOf(moon.getString("percentIlluminated"));
-                moonPhaseTxt = moon.getString("phaseofMoon");
-                sunriseTxt = sun_rise.get("hour") + ":" + sun_rise.get("minute");
-
-                sunsetTxt = sun_set.get("hour") + ":" + sun_set.get("minute");
-                Date d = new Date();
-                dayTxt = (String) android.text.format.DateFormat.format("EEEE", d);
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            setData();
-        }
-    }
-
-    public void setInfo(String city, String code, String date, String min, String max){
+    public void setExternalInfo(String city, String code, String date, String min, String max){
         this.city = city;
         this.code = code;
         this.minTxt = min;
         this.maxTxt = max;
         this.dateTxt = date;
-        if(city != null && code != null)
-            new GetMoreInfoTask().execute();
-    }
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
+    public void setTaskInfo(String day, String temp, String feels, String  uv, String humidity, String preassure, String windsSpeed, String  visibility, String sunrise, String  sunset, String  condition, String  moonPhase, int moonAge, int illuminate){
+
+        this.dayTxt = day;
+        this.tempTxt = temp;
+        this.feelsTxt = feels;
+        this.uvTxt = uv;
+        this.humidityTxt = humidity;
+        this.preassureTxt = preassure;
+        this.windsSpeedtxt = windsSpeed;
+        this.visibilityTxt = visibility;
+        this.sunriseTxt = sunrise;
+        this.sunsetTxt = sunset;
+        this.conditionTxt = condition;
+        this.moonPhaseTxt = moonPhase;
+        this.moonAgeTxt = moonAge;
+        this.moonIllumitatedTxt = illuminate;
+    }
+
+    public ProgressBar getProgress() {
+        return progress;
+    }
+
+    public LinearLayout getLayout() {
+        return layout;
+    }
 }

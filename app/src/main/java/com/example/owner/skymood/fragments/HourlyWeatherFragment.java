@@ -15,7 +15,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.owner.skymood.R;
 import com.example.owner.skymood.SwipeViewActivity;
@@ -43,6 +45,8 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
     private RecyclerView hourlyRecycler;
     private RecyclerView weerklyRecycler;
     private Context context;
+    private LinearLayout layout;
+    private TextView text;
 
     public HourlyWeatherFragment() {
         // Required empty public constructor
@@ -56,11 +60,11 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
         View view =  inflater.inflate(R.layout.fragment_hourly_weather, container, false);
         this.setRetainInstance(true);
 
+        //layout = (LinearLayout) view.findViewById(R.id.hourlyLayout);
         hourlyWeather = new ArrayList<>();
         weatherArray = new ArrayList<>();
 
-        if(isOnline()) {
-            view.findViewById(R.id.hour_no_internet).setVisibility(View.GONE);
+           // text = (TextView) view.findViewById(R.id.hour_no_internet);
             // hourly recycler
             hourlyRecycler = (RecyclerView) view.findViewById(R.id.recycler_hourly);
             hourlyRecycler.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
@@ -72,10 +76,6 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
             weerklyRecycler.setLayoutManager(new LinearLayoutManager(context));
             WeeklyAdapter weeklyAdapte = new WeeklyAdapter(weatherArray, context);
             weerklyRecycler.setAdapter(weeklyAdapte);
-        }
-        else{
-            view.findViewById(R.id.hour_no_internet).setVisibility(View.VISIBLE);
-        }
 
 
         return view;
@@ -101,11 +101,11 @@ public class HourlyWeatherFragment extends Fragment implements Swideable{
         return this.weatherArray;
     }
 
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
+    public TextView getText() {
+        return text;
     }
 
+    public LinearLayout getLayout() {
+        return layout;
+    }
 }

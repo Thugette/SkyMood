@@ -17,15 +17,19 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".SwipeViewActivity">
+        <activity android:name=".SwipeViewActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity android:name=".MyLocationsActivity"></activity>
-        <activity android:name=".SearchedLocationsActivity"></activity>
+        <activity android:name=".MyLocationsActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".SearchedLocationsActivity"
+            android:screenOrientation="portrait"></activity>
         <receiver android:name=".model.MyWidgedProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
