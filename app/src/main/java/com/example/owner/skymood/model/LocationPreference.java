@@ -9,9 +9,10 @@ import android.content.SharedPreferences;
 public class LocationPreference {
 
     private static LocationPreference instance = null;
-    SharedPreferences pref;
-    Context context;
-    SharedPreferences.Editor editor;
+    private SharedPreferences pref;
+    private Context context;
+    private SharedPreferences.Editor editor;
+    private MyWidgedProvider widged;
     int PRIVATE_MODE = 0;
     private static final String PREFER_NAME = "SkyModePreferences";
     public static final String CITY = "city";
@@ -29,6 +30,7 @@ public class LocationPreference {
         this.context = context;
         pref = context.getSharedPreferences(PREFER_NAME, PRIVATE_MODE);
         editor = pref.edit();
+        this.widged = MyWidgedProvider.getInstance();
     }
 
     public static LocationPreference getInstance(Context context){
@@ -51,6 +53,7 @@ public class LocationPreference {
         editor.putString(FEELS_LIKE, feelsLike);
         editor.putString(LAST_UPDATE, lastUpdate);
         editor.commit();
+        widged.setInfo(city, country, countryCode);
     }
 
     public boolean isSetLocation(){
@@ -106,7 +109,6 @@ public class LocationPreference {
             return false;
         }
     }
-
 
     public void removeInfo(){
         editor.clear();

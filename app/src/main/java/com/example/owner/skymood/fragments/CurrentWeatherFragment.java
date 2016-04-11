@@ -139,8 +139,6 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                         country = location[1].trim();
                         //countryCode from  DB
                         APIDataGetterAsyncTask task = new APIDataGetterAsyncTask(CurrentWeatherFragment.this, context, weatherImage);
-                        //TODO remove next line
-                        //countryCode = "BG";
                         countryCode = manager.selectCuntryCode(city, country);
                         task.execute(countryCode, city, country);
                     } else {
@@ -431,15 +429,12 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
     public void setInfoData(String city, String country, String icon, String temp, String minTemp, String maxTemp,
                             String condition, String feelsLike, String lastUpdate){
 
-        Log.e("VVV", city + " - city");
         this.chosenCityTextView.setVisibility(View.VISIBLE);
         this.chosenCityTextView.setText(city);
         this.countryTextView.setText(country);
         this.temperature.setText(temp + "°");
         this.minTempTextView.setText("⬇" + minTemp + "°");
-        Log.e("VVV", maxTemp + " - max");
         this.maxTempTextView.setText("⬆" + maxTemp + "°");
-        Log.e("VVV", condition + " - condition");
         this.condition.setText(condition);
         this.feelsLike.setText(feelsLike);
         this.lastUpdate.setText(lastUpdate);
