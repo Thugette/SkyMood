@@ -1,11 +1,5 @@
 package com.example.owner.skymood.fragments;
 
-import com.example.owner.skymood.model.WeatherCondition;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.TreeMap;
-
 /**
  * Created by owner on 06/04/2016.
  */

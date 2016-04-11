@@ -4,16 +4,13 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
 import android.view.ViewGroup;
 
-import com.example.owner.skymood.R;
 import com.example.owner.skymood.SwipeViewActivity;
 import com.example.owner.skymood.fragments.CurrentWeatherFragment;
 import com.example.owner.skymood.fragments.HourlyWeatherFragment;
 import com.example.owner.skymood.fragments.MoreInfoFragment;
 import com.example.owner.skymood.fragments.Swideable;
-import com.example.owner.skymood.model.WeatherCondition;
 
 /**
  * Created by Golemanovaa on 4.4.2016 г..
