@@ -35,9 +35,6 @@ public class SwipeViewActivity extends AppCompatActivity implements ICommunicati
     ViewPager pager;
     Toolbar toolbar;
 
-    private String moreInfoJSON;
-    private String hourlyJSON;
-    private String weeklyJSON;
     private LinearLayout layout;
 
     private String[] tabs = {"Current", "Hourly", "More info"};
@@ -130,6 +127,7 @@ public class SwipeViewActivity extends AppCompatActivity implements ICommunicati
                 CurrentWeatherFragment fragment = (CurrentWeatherFragment)adapter.getItem(0);
                 if(fragment.isOnline()) {
                     APIDataGetterAsyncTask task = new APIDataGetterAsyncTask(fragment, this, fragment.getWeatherImage());
+                    Log.e("DIDI", city + " " + country);
                     task.execute(countryCode, city, country);
                 } else {
                     fragment.setInfoData(city, country, object.getIcon(), object.getTemp(), object.getMin(), object.getMax(),
@@ -143,9 +141,6 @@ public class SwipeViewActivity extends AppCompatActivity implements ICommunicati
         return this.toolbar;
     }
 
-    public void setWeeklyJSON(String weeklyJSON) {
-        this.weeklyJSON = weeklyJSON;
-    }
 
     public void changeBackground(String partOfDay){
         if(partOfDay == DAY){

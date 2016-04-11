@@ -166,7 +166,7 @@ public class APIDataGetterAsyncTask extends AsyncTask<String, Void, Void> {
 
 
 
-        ((CurrentWeatherFragment) fragment).apiDataGetterAsyncTaskOnPostExecute(temp, condition, feelsLike, minTemp, maxTemp, dateAndTime, lastUpdate);
+        ((CurrentWeatherFragment) fragment).apiDataGetterAsyncTaskOnPostExecute(temp, condition, feelsLike, minTemp, maxTemp, dateAndTime, lastUpdate, city, country);
 
     }
 

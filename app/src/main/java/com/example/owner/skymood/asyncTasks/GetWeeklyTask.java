@@ -55,7 +55,6 @@ public class GetWeeklyTask extends AsyncTask<String, Void, Void> {
                 body.append(sc.nextLine());
             }
             String info = body.toString();
-            activity.setWeeklyJSON(info);
             JSONObject jsonData = new JSONObject(info);
             JSONObject forecast = jsonData.getJSONObject("forecast");
             JSONObject simpleforecast = forecast.getJSONObject("simpleforecast");

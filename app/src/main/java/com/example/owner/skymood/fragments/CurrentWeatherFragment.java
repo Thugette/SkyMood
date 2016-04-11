@@ -363,7 +363,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
     }
 
     public void apiDataGetterAsyncTaskOnPostExecute(String temp, String condition, String feelsLike,
-                                    String minTemp, String maxTemp, String dateAndTime, String lastUpdate){
+                                    String minTemp, String maxTemp, String dateAndTime, String lastUpdate, String cityToDisplay, String country){
         this.progressBar.setVisibility(View.GONE);
         this.chosenCityTextView.setVisibility(View.VISIBLE);
         this.chosenCityTextView.setText(cityToDisplay);
