@@ -53,6 +53,7 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
     private TextView moonPhase;
     private ProgressBar progress;
     private LinearLayout layout;
+    private TextView textCon;
 
     private String dayTxt;
     private String dateTxt;
@@ -107,7 +108,8 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
         this.windSpeed = (TextView) root.findViewById(R.id.more_windsSpeed);
         this.moonPhase = (TextView)root.findViewById(R.id.more_phase_of_moon);
         this.progress = (ProgressBar) root.findViewById(R.id.more_progress);
-        layout = (LinearLayout) root.findViewById(R.id.more_layout);
+        this.layout = (LinearLayout) root.findViewById(R.id.more_layout);
+        this.textCon = (TextView) root.findViewById(R.id.text_condition);
 
         //root.findViewById(R.id.more_no_internet).setVisibility(View.GONE);
             //new GetMoreInfoTask().execute();
@@ -138,6 +140,8 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
         this.date.setText(dateTxt);
         this.day.setText(city);
         this.moonPhase.setText(moonPhaseTxt);
+        if(this.condition.getHeight() > textCon.getHeight())
+            textCon.setHeight(this.condition.getHeight());
     }
 
 
@@ -166,6 +170,8 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
         this.moonPhaseTxt = moonPhase;
         this.moonAgeTxt = moonAge;
         this.moonIllumitatedTxt = illuminate;
+
+
     }
 
     public ProgressBar getProgress() {

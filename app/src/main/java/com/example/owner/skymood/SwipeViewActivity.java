@@ -127,7 +127,6 @@ public class SwipeViewActivity extends AppCompatActivity implements ICommunicati
                 CurrentWeatherFragment fragment = (CurrentWeatherFragment)adapter.getItem(0);
                 if(fragment.isOnline()) {
                     APIDataGetterAsyncTask task = new APIDataGetterAsyncTask(fragment, this, fragment.getWeatherImage());
-                    Log.e("DIDI", city + " " + country);
                     task.execute(countryCode, city, country);
                 } else {
                     fragment.setInfoData(city, country, object.getIcon(), object.getTemp(), object.getMin(), object.getMax(),
