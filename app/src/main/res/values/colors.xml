@@ -17,5 +17,7 @@
 
     <color name="searchedLoc">#6d000dff</color>
 
+    <color name="spinner">#45000000</color>
+
 
 </resources>

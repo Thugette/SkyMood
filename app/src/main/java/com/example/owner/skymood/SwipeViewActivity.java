@@ -37,19 +37,20 @@ public class SwipeViewActivity extends AppCompatActivity implements ICommunicati
 
     private LinearLayout layout;
 
-    private String[] tabs = {"Current", "Hourly", "More info"};
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_swipe_view);
 
+        //used for changing the background
         layout = (LinearLayout) findViewById(R.id.swipe_view_activity);
 
+        //setting toolbar
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        //setting pager adapter
         adapter = new CustomPagerAdapter(getSupportFragmentManager(), this);
         pager = (ViewPager) findViewById(R.id.pager);
         pager.setOffscreenPageLimit(3);

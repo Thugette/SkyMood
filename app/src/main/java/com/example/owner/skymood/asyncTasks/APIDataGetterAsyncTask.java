@@ -86,7 +86,7 @@ public class APIDataGetterAsyncTask extends AsyncTask<String, Void, Void> {
             icon = observation.getString("icon");
 
             //API 2
-            URL url2 = new URL("http://api.wunderground.com/api/"+ CurrentWeatherFragment.API_KEY +"/forecast/q/" + countryCode + "/" + city + ".json");
+            URL url2 = new URL("http://api.wunderground.com/api/"+ CurrentWeatherFragment.API_KEY_TWO +"/forecast/q/" + countryCode + "/" + city + ".json");
             HttpURLConnection connection2 = (HttpURLConnection) url2.openConnection();
             connection2.connect();
 

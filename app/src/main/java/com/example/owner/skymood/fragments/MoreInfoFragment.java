@@ -144,8 +144,6 @@ public class MoreInfoFragment extends Fragment  implements Swideable{
             textCon.setHeight(this.condition.getHeight());
     }
 
-
-
     public void setExternalInfo(String city, String code, String date, String min, String max){
         this.city = city;
         this.code = code;

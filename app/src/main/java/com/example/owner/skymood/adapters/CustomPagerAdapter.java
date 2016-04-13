@@ -18,12 +18,6 @@ import com.example.owner.skymood.fragments.Swideable;
 public class CustomPagerAdapter extends FragmentStatePagerAdapter {
 
     private Context context;
-    private String city;
-    private String code;
-    private String min;
-    private String max;
-    private String date;
-    private int id = 0;
     private FragmentManager mFragmentManager;
     private Swideable[] fragmentsArray = new Swideable[getCount()];
 
@@ -35,21 +29,25 @@ public class CustomPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        if(fragmentsArray[position]!=null)
-            return (Fragment)fragmentsArray[position];
+        if(fragmentsArray[position]!=null) {
+            return (Fragment) fragmentsArray[position];
+        }
+
         Swideable fragment = null;
         switch(position){
             case 0:
+                //CurrentWeatherConditionFragment();
                 fragment = new CurrentWeatherFragment();
                 fragment.setContext(context);
                 break;
 
             case 1:
+                //HorlyWeatherFragment();
                 fragment = new HourlyWeatherFragment();
                 fragment.setContext(context);
                 break;
             case 2:
-                //return MoreInfoOnWeatherConditionFragment();
+                //MoreInfoOnWeatherConditionFragment();
                 fragment = new MoreInfoFragment();
                 fragment.setContext(context);
                 break;
@@ -75,21 +73,8 @@ public class CustomPagerAdapter extends FragmentStatePagerAdapter {
         return null;
     }
 
-    public void setInfoWeather(String city, String code, String min, String max, String date) {
-        this.city = city;
-        this.code = code;
-        this.min = min;
-        this.max = max;
-        this.date = date;
-    }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-    }
-
-    public Object instantiateItem(ViewGroup container, int position) {
-        Swideable fragment = (Swideable) super.instantiateItem(container, position);
-        fragmentsArray[position] = fragment;
-        return fragment;
     }
 }

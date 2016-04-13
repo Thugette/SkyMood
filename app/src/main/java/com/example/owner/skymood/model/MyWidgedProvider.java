@@ -143,9 +143,6 @@ public class MyWidgedProvider extends AppWidgetProvider {
         @Override
         protected void onHandleIntent(Intent intent) {
             try {
-                Log.e("VVV", "Widged Service");
-                Log.e("VVV", "city to search - " + city);
-                Log.e("VVV", "country code to search - " + countryCode);
                 URL url = new URL("http://api.wunderground.com/api/" + CurrentWeatherFragment.API_KEY + "/conditions/q/" + countryCode + "/" + city + ".json");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
@@ -156,7 +153,6 @@ public class MyWidgedProvider extends AppWidgetProvider {
                     body.append(sc.nextLine());
                 }
                 String info = body.toString();
-                Log.e("VVV", "json - " + info);
 
                 JSONObject jsonData = new JSONObject(info);
                 JSONObject observation = (JSONObject) jsonData.get("current_observation");
@@ -169,15 +165,10 @@ public class MyWidgedProvider extends AppWidgetProvider {
                 int iconId = field.getInt(this);
 
                 RemoteViews remoteV = new RemoteViews(this.getPackageName(), R.layout.widget_layout);
-                Log.e("VVV", "city - " + city);
                 remoteV.setTextViewText(R.id.widget_city, city);
-                Log.e("VVV", "country - " + country);
                 remoteV.setTextViewText(R.id.widget_country, country);
-                Log.e("VVV", "condition - " + condition);
                 remoteV.setTextViewText(R.id.condition, condition);
-                Log.e("VVV", "temp - " + temp);
                 remoteV.setTextViewText(R.id.degree, temp + "℃");
-                Log.e("VVV", "icon - " + icon);
                 remoteV.setImageViewResource(R.id.icon, iconId);
 
 

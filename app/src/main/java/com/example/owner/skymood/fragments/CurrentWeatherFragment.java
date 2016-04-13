@@ -44,10 +44,7 @@ import java.util.HashMap;
 public class CurrentWeatherFragment extends Fragment implements Swideable {
 
     public static final String API_KEY =  "9226ced37cb70c78";
-
-    private static final String DEFAULT_CITY = "Sofia";
-    private static final String DEFAULT_COUNTRY_CODE = "BG";
-    private static final String DEFAULT_COUNTRY = "Bulgaria";
+    public static final String API_KEY_TWO =  "f340bd0448a4dba2";
 
     private ProgressBar progressBar;
     private TextView chosenCityTextView;
@@ -125,7 +122,7 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
         citiesSpinner =  new ArrayList<>();
         citiesSpinner.add("My Locations");
         citiesSpinner.addAll(manager.getAllStringLocations());
-        final ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, citiesSpinner);
+        final ArrayAdapter adapter = new ArrayAdapter(context, R.layout.custom_spinner, citiesSpinner);
         spinner.setAdapter(adapter);
 
         //listeners
@@ -142,9 +139,6 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                         countryCode = manager.selectCuntryCode(city, country);
                         task.execute(countryCode, city, country);
                     } else {
-                        //TODO check if there is information in DB
-
-                        //if there isn't info in db
                         Toast.makeText(context, "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -249,9 +243,6 @@ public class CurrentWeatherFragment extends Fragment implements Swideable {
                 }
             }
         });
-
-        //TODO remove, for now hard coded for demo
-        //locPref.setPreferredLocation("Burgas", "Bulgaria", "BG", "clear", "19.9", "15", "21", "Clear", "Feels like: 20", "Last update: 05.04.2016, 18:00");
 
         //logic
         if(isOnline()){
